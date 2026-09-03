@@ -1,0 +1,151 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Category {
+  id            String @id
+  name          String
+  gujaratiName  String
+  description   String
+  color         String
+  tagline       String
+  sortOrder     Int    @default(0)
+}
+
+model Product {
+  id                 String  @id
+  slug               String  @unique
+  name               String
+  gujaratiName       String
+  hindiName          String?
+  category           String
+  categoryName       String
+  tagline            String
+  description        String
+  culinaryStory      String
+  heroColor          String
+  accentColor        String
+  badgeColor         String?
+  packSizes          Json
+  defaultWeight      String
+  defaultPrice       Int
+  compareAtPrice     Int?
+  rating             Float
+  reviewCount        Int
+  makesText          String
+  badges             Json
+  ingredients        Json
+  verifiedNutrition  Json
+  preparationSteps   Json
+  cookingTimeMinutes Int
+  difficulty         String
+  servingSuggestion  String
+  pairingChutney     String
+  allergens          Json
+  shelfLife          String
+  moodTags           Json
+  isBestseller       Boolean @default(false)
+  isFeatured         Boolean @default(false)
+  isNew              Boolean @default(false)
+  inStock            Boolean @default(true)
+  stockCount         Int     @default(0)
+  imageUrl           String?
+}
+
+model Coupon {
+  code               String @id
+  discountPercentage Int
+  minOrderValue      Int
+  description        String
+}
+
+model Order {
+  id                String      @id
+  createdAt         DateTime    @default(now())
+  status            String      @default("Processing")
+  paymentMethod     String
+  paymentStatus     String      @default("Pending")
+  razorpayOrderId   String?
+  razorpayPaymentId String?
+  inventoryAdjusted Boolean     @default(false)
+  subtotal          Int
+  discount          Int
+  shipping          Int
+  total             Int
+  couponCode        String?
+  trackingNumber    String
+  estimatedDelivery String
+  fullName          String
+  email             String
+  phone             String
+  addressLine1      String
+  addressLine2      String?
+  city              String
+  state             String
+  pincode           String
+  items             OrderItem[]
+
+  @@index([razorpayOrderId])
+  @@index([razorpayPaymentId])
+}
+
+model OrderItem {
+  id           String @id @default(cuid())
+  orderId      String
+  order        Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId    String
+  name         String
+  gujaratiName String
+  weight       String
+  price        Int
+  quantity     Int
+  heroColor    String
+}
+
+model ContactMessage {
+  id        String    @id @default(cuid())
+  createdAt DateTime  @default(now())
+  name      String
+  email     String
+  phone     String?
+  subject   String
+  message   String
+  readAt    DateTime?
+}
+
+model HeroSetting {
+  id                  String   @id @default("default")
+  desktopImageUrl     String?
+  mobileImageUrl      String?
+  overlayOpacity      Int      @default(45)
+  autoplayIntervalMs  Int      @default(4500)
+  updatedAt           DateTime @updatedAt
+}
+
+model HeroSlide {
+  id               String   @id @default(cuid())
+  productId        String?
+  desktopImageUrl  String
+  mobileImageUrl   String
+  altText          String   @default("")
+  active           Boolean  @default(true)
+  sortOrder        Int      @default(0)
+  createdAt        DateTime @default(now())
+}
+
+model Offer {
+  id        String    @id @default(cuid())
+  text      String
+  ctaLabel  String?
+  href      String?
+  active    Boolean   @default(true)
+  sortOrder Int       @default(0)
+  startsAt  DateTime?
+  endsAt    DateTime?
+  createdAt DateTime  @default(now())
+}

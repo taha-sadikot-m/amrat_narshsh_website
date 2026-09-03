@@ -1,0 +1,209 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-display: 'Sora', 'Plus Jakarta Sans', sans-serif;
+  --font-gujarati: 'Noto Sans Gujarati', 'Plus Jakarta Sans', sans-serif;
+
+  --color-primary: #C90018;
+  --color-primary-bright: #E31B23;
+  --color-primary-dark: #A50013;
+  --color-secondary: #F4C400;
+  --color-surface: #FFF8EC;
+  --color-surface-warm: #FFF8EC;
+  --color-canvas: #FCFAF5;
+  --color-text-main: #191919;
+  --color-text-muted: #5C5852;
+  --color-border-subtle: #EADFCB;
+
+  /* Explicit Amrat Narsih brand palette tokens */
+  --color-brand-red: #C90018;
+  --color-brand-red-bright: #E31B23;
+  --color-brand-yellow: #F4C400;
+  --color-brand-gold: #F4C400;
+  --color-brand-cream: #FFF8EC;
+  --color-brand-offwhite: #FCFAF5;
+  --color-brand-charcoal: #191919;
+  --color-brand-brown: #6F3E24;
+  --color-brand-green: #4C6B3C;
+}
+
+@layer base {
+  :root {
+    /* High-Contrast Accents and Semantic Variables */
+    --color-primary: #C90018;
+    --color-primary-bright: #E31B23;
+    --color-primary-dark: #A50013;
+    --color-brand-red: #C90018;
+    --color-brand-red-bright: #E31B23;
+
+    /* Secondary Highlights & Warm Accents */
+    --color-secondary: #F4C400;
+    --color-brand-yellow: #F4C400;
+    --color-brand-gold: #F4C400;
+
+    /* Text & Typography */
+    --color-text: #191919;
+    --color-text-main: #191919;
+    --color-text-muted: #5C5852;
+    --color-brand-charcoal: #191919;
+    --color-brand-brown: #6F3E24;
+    --color-brand-green: #4C6B3C;
+
+    /* Surfaces, Canvases & Borders */
+    --color-surface: #FFF8EC;
+    --color-surface-warm: #FFF8EC;
+    --color-surface-card: #FFFFFF;
+    --color-canvas: #FCFAF5;
+    --color-brand-cream: #FFF8EC;
+    --color-brand-offwhite: #FCFAF5;
+    --color-border-subtle: #EADFCB;
+    --color-border-accent: rgba(244, 196, 0, 0.4);
+  }
+
+  body {
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background-color: var(--color-canvas);
+    color: var(--color-text);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  h1, h2, h3, h4, h5, h6, .font-display {
+    font-family: 'Sora', 'Plus Jakarta Sans', sans-serif;
+    letter-spacing: -0.02em;
+  }
+
+  .font-gujarati {
+    font-family: 'Noto Sans Gujarati', 'Plus Jakarta Sans', sans-serif;
+  }
+}
+
+/* Custom subtle scrollbar */
+::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-canvas);
+}
+
+::-webkit-scrollbar-thumb {
+  background: #D6CFBE;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #B5AC96;
+}
+
+/* High-contrast subtle decorative heritage patterns */
+.bg-heritage-pattern {
+  background-color: var(--color-surface);
+  background-image: radial-gradient(var(--color-primary) 0.65px, transparent 0.65px), radial-gradient(var(--color-secondary) 0.65px, var(--color-surface) 0.65px);
+  background-size: 26px 26px;
+  background-position: 0 0, 13px 13px;
+}
+
+.bg-dot-pattern {
+  background-image: radial-gradient(rgba(227, 27, 35, 0.12) 1px, transparent 1px);
+  background-size: 18px 18px;
+}
+
+/* Smooth glass effect */
+.glass-nav {
+  background: rgba(252, 250, 245, 0.9);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+/* Primary CTA Button Animation (Solid Deep Amrat Red #C90018 to Radial Gradient with #F4C400 & #E31B23 on hover) */
+.btn-vibrant-cta {
+  position: relative;
+  background-color: #C90018;
+  color: #FFFFFF;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: 700;
+  isolation: isolate;
+  overflow: hidden;
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
+  box-shadow: 0 4px 14px 0 rgba(201, 0, 24, 0.28);
+}
+
+.btn-vibrant-cta::before {
+  content: '';
+  position: absolute;
+  inset: -60%;
+  background: radial-gradient(circle at center, #F4C400 0%, #E31B23 60%, #C90018 100%);
+  opacity: 0;
+  transform: scale(0.4);
+  transition: opacity 0.35s cubic-bezier(0.4, 0, 0.2, 1), transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: -1;
+  pointer-events: none;
+  border-radius: inherit;
+}
+
+.btn-vibrant-cta:hover {
+  transform: translateY(-1.5px);
+  box-shadow: 0 10px 24px -2px rgba(201, 0, 24, 0.42), 0 4px 12px 0 rgba(244, 196, 0, 0.32);
+}
+
+.btn-vibrant-cta:hover::before {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.btn-vibrant-cta:active {
+  transform: translateY(0px) scale(0.98);
+}
+
+/* Shimmer Loading Skeleton Animation */
+@keyframes shimmer-sweep {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.shimmer-element {
+  position: relative;
+  overflow: hidden;
+  background-color: #EDE5D8;
+}
+
+.shimmer-element::after {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  transform: translateX(-100%);
+  background-image: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.6) 35%,
+    rgba(244, 196, 0, 0.25) 50%,
+    rgba(255, 255, 255, 0.6) 65%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  animation: shimmer-sweep 1.8s infinite ease-in-out;
+  content: '';
+}
+
+@keyframes announcement-marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.announcement-marquee {
+  animation: announcement-marquee 28s linear infinite;
+}
+
+.announcement-marquee:hover {
+  animation-play-state: paused;
+}
+
+
