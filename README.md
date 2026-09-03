@@ -64,7 +64,7 @@ Images uploaded through `/admin` are written to `public/uploads` on the server's
 | Platform | How |
 |---|---|
 | **Vercel** | Connect the repo and set the environment variables above. Uploads to `public/uploads` do not persist on serverless. |
-| **Any Node VPS** (Hostinger Node, GoDaddy VPS) | `npm ci && npm run build`, then `npm start`, or run `.next/standalone/server.js` (`output: 'standalone'`). |
+| **Any Node VPS** (Hostinger Node, GoDaddy VPS) | `npm ci && npm run build`, then `npm start`. Set `PORT` if you need a port other than 3000. |
 | **Shared PHP hosting** (typical GoDaddy/Hostinger shared) | **Cannot run this app.** Those plans only serve static files and PHP. Use a Node VPS, Render, or Vercel. |
 
 ## Admin studio
