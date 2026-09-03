@@ -19,7 +19,6 @@ type IllustrationKind = 'mix' | 'rest' | 'cook' | 'serve';
 type ProcessStep = {
   number: string;
   title: string;
-  gujarati: string;
   description: string;
   timing: string;
   Icon: LucideIcon;
@@ -31,7 +30,6 @@ const STEPS: ProcessStep[] = [
   {
     number: '01',
     title: 'Open & Whisk',
-    gujarati: 'પાણી સાથે મિક્સ કરો',
     description:
       'Empty the packet into a bowl and add the exact measured water. No complicated ratios or extra spices required.',
     timing: '2 Mins',
@@ -42,7 +40,6 @@ const STEPS: ProcessStep[] = [
   {
     number: '02',
     title: 'Rest & Hydrate',
-    gujarati: 'પલાળી રાખો',
     description:
       'Let the coarse-ground lentils and stone-milled flours absorb moisture for 5–10 minutes for signature fluffiness.',
     timing: '5–10 Mins',
@@ -53,7 +50,6 @@ const STEPS: ProcessStep[] = [
   {
     number: '03',
     title: 'Golden Fry or Steam',
-    gujarati: 'ગરમા ગરમ તળો / બાફો',
     description:
       'Deep fry to a crispy amber crunch or steam in a thali until pillowy soft and feather-light.',
     timing: 'Cook',
@@ -64,7 +60,6 @@ const STEPS: ProcessStep[] = [
   {
     number: '04',
     title: 'Pure Gujarati Joy',
-    gujarati: 'પરિવાર સાથે માણો',
     description:
       'Serve piping hot with sweet Gujarati kadhi, fried salted chillies, or cold-pressed peanut oil with chai.',
     timing: 'Enjoy!',
@@ -169,7 +164,6 @@ function DesktopStepCard({
         <h3 className="font-display text-[24px] font-black leading-[1.15] tracking-tight text-[#191919]">
           {step.title}
         </h3>
-        <p className="font-gujarati mt-2 text-sm font-bold text-[#8B3D2E]">{step.gujarati}</p>
         <p className="mt-4 text-sm leading-6 text-[#5C5852]">{step.description}</p>
       </div>
 
@@ -219,9 +213,6 @@ function MobileTimeline({
                   <h3 className="font-display text-[21px] font-black leading-tight tracking-tight text-[#191919]">
                     {step.title}
                   </h3>
-                  <p className="font-gujarati mt-1.5 text-sm font-bold text-[#8B3D2E]">
-                    {step.gujarati}
-                  </p>
                 </div>
                 <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-white text-[#C90018] shadow-[0_6px_18px_rgba(93,61,28,0.08)]">
                   <Icon className="h-[22px] w-[22px]" strokeWidth={1.6} />
@@ -303,9 +294,6 @@ export const PacketToPlate: React.FC = () => {
             From Our Packet
             <span className="mt-1 block text-[#C90018]">to Your Plate</span>
           </h2>
-          <p className="font-gujarati mt-5 text-sm font-bold leading-relaxed text-[#8B3D2E] sm:text-base">
-            પેકેટથી થાળી સુધી — સરળ, સ્વાદિષ્ટ અને પરંપરાગત
-          </p>
           <p className="mx-auto mt-5 max-w-[700px] text-sm leading-7 text-[#5C5852] sm:text-base">
             No messy grinding, no guesswork with spices. Just authentic heritage taste made fresh
             at home in 4 simple steps.

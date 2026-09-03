@@ -215,16 +215,10 @@ export const ProductDetailPage: React.FC<{
                 {product.name}
               </h1>
               <div className="flex items-center space-x-2 mt-1">
-                <span className="font-gujarati text-lg font-bold text-[#6F3E24]">
-                  {product.gujaratiName}
-                </span>
                 {product.hindiName && (
-                  <>
-                    <span className="text-gray-300">|</span>
-                    <span className="text-sm font-semibold text-gray-600">
-                      {product.hindiName}
-                    </span>
-                  </>
+                  <span className="text-sm font-semibold text-gray-600">
+                    {product.hindiName}
+                  </span>
                 )}
               </div>
 

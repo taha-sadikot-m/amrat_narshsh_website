@@ -30,9 +30,6 @@ export const HeritageIntro: React.FC = () => {
             <h2 className="font-display font-black text-6xl sm:text-8xl md:text-9xl text-[#191919] tracking-tighter leading-none">
               Since <span className="text-[#C90018]">1956.</span>
             </h2>
-            <div className="font-gujarati text-lg sm:text-2xl font-black text-[#6F3E24] mt-2">
-              સાત દાયકાની અસ્સલ ગુજરાતી સ્વાદ પરંપરા
-            </div>
           </div>
 
           {/* Exact Supporting Text */}

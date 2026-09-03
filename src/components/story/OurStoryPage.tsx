@@ -26,10 +26,6 @@ export const OurStoryPage: React.FC = () => {
             <span className="text-[#C90018]">A Tradition That Lives On.</span>
           </h1>
 
-          <p className="font-gujarati text-xl font-extrabold text-[#6F3E24]">
-            મસાલાવાળા તૈયાર લોટના બેતાજ બાદશાહ • મોદી ફૂડ્સ પ્રા. લિ.
-          </p>
-
           <p className="text-base sm:text-lg text-gray-700 leading-relaxed max-w-2xl mx-auto">
             For generations, Gujarati food has been more than just a meal — it has been a celebration of family, tradition and togetherness.
           </p>
@@ -104,9 +100,6 @@ export const OurStoryPage: React.FC = () => {
             </div>
           </div>
 
-          <p className="font-gujarati text-lg text-yellow-100/90 font-bold">
-            સ્વાદ જાળવો • બનાવટ સરળ કરો • પરંપરા આગળ ધપાવો
-          </p>
         </div>
 
         {/* 4 Purity & Quality Creeds */}

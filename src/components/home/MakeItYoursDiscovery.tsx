@@ -7,13 +7,13 @@ import { useStore } from '../../context/StoreContext';
 import { ProductPackshot } from '../../data/brandAssets';
 import { MoodTag } from '../../types';
 
-const MOODS: { id: MoodTag; label: string; icon: any; gujarati: string; desc: string }[] = [
-  { id: 'crispy', label: 'Crispy & Golden', icon: Flame, gujarati: 'કુડકુડતા અને સ્વાદિષ્ટ', desc: 'Crunchy monsoon snacks and evening fritters' },
-  { id: 'breakfast', label: 'Morning Warmth', icon: Sun, gujarati: 'સવારનો ગરમાગરમ નાસ્તો', desc: 'Soft steamed Idla, Locho, and hearty Handwa' },
-  { id: 'evening-snack', label: 'Tea-Time Treats', icon: Coffee, gujarati: 'સાંજના ચા સાથે', desc: 'Dalwada, Gobapuri, and Dakor na Gota' },
-  { id: 'sweet', label: 'Sweet Celebrations', icon: Heart, gujarati: 'મીઠાઈ અને ઉત્સવ', desc: 'Royally soft, saffron-soaked Gulab Jamuns' },
-  { id: 'fast-easy', label: 'Instant in 10 Mins', icon: Clock, gujarati: 'ઝટપટ ૧૦ મિનિટમાં', desc: 'Zero hassle, instant comfort food like Khichu' },
-  { id: 'gluten-free', label: 'Fasting / Farali', icon: Sparkles, gujarati: 'ઉપવાસ અને ફરાળ', desc: '100% Farali pure grounded flours for Vrat' },
+const MOODS: { id: MoodTag; label: string; icon: any; desc: string }[] = [
+  { id: 'crispy', label: 'Crispy & Golden', icon: Flame, desc: 'Crunchy monsoon snacks and evening fritters' },
+  { id: 'breakfast', label: 'Morning Warmth', icon: Sun, desc: 'Soft steamed Idla, Locho, and hearty Handwa' },
+  { id: 'evening-snack', label: 'Tea-Time Treats', icon: Coffee, desc: 'Dalwada, Gobapuri, and Dakor na Gota' },
+  { id: 'sweet', label: 'Sweet Celebrations', icon: Heart, desc: 'Royally soft, saffron-soaked Gulab Jamuns' },
+  { id: 'fast-easy', label: 'Instant in 10 Mins', icon: Clock, desc: 'Zero hassle, instant comfort food like Khichu' },
+  { id: 'gluten-free', label: 'Fasting / Farali', icon: Sparkles, desc: '100% Farali pure grounded flours for Vrat' },
 ];
 
 export const MakeItYoursDiscovery: React.FC = () => {
@@ -80,13 +80,6 @@ export const MakeItYoursDiscovery: React.FC = () => {
                   <Icon className="w-5 h-5" />
                 </motion.div>
                 <div className="text-xs font-extrabold">{mood.label}</div>
-                <div
-                  className={`font-gujarati text-[10px] mt-0.5 ${
-                    isSelected ? 'text-yellow-200' : 'text-[#6F3E24]'
-                  }`}
-                >
-                  {mood.gujarati}
-                </div>
               </motion.button>
             );
           })}
@@ -122,9 +115,6 @@ export const MakeItYoursDiscovery: React.FC = () => {
                   <h4 className="font-display font-bold text-sm text-gray-900 group-hover:text-[#C90018] truncate">
                     {product.name}
                   </h4>
-                  <div className="font-gujarati text-xs text-[#6F3E24]">
-                    {product.gujaratiName}
-                  </div>
                   <div className="text-xs font-extrabold text-gray-900 mt-2">
                     ₹{product.defaultPrice}{' '}
                     <span className="text-[10px] text-gray-400 font-normal">

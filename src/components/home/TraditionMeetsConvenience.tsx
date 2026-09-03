@@ -34,9 +34,6 @@ export const TraditionMeetsConvenience: React.FC = () => {
           <p className="text-base sm:text-lg text-gray-700 font-medium leading-relaxed max-w-2xl mx-auto">
             Authentic food should be easy to enjoy, without compromising on the taste and traditions we grew up with.
           </p>
-          <div className="font-gujarati text-sm font-bold text-[#6F3E24]">
-            સ્વાદ વડીલોનો, સરળતા આજના જમાનાની
-          </div>
         </div>
 
         {/* Dual Side-by-Side Comparison: Traditional Way vs Amrat Narsih Way */}

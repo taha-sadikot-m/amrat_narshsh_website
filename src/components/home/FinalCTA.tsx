@@ -79,16 +79,6 @@ export const FinalCTA: React.FC = () => {
               Discover traditional favourites made for the way we enjoy food today.
             </motion.p>
 
-            <motion.div
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.3 }}
-              className="font-gujarati text-base sm:text-xl font-bold text-[#F4C400]"
-            >
-              આજે જ મંગાવો અને માણો સાત દાયકાની સ્વાદિષ્ટ પરંપરા
-            </motion.div>
-
             {/* Primary & Secondary Action Buttons */}
             <motion.div
               initial={{ opacity: 0, y: 15 }}

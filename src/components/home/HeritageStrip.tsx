@@ -8,11 +8,11 @@ export const HeritageStrip: React.FC = () => {
   const { navigateTo } = useStore();
 
   const QUICK_ITEMS = [
-    { label: 'Bhajiya Mix', guj: 'ભજીયા' },
-    { label: 'Dalwada Mix', guj: 'દાળવડા' },
-    { label: 'Gota Mix', guj: 'ગોટા' },
-    { label: 'Surti Locho', guj: 'લોચો' },
-    { label: 'Handwa Mix', guj: 'હાંડવો' },
+    { label: 'Bhajiya Mix' },
+    { label: 'Dalwada Mix' },
+    { label: 'Gota Mix' },
+    { label: 'Surti Locho' },
+    { label: 'Handwa Mix' },
   ];
 
   return (
@@ -30,9 +30,6 @@ export const HeritageStrip: React.FC = () => {
           <div>
             <span className="font-display font-black text-sm uppercase tracking-wide text-[#191919] mr-2">
               GENERATIONS OF FLAVOUR. ONE TRUSTED NAME.
-            </span>
-            <span className="font-gujarati text-xs font-black text-[#6F3E24]">
-              (મસાલાવાળા તૈયાર લોટના બેતાજ બાદશાહ)
             </span>
           </div>
         </div>

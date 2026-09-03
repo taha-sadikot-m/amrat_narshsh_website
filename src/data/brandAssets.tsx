@@ -1,15 +1,12 @@
 'use client';
 
-import React, { useId } from 'react';
+import React from 'react';
 
 // Official Amrat Narsih Logo (real brand artwork)
 export const AmratNarsihLogo: React.FC<{
   className?: string;
   variant?: 'full' | 'compact' | 'monochrome' | 'white';
-  showHeritageTag?: boolean;
-}> = ({ className = 'h-12 w-auto', showHeritageTag = false }) => {
-  const arcId = useId();
-
+}> = ({ className = 'h-12 w-auto' }) => {
   return (
     <div className={`relative inline-block select-none ${className}`}>
       <img
@@ -18,25 +15,6 @@ export const AmratNarsihLogo: React.FC<{
         className="w-full h-full object-contain drop-shadow-sm"
         draggable={false}
       />
-      {showHeritageTag && (
-        // Gujarati tagline set on a shallow arc, echoing the curved seal on the packaging.
-        // Absolutely positioned with fixed intrinsic dimensions so it can't distort the
-        // logo's own auto-sizing (a % width here would create a circular layout loop).
-        <svg
-          viewBox="0 0 200 30"
-          width={130}
-          height={19}
-          className="absolute left-1/2 top-full -translate-x-1/2 mt-0.5 max-w-none pointer-events-none"
-          aria-hidden="true"
-        >
-          <path id={`heritage-arc-${arcId}`} d="M 6 7 Q 100 30 194 7" fill="none" />
-          <text fill="#6F3E24" fontSize="12" fontWeight="700" className="font-gujarati">
-            <textPath href={`#heritage-arc-${arcId}`} startOffset="50%" textAnchor="middle">
-              મસાલાવાળા તૈયાર લોટના બેતાજ બાદશાહ
-            </textPath>
-          </text>
-        </svg>
-      )}
     </div>
   );
 };

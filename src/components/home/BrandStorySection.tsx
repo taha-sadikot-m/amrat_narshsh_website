@@ -24,9 +24,6 @@ export const BrandStorySection: React.FC = () => {
             A Legacy of Taste. <br />
             <span className="text-[#C90018]">A Tradition That Lives On.</span>
           </h2>
-          <p className="font-gujarati text-lg font-bold text-[#6F3E24]">
-            વારસો સ્વાદનો • પરંપરા જે પેઢી દર પેઢી જીવંત રહે છે
-          </p>
         </div>
 
         {/* 4 Story Modules: Origin, Family, Company, Today */}

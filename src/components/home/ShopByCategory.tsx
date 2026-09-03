@@ -125,12 +125,6 @@ function CategoryCard({
         <h3 className="font-display mt-1 max-w-[150px] text-lg font-black leading-tight tracking-tight text-[#191919] min-[375px]:text-xl md:mt-4 md:max-w-none md:text-3xl">
           {category.name}
         </h3>
-        <p
-          className="font-gujarati mt-1 max-w-[155px] text-[11px] font-bold leading-5 md:max-w-none md:text-base"
-          style={{ color: visual.textAccent }}
-        >
-          {category.gujaratiName}
-        </p>
         <p className="mt-3 hidden max-w-[300px] text-sm leading-relaxed text-[#5C5852] md:block">
           {category.description}
         </p>

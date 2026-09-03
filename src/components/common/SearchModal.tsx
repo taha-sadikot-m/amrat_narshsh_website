@@ -160,9 +160,6 @@ export const SearchModal: React.FC = () => {
                             <div className="text-xs font-bold text-gray-900 group-hover:text-[#C90018] truncate">
                               {product.name}
                             </div>
-                            <div className="text-[10px] text-gray-500 font-gujarati">
-                              {product.gujaratiName}
-                            </div>
                             <div className="text-[10px] text-[#6F3E24] font-medium truncate">
                               {product.makesText}
                             </div>

@@ -41,13 +41,6 @@ export const BrandPhilosophy: React.FC = () => {
           </div>
         </div>
 
-        {/* Gujarati Script Translation */}
-        <div className="pt-2">
-          <p className="font-gujarati text-lg sm:text-2xl font-bold text-yellow-100/80 max-w-2xl mx-auto">
-            સ્વાદ જાળવો • બનાવટ સરળ કરો • પરંપરા આગળ ધપાવો
-          </p>
-        </div>
-
         <p className="text-xs sm:text-sm text-gray-300 max-w-xl mx-auto leading-relaxed">
           A commitment made by Late Amrutlal Narsihdas Modi in 1956 that continues to guide every batch produced by Modi Foods Pvt. Ltd. today.
         </p>

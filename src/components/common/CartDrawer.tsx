@@ -262,9 +262,6 @@ export const CartDrawer: React.FC = () => {
                       <h4 className="text-xs font-bold text-gray-900 truncate font-display">
                         {item.name}
                       </h4>
-                      <div className="text-[10px] text-gray-500 font-gujarati">
-                        {item.gujaratiName}
-                      </div>
                       <div className="flex items-center space-x-2 mt-1">
                         <span className="text-[10px] font-bold bg-[#FFF8EC] text-[#6F3E24] px-2 py-0.5 rounded-md border border-[#F4C400]/30">
                           {item.weight}

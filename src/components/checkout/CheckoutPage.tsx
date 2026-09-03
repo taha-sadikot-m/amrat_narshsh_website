@@ -299,9 +299,6 @@ export const CheckoutPage: React.FC = () => {
               <h1 className="font-display font-black text-3xl sm:text-4xl text-gray-900 mt-1">
                 Dhanyavaad for Your Order!
               </h1>
-              <p className="font-gujarati text-base font-bold text-[#6F3E24] mt-1">
-                અમરત નરસિંહ પરિવાર તરફથી આભાર
-              </p>
             </div>
 
             <div className="p-4 bg-[#FFF8EC] rounded-2xl border border-[#F4C400]/50 max-w-md mx-auto space-y-1 text-xs">
@@ -336,7 +333,7 @@ export const CheckoutPage: React.FC = () => {
                       </div>
                       <div>
                         <div className="font-bold text-gray-900">{item.name}</div>
-                        <div className="text-[10px] text-gray-500 font-gujarati">{item.gujaratiName} ({item.weight})</div>
+                        <div className="text-[10px] text-gray-500">{item.weight}</div>
                       </div>
                     </div>
                     <div className="text-right">
@@ -626,7 +623,7 @@ export const CheckoutPage: React.FC = () => {
                         </div>
                         <div className="min-w-0">
                           <div className="font-bold text-gray-900 truncate">{item.name}</div>
-                          <div className="text-[10px] text-gray-500 font-gujarati">{item.gujaratiName} ({item.weight})</div>
+                          <div className="text-[10px] text-gray-500">{item.weight}</div>
                           <div className="text-[10px] text-gray-400">Qty: {item.quantity} × ₹{item.price}</div>
                         </div>
                       </div>

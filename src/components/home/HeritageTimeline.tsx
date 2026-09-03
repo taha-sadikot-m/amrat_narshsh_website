@@ -29,13 +29,11 @@ interface MilestoneData {
   periodLabel: string;
   chapterNumber: string;
   leader: string;
-  gujaratiLeader: string;
   location: string;
   themeColor: string;
   accentBg: string;
   accentBorder: string;
   headline: string;
-  gujaratiHeadline: string;
   narrative: string[];
   heritagePrinciple: string;
   statNumber: string;
@@ -55,13 +53,11 @@ const MILESTONES: MilestoneData[] = [
     periodLabel: 'THE SURAT GENESIS',
     chapterNumber: 'CHAPTER 01',
     leader: 'Late Amrutlal Narsihdas Modi',
-    gujaratiLeader: 'સ્વ. અમૃતલાલ નરસિંહદાસ મોદી',
     location: 'Salabatpura, Surat, Gujarat',
     themeColor: '#C90018',
     accentBg: '#FFF5F5',
     accentBorder: '#FECDCD',
     headline: 'The Humble Stone-Milled Beginning in Surat',
-    gujaratiHeadline: 'સુરતના સાળંગપુર અને સલાબતપુરાથી શરૂ થયેલી સ્વાદની પવિત્ર યાત્રા',
     narrative: [
       'The journey of Amrat Narsih began in 1956 in the historic culinary city of Surat. Driven by an uncompromising belief that pure food brings families together, Late Amrutlal Narsihdas Modi opened a small spice and flour milling workshop.',
       'Using traditional heavy stone chakki mills, he insisted that no artificial coloring, chemical bleaching, or fillers would ever enter the formulation—establishing the gold standard of authentic Gujarati taste.'
@@ -86,13 +82,11 @@ const MILESTONES: MilestoneData[] = [
     periodLabel: 'CRAFT REFINEMENT',
     chapterNumber: 'CHAPTER 02',
     leader: 'Late Mukeshchandra Amrutlal Modi',
-    gujaratiLeader: 'સ્વ. મુકેશચંદ્ર અમૃતલાલ મોદી',
     location: 'Expansion Across Gujarat Kitchens',
     themeColor: '#D97706',
     accentBg: '#FFFBEB',
     accentBorder: '#FDE68A',
     headline: 'Mastering the Secret Spice Balance & Grain Mesh',
-    gujaratiHeadline: 'પરંપરાગત સ્વાદ અને મસાલાના ચોક્કસ પ્રમાણનું સચોટ સંશોધન',
     narrative: [
       'Joining his father’s side, Late Mukeshchandra Amrutlal Modi brought rigorous artisanal discipline to the family craft, standardizing exact grain coarseness and spice blending ratios.',
       'He perfected the proprietary coarse grind for authentic Dalwada and Handwa, guaranteeing the legendary crisp exterior and spongy melt-in-mouth core that home cooks struggled to reproduce consistently.'
@@ -117,13 +111,11 @@ const MILESTONES: MilestoneData[] = [
     periodLabel: 'MODERN COMPLIANCE',
     chapterNumber: 'CHAPTER 03',
     leader: 'Modi Foods Incorporation',
-    gujaratiLeader: 'આધુનિક હાઈજીન અને શુદ્ધતાનું સંસ્થાપન',
     location: 'Surat Central Manufacturing Facility',
     themeColor: '#15803D',
     accentBg: '#F0FDF4',
     accentBorder: '#BBF7D0',
     headline: 'Pioneering Hygienic Processing & Freshness Packaging',
-    gujaratiHeadline: 'શુદ્ધતા, સ્વચ્છતા અને અદ્યતન પેકિંગ સાથે નવો યુગ',
     narrative: [
       'In 1992, the business was formally incorporated, laying down advanced hygienic production facilities in Gujarat with automated stainless steel blending systems and strict quality controls.',
       'This pivotal era introduced moisture-barrier packaging, locking in the essential oils and aroma of fresh spices without relying on chemical preservatives.'
@@ -148,13 +140,11 @@ const MILESTONES: MilestoneData[] = [
     periodLabel: 'PAN-INDIA HERITAGE',
     chapterNumber: 'CHAPTER 04',
     leader: 'Amit Mukeshchandra Modi',
-    gujaratiLeader: 'અમિત મુકેશચંદ્ર મોદી (આધુનિક નેતૃત્વ)',
     location: 'Pan-India & Global Kitchens',
     themeColor: '#6F3E24',
     accentBg: '#FAF5EE',
     accentBorder: '#E7D7C1',
     headline: 'Carrying the 1956 Legacy into Modern Households',
-    gujaratiHeadline: '૧૫ મિનિટમાં ઘર જેવા શુદ્ધ સ્વાદની દેશવ્યાપી ઉપલબ્ધતા',
     narrative: [
       'Today, Amit Mukeshchandra Modi guides Amrat Narsih, honoring the original 1956 vision while empowering busy modern households with effortless 15-minute traditional cooking.',
       'With a lineup of 11 authentic instant mixes—from Surti Locho and Dakor Gota to Gujarati Handwa and Dalwada—the authentic taste of Baa’s kitchen is now just minutes away.'
@@ -192,9 +182,6 @@ const EraArtifactIllustration: React.FC<{ type: MilestoneData['artifactSvgType']
             <div className="font-display font-black text-sm text-[#191919]">
               Stone-Milled Ghani Heritage
             </div>
-            <div className="text-[11px] text-[#6F3E24] font-gujarati font-bold">
-              હાથે દળેલા અનાજ અને શુદ્ધ મસાલા
-            </div>
             <div className="flex items-center space-x-2 text-[10px] font-bold text-gray-500 bg-white/80 px-2.5 py-0.5 rounded-full border border-gray-200">
               <History className="w-3 h-3 text-[#C90018]" />
               <span>1956 Salabatpura Workshop</span>
@@ -213,9 +200,6 @@ const EraArtifactIllustration: React.FC<{ type: MilestoneData['artifactSvgType']
             </div>
             <div className="font-display font-black text-sm text-[#191919]">
               Standardized Coarse Granulation
-            </div>
-            <div className="text-[11px] text-[#6F3E24] font-gujarati font-bold">
-              દાલવડા અને હાંડવા માટે સચોટ દાણાદાર લોટ
             </div>
             <div className="flex items-center space-x-2 text-[10px] font-bold text-gray-500 bg-white/80 px-2.5 py-0.5 rounded-full border border-gray-200">
               <ChefHat className="w-3 h-3 text-[#D97706]" />
@@ -236,9 +220,6 @@ const EraArtifactIllustration: React.FC<{ type: MilestoneData['artifactSvgType']
             <div className="font-display font-black text-sm text-[#191919]">
               Stainless Steel Hygienic Blending
             </div>
-            <div className="text-[11px] text-[#6F3E24] font-gujarati font-bold">
-              ૧૦૦% શુદ્ધતા અને નેચરલ એરોમા લોક
-            </div>
             <div className="flex items-center space-x-2 text-[10px] font-bold text-gray-500 bg-white/80 px-2.5 py-0.5 rounded-full border border-gray-200">
               <ShieldCheck className="w-3 h-3 text-[#15803D]" />
               <span>ISO Grade Hygiene & Lab Purity</span>
@@ -257,9 +238,6 @@ const EraArtifactIllustration: React.FC<{ type: MilestoneData['artifactSvgType']
             </div>
             <div className="font-display font-black text-sm text-[#191919]">
               15-Minute Modern Gujarati Kitchen
-            </div>
-            <div className="text-[11px] text-[#6F3E24] font-gujarati font-bold">
-              ૧૧ પૌષ્ટિક અને સ્વાદિષ્ટ ઇન્સ્ટન્ટ મિક્સ
             </div>
             <div className="flex items-center space-x-2 text-[10px] font-bold text-gray-500 bg-white/80 px-2.5 py-0.5 rounded-full border border-gray-200">
               <Clock className="w-3 h-3 text-[#6F3E24]" />
@@ -358,19 +336,13 @@ const MilestoneCard: React.FC<{
               <h3 className="font-display font-black text-xl sm:text-2xl text-gray-900 leading-snug">
                 {milestone.leader}
               </h3>
-              <div className="font-gujarati text-xs font-bold text-[#C90018]">
-                {milestone.gujaratiLeader}
-              </div>
             </div>
 
-            {/* Headline & Gujarati Callout */}
+            {/* Headline */}
             <div className="space-y-1.5 pt-1">
               <h4 className="font-display font-bold text-base sm:text-lg text-gray-800 leading-snug">
                 {milestone.headline}
               </h4>
-              <div className="font-gujarati text-xs text-gray-600 font-medium">
-                {milestone.gujaratiHeadline}
-              </div>
             </div>
 
             {/* Narrative Paragraphs */}
@@ -532,10 +504,6 @@ export const HeritageTimeline: React.FC = () => {
             Our Journey Across <br />
             <span className="text-[#C90018]">Generations of Taste</span>
           </h2>
-
-          <p className="font-gujarati text-lg sm:text-xl font-extrabold text-[#C90018]">
-            સુરતથી શરૂ થયેલી સ્વાદની અવિરત યાત્રા • પેઢી દર પેઢી જળવાયેલી પવિત્રતા
-          </p>
 
           <p className="text-sm sm:text-base text-gray-600 leading-relaxed max-w-2xl mx-auto">
             From a humble stone-milling workshop in 1956 Surat to dinner tables across India.

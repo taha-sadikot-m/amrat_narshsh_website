@@ -119,9 +119,6 @@ export const BestsellersCarousel: React.FC = () => {
                 We <span className="text-[#C90018]">Grew Up</span> With
               </span>
             </h2>
-            <p className="font-gujarati mt-4 text-sm font-bold text-[#8B3D2E] sm:text-base">
-              ઘર-ઘરનો માનીતો અસ્સલ ગુજરાતી સ્વાદ
-            </p>
             <div className="mt-4 h-px w-32 bg-gradient-to-r from-[#D8A21B]/70 to-transparent" aria-hidden="true" />
             <p className="mt-4 max-w-[510px] text-sm leading-6 text-[#5C5852] sm:text-base sm:leading-7">
               Traditional recipes. Honest ingredients. Stone-milled goodness.

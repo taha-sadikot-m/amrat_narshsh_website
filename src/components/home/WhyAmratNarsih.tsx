@@ -8,28 +8,24 @@ import { useStore } from '../../context/StoreContext';
 const PILLARS = [
   {
     title: 'Heritage Since 1956',
-    gujaratiTitle: '૧૯૫૬થી અવિરત સ્વાદની પરંપરા',
     description: 'Over 68 years of culinary trust rooted in Ahmedabad, Gujarat. Formulations passed down through generations without alteration.',
     icon: Award,
     color: '#C90018',
   },
   {
     title: '100% Pure Vegetarian & Clean',
-    gujaratiTitle: 'શુદ્ધ અને સાત્વિક સામગ્રી',
     description: 'Stone-milled flours, unadulterated ground lentils, and genuine whole spices. Zero artificial colorings, zero fillers.',
     icon: ShieldCheck,
     color: '#2E7D32',
   },
   {
     title: 'Ready in 10–15 Minutes',
-    gujaratiTitle: 'ઝટપટ સ્વાદિષ્ટ રસોઈ',
     description: 'Designed for modern busy lifestyles. Recreate authentic Gujarati street food and festive banquets with zero prep stress.',
     icon: Sparkles,
     color: '#F4C400',
   },
   {
     title: 'Milled to Perfection',
-    gujaratiTitle: 'સ્વચ્છતા અને ઉત્તમ ગુણવત્તા',
     description: 'State-of-the-art hygienic processing and triple-layer nitrogen sealing keeps every spice fresh and aromatic.',
     icon: HeartHandshake,
     color: '#6F3E24',
@@ -60,9 +56,6 @@ export const WhyAmratNarsih: React.FC = () => {
           <h2 className="font-display font-black text-2xl sm:text-4xl text-[#191919]">
             Why Generations Trust Us
           </h2>
-          <p className="font-gujarati text-sm sm:text-base font-bold text-[#6F3E24] mt-2">
-            ૧૯૫૬થી અવિરત સ્વાદની પરંપરા
-          </p>
         </motion.div>
 
         {/* 4 Pillars Grid */}

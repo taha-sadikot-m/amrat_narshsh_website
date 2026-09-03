@@ -153,13 +153,8 @@ export const Navbar: React.FC = () => {
                         src={products.find((product) => product.id === CATEGORY_PREVIEW_PRODUCT[cat.id])?.imageUrl}
                       />
                     </div>
-                    <div>
-                      <div className="text-xs font-bold text-gray-900 group-hover:text-[#C90018]">
-                        {cat.name}
-                      </div>
-                      <div className="text-[11px] text-gray-500 font-gujarati">
-                        {cat.gujaratiName}
-                      </div>
+                    <div className="text-xs font-bold text-gray-900 group-hover:text-[#C90018]">
+                      {cat.name}
                     </div>
                   </button>
                 ))}

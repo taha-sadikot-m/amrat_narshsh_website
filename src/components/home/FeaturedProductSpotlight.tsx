@@ -106,9 +106,6 @@ export const FeaturedProductSpotlight: React.FC = () => {
               <h3 className="font-display font-black text-2xl sm:text-3xl text-gray-900 mt-1">
                 {product.name}
               </h3>
-              <div className="font-gujarati text-base font-bold text-[#6F3E24]">
-                {product.gujaratiName}
-              </div>
             </div>
 
             <p className="text-sm text-gray-700 leading-relaxed">

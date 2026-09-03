@@ -170,10 +170,6 @@ export const ShopPage: React.FC<{ products?: Product[] }> = ({ products = [] }) 
             Authentic Gujarati Pantry &amp; Mixes
           </h1>
 
-          <p className="font-gujarati text-lg font-extrabold text-[#C90018]">
-            અમરત નરસિંહ તૈયાર લોટ સંગ્રહ • શુદ્ધ અને પૌષ્ટિક
-          </p>
-
           <p className="text-xs sm:text-sm text-gray-600 max-w-2xl mx-auto leading-relaxed">
             11 time-tested instant mixes and traditional flours made with pure stone-ground pulses, authentic Gujarati spices, and zero chemical preservatives.
           </p>
@@ -534,14 +530,9 @@ export const ShopPage: React.FC<{ products?: Product[] }> = ({ products = [] }) 
             <div className="w-16 h-16 bg-[#FFF8EC] rounded-full flex items-center justify-center mx-auto text-[#C90018] border border-[#F4C400]/40">
               <Search className="w-8 h-8" />
             </div>
-            <div className="space-y-1">
-              <h3 className="font-display font-black text-xl text-gray-900">
-                No Recipes Found
-              </h3>
-              <p className="font-gujarati text-sm font-bold text-[#6F3E24]">
-                આ ફિલ્ટર્સ સાથે કોઈ વાનગી મળી નથી
-              </p>
-            </div>
+            <h3 className="font-display font-black text-xl text-gray-900">
+              No Recipes Found
+            </h3>
             <p className="text-xs text-gray-600 leading-relaxed">
               We couldn't find any Amrat Narsih instant mixes matching your combination of dietary needs and category filters. Try resetting the filters or searching for another ingredient.
             </p>

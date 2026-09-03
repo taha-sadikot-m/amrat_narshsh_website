@@ -197,15 +197,10 @@ export const QuickViewModal: React.FC = () => {
                     </button>
                   </div>
 
-                  {/* Title & Gujarati Typography */}
-                  <div>
-                    <h2 className="text-xl sm:text-2xl font-display font-black text-gray-900 leading-tight">
-                      {quickViewProduct.name}
-                    </h2>
-                    <p className="font-gujarati text-sm sm:text-base font-extrabold text-[#C90018] mt-0.5">
-                      {quickViewProduct.gujaratiName}
-                    </p>
-                  </div>
+                  {/* Title */}
+                  <h2 className="text-xl sm:text-2xl font-display font-black text-gray-900 leading-tight">
+                    {quickViewProduct.name}
+                  </h2>
 
                   {/* Short Description */}
                   <p className="text-xs text-gray-600 leading-relaxed line-clamp-2">

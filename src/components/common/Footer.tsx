@@ -42,14 +42,9 @@ export const Footer: React.FC = () => {
               <AmratNarsihLogo className="h-14 w-auto" />
             </div>
 
-            {/* Core Brand Idea & Gujarati Line */}
-            <div className="space-y-1">
-              <div className="text-sm font-black text-white">
-                A Legacy of Taste. A Tradition That Lives On.
-              </div>
-              <p className="font-gujarati text-sm text-yellow-200/90 font-bold">
-                મસાલાવાળા તૈયાર લોટના બેતાજ બાદશાહ
-              </p>
+            {/* Core Brand Idea */}
+            <div className="text-sm font-black text-white">
+              A Legacy of Taste. A Tradition That Lives On.
             </div>
 
             <p className="text-xs text-gray-400 leading-relaxed max-w-sm">
@@ -75,12 +70,9 @@ export const Footer: React.FC = () => {
                 <li key={prod.id}>
                   <button
                     onClick={() => navigateTo('product-detail', { productId: prod.id })}
-                    className="hover:text-[#F4C400] transition-colors text-left flex items-center justify-between w-full cursor-pointer"
+                    className="hover:text-[#F4C400] transition-colors text-left flex items-center w-full cursor-pointer"
                   >
                     <span>{prod.name}</span>
-                    <span className="text-[10px] text-gray-600 font-gujarati">
-                      {prod.gujaratiName.split(' ')[0]}
-                    </span>
                   </button>
                 </li>
               ))}

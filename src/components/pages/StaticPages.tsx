@@ -83,10 +83,6 @@ export const ContactPage: React.FC = () => {
             Visit Our Surat Flagship
           </h1>
 
-          <p className="font-gujarati text-lg font-extrabold text-[#C90018]">
-            અમરત નરસિંહ • ૩/૨૨૭૩, બાલાભાઈની શેરી, સલાબતપુરા, સુરત
-          </p>
-
           <p className="text-xs sm:text-sm text-gray-600 leading-relaxed">
             Visit our historic heritage store in Salabatpura, Surat to purchase fresh factory batches directly from the counter, or reach out to our team for online orders and retail distribution.
           </p>
@@ -593,9 +589,6 @@ export const FaqPage: React.FC = () => {
           <h1 className="font-display font-black text-3xl sm:text-4xl text-[#191919]">
             Frequently Asked Questions
           </h1>
-          <p className="font-gujarati text-base font-bold text-[#6F3E24]">
-            વારંવાર પૂછાતા પ્રશ્નો
-          </p>
         </div>
 
         <div className="space-y-3">
