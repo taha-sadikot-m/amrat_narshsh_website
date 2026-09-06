@@ -1,7 +1,7 @@
 'use client';
 
 import { HeroSection } from '../components/home/HeroSection';
-import { ShopByCategory } from '../components/home/ShopByCategory';
+import { RecipeEntryPoint } from '../components/home/RecipeEntryPoint';
 import { BestsellersCarousel } from '../components/home/BestsellersCarousel';
 import { PacketToPlate } from '../components/home/PacketToPlate';
 import { WhyAmratNarsih } from '../components/home/WhyAmratNarsih';
@@ -13,7 +13,7 @@ export default function HomePage() {
   return (
     <main id="home-view" className="space-y-0">
       <HeroSection />
-      <ShopByCategory />
+      <RecipeEntryPoint />
       <BestsellersCarousel />
       <PacketToPlate />
       <WhyAmratNarsih />
