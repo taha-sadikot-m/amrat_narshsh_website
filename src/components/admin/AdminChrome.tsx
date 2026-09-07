@@ -12,6 +12,7 @@ import {
   Inbox,
   LogOut,
   ExternalLink,
+  Layers,
 } from 'lucide-react';
 
 const NAV = [
@@ -19,6 +20,7 @@ const NAV = [
   { href: '/admin/hero', label: 'Hero images', icon: ImageIcon },
   { href: '/admin/offers', label: 'Offers', icon: Megaphone },
   { href: '/admin/products', label: 'Products', icon: Package },
+  { href: '/admin/combos', label: 'Combos', icon: Layers },
   { href: '/admin/orders', label: 'Orders', icon: ShoppingBag },
   { href: '/admin/coupons', label: 'Coupons', icon: Ticket },
   { href: '/admin/inbox', label: 'Inbox', icon: Inbox },

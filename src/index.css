@@ -1,69 +1,64 @@
 @import "tailwindcss";
 
 @theme {
-  --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  --font-display: 'Sora', 'Plus Jakarta Sans', sans-serif;
-  --font-editorial: 'Lora', Georgia, serif;
-  --font-gujarati: 'Noto Sans Gujarati', 'Plus Jakarta Sans', sans-serif;
+  --font-sans: 'DM Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-display: 'Playfair Display', Georgia, serif;
+  --font-editorial: 'Playfair Display', Georgia, serif;
+  --font-gujarati: 'Noto Sans Gujarati', 'DM Sans', sans-serif;
 
-  --color-primary: #C90018;
-  --color-primary-bright: #E31B23;
-  --color-primary-dark: #A50013;
-  --color-secondary: #F4C400;
-  --color-surface: #FFF8EC;
-  --color-surface-warm: #FFF8EC;
-  --color-canvas: #FCFAF5;
-  --color-text-main: #191919;
-  --color-text-muted: #5C5852;
-  --color-border-subtle: #EADFCB;
+  --color-primary: #D46A1E;
+  --color-primary-bright: #D46A1E;
+  --color-primary-dark: #A84F10;
+  --color-secondary: #2E7D32;
+  --color-surface: #FFF3E0;
+  --color-surface-warm: #FFF3E0;
+  --color-canvas: #FFFBF5;
+  --color-text-main: #3E2723;
+  --color-text-muted: #8D6E63;
+  --color-border-subtle: #F0E4D0;
 
-  /* Explicit Amrat Narsih brand palette tokens */
-  --color-brand-red: #C90018;
-  --color-brand-red-bright: #E31B23;
-  --color-brand-yellow: #F4C400;
-  --color-brand-gold: #F4C400;
-  --color-brand-cream: #FFF8EC;
-  --color-brand-offwhite: #FCFAF5;
-  --color-brand-charcoal: #191919;
-  --color-brand-brown: #6F3E24;
-  --color-brand-green: #4C6B3C;
+  --color-brand-red: #C62828;
+  --color-brand-red-bright: #D46A1E;
+  --color-brand-yellow: #F5A623;
+  --color-brand-gold: #B8860B;
+  --color-brand-cream: #FFF3E0;
+  --color-brand-offwhite: #FFFBF5;
+  --color-brand-charcoal: #3E2723;
+  --color-brand-brown: #3E2723;
+  --color-brand-green: #2E7D32;
 }
 
 @layer base {
   :root {
-    /* High-Contrast Accents and Semantic Variables */
-    --color-primary: #C90018;
-    --color-primary-bright: #E31B23;
-    --color-primary-dark: #A50013;
-    --color-brand-red: #C90018;
-    --color-brand-red-bright: #E31B23;
+    --color-primary: #D46A1E;
+    --color-primary-bright: #D46A1E;
+    --color-primary-dark: #A84F10;
+    --color-brand-red: #C62828;
+    --color-brand-red-bright: #D46A1E;
 
-    /* Secondary Highlights & Warm Accents */
-    --color-secondary: #F4C400;
-    --color-brand-yellow: #F4C400;
-    --color-brand-gold: #F4C400;
+    --color-secondary: #2E7D32;
+    --color-brand-yellow: #F5A623;
+    --color-brand-gold: #B8860B;
 
-    /* Text & Typography */
-    --color-text: #191919;
-    --color-text-main: #191919;
-    --color-text-muted: #5C5852;
-    --color-brand-charcoal: #191919;
-    --color-brand-brown: #6F3E24;
-    --color-brand-green: #4C6B3C;
+    --color-text: #3E2723;
+    --color-text-main: #3E2723;
+    --color-text-muted: #8D6E63;
+    --color-brand-charcoal: #3E2723;
+    --color-brand-brown: #3E2723;
+    --color-brand-green: #2E7D32;
 
-    /* Surfaces, Canvases & Borders */
-    --color-surface: #FFF8EC;
-    --color-surface-warm: #FFF8EC;
+    --color-surface: #FFF3E0;
+    --color-surface-warm: #FFF3E0;
     --color-surface-card: #FFFFFF;
-    --color-canvas: #FCFAF5;
-    --color-brand-cream: #FFF8EC;
-    --color-brand-offwhite: #FCFAF5;
-    --color-border-subtle: #EADFCB;
-    --color-border-accent: rgba(244, 196, 0, 0.4);
+    --color-canvas: #FFFBF5;
+    --color-brand-cream: #FFF3E0;
+    --color-brand-offwhite: #FFFBF5;
+    --color-border-subtle: #F0E4D0;
+    --color-border-accent: rgba(212, 106, 30, 0.4);
   }
 
   body {
-    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     background-color: var(--color-canvas);
     color: var(--color-text);
     -webkit-font-smoothing: antialiased;
@@ -71,16 +66,16 @@
   }
 
   h1, h2, h3, h4, h5, h6, .font-display {
-    font-family: 'Sora', 'Plus Jakarta Sans', sans-serif;
-    letter-spacing: -0.02em;
+    font-family: 'Playfair Display', Georgia, serif;
+    letter-spacing: -0.01em;
   }
 
   .font-gujarati {
-    font-family: 'Noto Sans Gujarati', 'Plus Jakarta Sans', sans-serif;
+    font-family: 'Noto Sans Gujarati', 'DM Sans', sans-serif;
   }
 
   .font-editorial {
-    font-family: 'Lora', Georgia, serif;
+    font-family: 'Playfair Display', Georgia, serif;
     letter-spacing: 0;
   }
 }
@@ -119,7 +114,7 @@
 
 /* Smooth glass effect */
 .glass-nav {
-  background: rgba(252, 250, 245, 0.9);
+  background: rgba(255, 251, 245, 0.92);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
 }
@@ -127,41 +122,27 @@
 /* Primary CTA Button Animation (Solid Deep Amrat Red #C90018 to Radial Gradient with #F4C400 & #E31B23 on hover) */
 .btn-vibrant-cta {
   position: relative;
-  background-color: #C90018;
+  background-color: #D46A1E;
   color: #FFFFFF;
-  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-family: 'DM Sans', sans-serif;
   font-weight: 700;
   isolation: isolate;
   overflow: hidden;
-  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
-  box-shadow: 0 4px 14px 0 rgba(201, 0, 24, 0.28);
+  transition: background-color 0.25s ease, box-shadow 0.25s ease;
+  box-shadow: 0 4px 14px 0 rgba(212, 106, 30, 0.28);
 }
 
 .btn-vibrant-cta::before {
-  content: '';
-  position: absolute;
-  inset: -60%;
-  background: radial-gradient(circle at center, #F4C400 0%, #E31B23 60%, #C90018 100%);
-  opacity: 0;
-  transform: scale(0.4);
-  transition: opacity 0.35s cubic-bezier(0.4, 0, 0.2, 1), transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-  z-index: -1;
-  pointer-events: none;
-  border-radius: inherit;
+  content: none;
 }
 
 .btn-vibrant-cta:hover {
-  transform: translateY(-1.5px);
-  box-shadow: 0 10px 24px -2px rgba(201, 0, 24, 0.42), 0 4px 12px 0 rgba(244, 196, 0, 0.32);
-}
-
-.btn-vibrant-cta:hover::before {
-  opacity: 1;
-  transform: scale(1);
+  background-color: #A84F10;
+  box-shadow: 0 8px 20px -2px rgba(212, 106, 30, 0.42);
 }
 
 .btn-vibrant-cta:active {
-  transform: translateY(0px) scale(0.98);
+  transform: scale(0.98);
 }
 
 /* Shimmer Loading Skeleton Animation */

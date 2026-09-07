@@ -141,6 +141,51 @@ async function main() {
     });
   }
 
+  const COMBOS = [
+    {
+      id: 'combo-festival',
+      name: 'Festival Mix Box',
+      tagline: 'Bhajiya, Gota, and Gulab Jamun for celebration tables',
+      price: 289,
+      sortOrder: 0,
+      productIds: ['bhajiya', 'gota', 'gulab-jamun'],
+    },
+    {
+      id: 'combo-chai',
+      name: 'Chai-Time Snack Pack',
+      tagline: 'Dalwada, Handwa, and Khichu for evening plates',
+      price: 220,
+      sortOrder: 1,
+      productIds: ['dalwada', 'handwa', 'khichu'],
+    },
+    {
+      id: 'combo-farali',
+      name: 'Farali Fasting Kit',
+      tagline: 'Farali Atta, Gobapuri, and Khatawada for vrat days',
+      price: 278,
+      sortOrder: 2,
+      productIds: ['farali-atta', 'gobapuri', 'khatawada'],
+    },
+  ];
+
+  for (const combo of COMBOS) {
+    await prisma.combo.upsert({
+      where: { id: combo.id },
+      update: {},
+      create: {
+        id: combo.id,
+        name: combo.name,
+        tagline: combo.tagline,
+        price: combo.price,
+        active: true,
+        sortOrder: combo.sortOrder,
+        items: {
+          create: combo.productIds.map((productId) => ({ productId, quantity: 1 })),
+        },
+      },
+    });
+  }
+
   await prisma.heroSetting.upsert({
     where: { id: 'default' },
     update: {},
@@ -183,7 +228,7 @@ async function main() {
   }
 
   console.log(
-    `Seeded missing records: ${PRODUCTS.length} products, ${CATEGORIES.length} categories, ${COUPONS.length} coupons, ${OFFERS.length} offers, ${HERO_SLIDES.length} hero slides, and hero settings.`,
+    `Seeded missing records: ${PRODUCTS.length} products, ${CATEGORIES.length} categories, ${COUPONS.length} coupons, ${OFFERS.length} offers, ${COMBOS.length} combos, ${HERO_SLIDES.length} hero slides, and hero settings.`,
   );
 }
 

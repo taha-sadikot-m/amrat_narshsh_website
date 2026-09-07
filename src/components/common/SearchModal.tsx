@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
-import { Search, X, Sparkles } from 'lucide-react';
+import { Search, X, Sparkles, ArrowRight } from 'lucide-react';
 import { useStore } from '../../context/StoreContext';
 import { ProductPackshot } from '../../data/brandAssets';
 
@@ -133,9 +133,10 @@ export const SearchModal: React.FC = () => {
                         closeSearch();
                         navigateTo('shop', { search: searchTerm });
                       }}
-                      className="text-xs font-bold text-[#C90018] hover:underline cursor-pointer"
+                      className="inline-flex items-center gap-1.5 text-xs font-bold text-[#C90018] hover:underline cursor-pointer"
                     >
-                      View in Shop →
+                      View in Shop
+                      <ArrowRight className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
                     </button>
                   )}
                 </div>

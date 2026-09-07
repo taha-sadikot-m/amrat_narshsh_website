@@ -13,41 +13,38 @@ export const ToastContainer: React.FC = () => {
     <div
       id="toast-notifications-container"
       aria-live="polite"
-      className="fixed bottom-20 sm:bottom-6 right-4 sm:right-6 z-50 flex flex-col space-y-2 pointer-events-none max-w-sm w-full"
+      className="pointer-events-none fixed bottom-20 right-4 z-50 flex w-full max-w-sm flex-col space-y-2 sm:bottom-6 sm:right-6"
     >
       {toasts.map((toast) => {
+        const isSuccess = toast.type === 'success';
         return (
           <div
             key={toast.id}
-            className="pointer-events-auto bg-white/95 backdrop-blur-md border border-[#EADFCB] text-gray-900 rounded-2xl shadow-xl p-3.5 flex items-start space-x-3 animate-in slide-in-from-bottom-5 fade-in duration-200"
+            className={`pointer-events-auto flex items-start space-x-3 rounded-lg p-3.5 shadow-xl duration-200 animate-in fade-in slide-in-from-bottom-5 ${
+              isSuccess
+                ? 'bg-[#2E7D32] text-white'
+                : 'border border-[#F0E4D0] bg-white text-[#3E2723]'
+            }`}
           >
-            <div className="shrink-0 mt-0.5">
-              {toast.type === 'success' && (
-                <CheckCircle2 className="w-5 h-5 text-green-600" />
-              )}
-              {toast.type === 'warning' && (
-                <AlertCircle className="w-5 h-5 text-amber-600" />
-              )}
-              {toast.type === 'info' && (
-                <Info className="w-5 h-5 text-[#C90018]" />
-              )}
+            <div className="mt-0.5 shrink-0">
+              {toast.type === 'success' && <CheckCircle2 className="h-5 w-5 text-white" />}
+              {toast.type === 'warning' && <AlertCircle className="h-5 w-5 text-amber-600" />}
+              {toast.type === 'info' && <Info className="h-5 w-5 text-[#D46A1E]" />}
             </div>
-
-            <div className="flex-1 min-w-0">
-              <h5 className="text-xs font-bold text-gray-900 leading-tight">
+            <div className="min-w-0 flex-1">
+              <h5 className={`text-xs font-bold leading-tight ${isSuccess ? 'text-white' : 'text-[#3E2723]'}`}>
                 {toast.title}
               </h5>
-              <p className="text-[11px] text-gray-600 mt-0.5 leading-normal">
+              <p className={`mt-0.5 text-[11px] leading-normal ${isSuccess ? 'text-white/90' : 'text-[#8D6E63]'}`}>
                 {toast.message}
               </p>
             </div>
-
             <button
               onClick={() => removeToast(toast.id)}
-              className="text-gray-400 hover:text-gray-700 p-1 -mr-1 -mt-1 transition-colors"
+              className={`-mr-1 -mt-1 p-1 ${isSuccess ? 'text-white/80 hover:text-white' : 'text-gray-400 hover:text-gray-700'}`}
               aria-label="Dismiss notification"
             >
-              <X className="w-3.5 h-3.5" />
+              <X className="h-3.5 w-3.5" />
             </button>
           </div>
         );

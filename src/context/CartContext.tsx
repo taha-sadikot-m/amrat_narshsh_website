@@ -1,13 +1,17 @@
 'use client';
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { CartItem, Coupon } from '../types';
+import { CartItem, Coupon, PublicCombo } from '../types';
+import { comboLineId, comboQuantityFromLines, splitBundlePrices } from '../lib/combo-pricing';
 
 interface CartContextType {
   items: CartItem[];
   addItem: (item: Omit<CartItem, 'id'>) => void;
+  addCombo: (combo: PublicCombo) => void;
   updateQuantity: (id: string, delta: number) => void;
+  updateComboQuantity: (comboId: string, delta: number) => void;
   removeItem: (id: string) => void;
+  removeCombo: (comboId: string) => void;
   clearCart: () => void;
   itemCount: number;
   subtotal: number;
@@ -129,7 +133,9 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, [appliedCoupon, ready]);
 
   const addItem = (item: Omit<CartItem, 'id'>) => {
-    const compositeId = `${item.productId}-${item.weight}`;
+    const compositeId = item.comboId
+      ? comboLineId(item.comboId, item.productId, item.weight)
+      : `${item.productId}-${item.weight}`;
     setItems((prev) => {
       const existing = prev.find((i) => i.id === compositeId);
       if (existing) {
@@ -138,6 +144,39 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
         );
       }
       return [...prev, { ...item, id: compositeId }];
+    });
+    setIsCartOpen(true);
+  };
+
+  const addCombo = (combo: PublicCombo) => {
+    const priced = splitBundlePrices(combo);
+    setItems((prev) => {
+      const existingGroup = prev.filter((item) => item.comboId === combo.id);
+      if (existingGroup.length > 0) {
+        return prev.map((item) => {
+          if (item.comboId !== combo.id) return item;
+          const unit = Math.max(1, item.comboUnitQty ?? 1);
+          return { ...item, quantity: item.quantity + unit };
+        });
+      }
+      const next = [...prev];
+      for (const line of priced) {
+        next.push({
+          id: comboLineId(combo.id, line.productId, line.weight),
+          productId: line.productId,
+          name: line.name,
+          gujaratiName: line.gujaratiName,
+          weight: line.weight,
+          price: line.unitPrice,
+          quantity: line.quantity,
+          heroColor: line.heroColor,
+          makesText: line.makesText,
+          comboId: combo.id,
+          comboName: combo.name,
+          comboUnitQty: line.quantity,
+        });
+      }
+      return next;
     });
     setIsCartOpen(true);
   };
@@ -156,8 +195,26 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     );
   };
 
+  const updateComboQuantity = (comboId: string, delta: number) => {
+    setItems((prev) => {
+      const group = prev.filter((item) => item.comboId === comboId);
+      const current = comboQuantityFromLines(group);
+      const nextQty = current + delta;
+      if (nextQty <= 0) return prev.filter((item) => item.comboId !== comboId);
+      return prev.map((item) => {
+        if (item.comboId !== comboId) return item;
+        const unit = Math.max(1, item.comboUnitQty ?? 1);
+        return { ...item, quantity: unit * nextQty };
+      });
+    });
+  };
+
   const removeItem = (id: string) => {
     setItems((prev) => prev.filter((item) => item.id !== id));
+  };
+
+  const removeCombo = (comboId: string) => {
+    setItems((prev) => prev.filter((item) => item.comboId !== comboId));
   };
 
   const clearCart = () => {
@@ -205,8 +262,11 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
       value={{
         items,
         addItem,
+        addCombo,
         updateQuantity,
+        updateComboQuantity,
         removeItem,
+        removeCombo,
         clearCart,
         itemCount,
         subtotal,

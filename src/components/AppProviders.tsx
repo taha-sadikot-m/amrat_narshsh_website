@@ -11,6 +11,7 @@ import { Navbar } from './common/Navbar';
 import { Footer } from './common/Footer';
 import { CartDrawer } from './common/CartDrawer';
 import { QuickViewModal } from './common/QuickViewModal';
+import { ComboQuickView } from './common/ComboQuickView';
 import { SearchModal } from './common/SearchModal';
 import { ToastContainer } from './common/ToastContainer';
 import { MobileBottomNav } from './common/MobileBottomNav';
@@ -26,7 +27,7 @@ function Shell({ children, products, categories }: { children: React.ReactNode }
     <StoreProvider products={products} categories={categories}>
       <WishlistProvider>
         <CartProvider>
-          <div className="min-h-screen flex flex-col bg-[#FCFAF5] text-[#191919] font-sans antialiased selection:bg-[#C90018] selection:text-white overflow-x-hidden">
+          <div className="min-h-screen flex flex-col bg-[#FFFBF5] text-[#3E2723] font-sans antialiased selection:bg-[#D46A1E] selection:text-white overflow-x-clip">
             <ScrollProgressBar />
             <AnnouncementBar />
             <Navbar />
@@ -34,6 +35,7 @@ function Shell({ children, products, categories }: { children: React.ReactNode }
             <Footer />
             <CartDrawer />
             <QuickViewModal />
+            <ComboQuickView />
             <SearchModal />
             <ToastContainer />
             <MobileBottomNav />

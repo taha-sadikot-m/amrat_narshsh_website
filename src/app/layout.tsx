@@ -25,11 +25,11 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
         <link
-          href="https://fonts.googleapis.com/css2?family=Lora:wght@700&family=Noto+Sans+Gujarati:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&family=Sora:wght@400;500;600;700;800&display=swap"
+          href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;0,9..40,800;1,9..40,400&family=Noto+Sans+Gujarati:wght@400;500;600;700;800&family=Playfair+Display:wght@700&display=swap"
           rel="stylesheet"
         />
       </head>
-      <body className="bg-[#FCFAF5] text-[#191919] font-sans antialiased selection:bg-[#C90018] selection:text-white">
+      <body className="bg-[#FFFBF5] text-[#3E2723] font-sans antialiased selection:bg-[#D46A1E] selection:text-white">
         <AppProviders products={products} categories={categories}>{children}</AppProviders>
       </body>
     </html>

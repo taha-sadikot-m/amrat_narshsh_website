@@ -11,14 +11,10 @@ import {
   Filter,
 } from 'lucide-react';
 import { useStore } from '../../context/StoreContext';
-import { useCart } from '../../context/CartContext';
-import { VegBadge, Since1956Badge } from '../../data/brandAssets';
 import { ProductGridSkeleton } from '../common/ProductSkeleton';
-import { EditorialProductCard } from '../home/EditorialProductCard';
+import { HomeProductCard } from '../home/HomeProductCard';
 import { ProductListView } from './ProductListView';
-import { ProductCategory, MoodTag, SortOptionId, Product } from '../../types';
-import { useReducedMotion } from 'motion/react';
-import confetti from 'canvas-confetti';
+import { SortOptionId, Product } from '../../types';
 
 type PriceTier = 'all' | 'under-100' | '100-140' | 'above-140';
 
@@ -33,9 +29,6 @@ export const ShopPage: React.FC<{ products?: Product[] }> = ({ products = [] }) 
     showToast,
     categories,
   } = useStore();
-
-  const { addItem } = useCart();
-  const reduceMotion = Boolean(useReducedMotion());
 
   // Local view and filter states
   const [sortBy, setSortBy] = useState<SortOptionId>('popularity');
@@ -131,50 +124,10 @@ export const ShopPage: React.FC<{ products?: Product[] }> = ({ products = [] }) 
     showToast('Filters Reset', 'Showing all 11 authentic Gujarati mixes.', 'info');
   };
 
-  const handleQuickAdd = (product: Product, e: React.MouseEvent) => {
-    e.stopPropagation();
-    addItem({
-      productId: product.id,
-      name: product.name,
-      gujaratiName: product.gujaratiName,
-      weight: product.defaultWeight,
-      price: product.defaultPrice,
-      quantity: 1,
-      heroColor: product.heroColor,
-      makesText: product.makesText,
-    });
-    if (!reduceMotion) {
-      confetti({
-        particleCount: 30,
-        spread: 45,
-        origin: { y: 0.7 },
-      });
-    }
-    showToast('Added to Basket', `${product.name} (${product.defaultWeight}) added!`, 'success');
-  };
-
   return (
     <div id="shop-catalog-page" className="py-8 sm:py-12 bg-[#FCFAF5] min-h-screen">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
         
-        {/* Section Header */}
-        <div className="text-center max-w-3xl mx-auto space-y-2.5">
-          <div className="inline-flex items-center space-x-2 bg-white px-4 py-1.5 rounded-full border border-[#EADFCB] shadow-2xs">
-            <Since1956Badge className="w-4 h-4 text-[#C90018]" />
-            <span className="text-[11px] font-black uppercase tracking-widest text-[#6F3E24]">
-              Heritage Pantry Catalog • Since 1956
-            </span>
-          </div>
-
-          <h1 className="font-display font-black text-3xl sm:text-5xl text-[#191919] tracking-tight">
-            Authentic Gujarati Pantry &amp; Mixes
-          </h1>
-
-          <p className="text-xs sm:text-sm text-gray-600 max-w-2xl mx-auto leading-relaxed">
-            11 time-tested instant mixes and traditional flours made with pure stone-ground pulses, authentic Gujarati spices, and zero chemical preservatives.
-          </p>
-        </div>
-
         {/* Master Control Filter Panel */}
         <div
           id="shop-filters-panel"
@@ -225,7 +178,7 @@ export const ShopPage: React.FC<{ products?: Product[] }> = ({ products = [] }) 
                   <option value="popularity">Popularity &amp; Bestsellers</option>
                   <option value="price-low">Price: Low to High (₹)</option>
                   <option value="price-high">Price: High to Low (₹)</option>
-                  <option value="rating">Highest Rated (★ 4.9+)</option>
+                  <option value="rating">Highest Rated (4.9+)</option>
                   <option value="cooking-time">Fastest Prep Time (8–15 mins)</option>
                   <option value="name-asc">Alphabetical (A to Z)</option>
                 </select>
@@ -501,23 +454,6 @@ export const ShopPage: React.FC<{ products?: Product[] }> = ({ products = [] }) 
 
         </div>
 
-        {/* Results Metadata Bar */}
-        <div className="flex items-center justify-between text-xs text-gray-600 px-2">
-          <div className="flex items-center space-x-2">
-            <span>
-              Showing <strong className="text-gray-900 font-bold">{filteredProducts.length}</strong> of{' '}
-              <strong className="text-gray-900 font-bold">{products.length}</strong> authentic mixes
-            </span>
-          </div>
-
-          <div className="flex items-center space-x-2">
-            <VegBadge size={14} />
-            <span className="font-bold text-gray-800 hidden sm:inline">
-              100% Vegetarian Certified
-            </span>
-          </div>
-        </div>
-
         {/* Product Catalog Display: Grid or List or Skeleton */}
         {isLoading ? (
           <ProductGridSkeleton count={8} />
@@ -553,13 +489,8 @@ export const ShopPage: React.FC<{ products?: Product[] }> = ({ products = [] }) 
             id="shop-product-grid"
             className="grid grid-cols-2 gap-3 animate-in fade-in duration-300 sm:gap-5 lg:grid-cols-4 lg:gap-6"
           >
-            {filteredProducts.map((product, index) => (
-              <EditorialProductCard
-                key={product.id}
-                product={product}
-                onQuickAdd={handleQuickAdd}
-                index={index}
-              />
+            {filteredProducts.map((product) => (
+              <HomeProductCard key={product.id} product={product} />
             ))}
           </div>
         ) : (

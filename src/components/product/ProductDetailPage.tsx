@@ -17,8 +17,7 @@ import { useCart } from '../../context/CartContext';
 import { useWishlist } from '../../context/WishlistContext';
 import { Product } from '../../types';
 import { ProductPackshot, VegBadge, Since1956Badge } from '../../data/brandAssets';
-import { EditorialProductCard } from '../home/EditorialProductCard';
-import { useReducedMotion } from 'motion/react';
+import { HomeProductCard } from '../home/HomeProductCard';
 import confetti from 'canvas-confetti';
 
 export const ProductDetailPage: React.FC<{
@@ -28,7 +27,6 @@ export const ProductDetailPage: React.FC<{
   const { navigateTo, showToast } = useStore();
   const { addItem, openCart } = useCart();
   const { toggleWishlist, isInWishlist } = useWishlist();
-  const reduceMotion = Boolean(useReducedMotion());
 
   const [selectedWeight, setSelectedWeight] = useState<string>('');
   const [quantity, setQuantity] = useState(1);
@@ -70,28 +68,6 @@ export const ProductDetailPage: React.FC<{
   const handleBuyNow = () => {
     handleAddToCart();
     navigateTo('checkout');
-  };
-
-  const handleRelatedQuickAdd = (related: Product, event: React.MouseEvent) => {
-    event.stopPropagation();
-    addItem({
-      productId: related.id,
-      name: related.name,
-      gujaratiName: related.gujaratiName,
-      weight: related.defaultWeight,
-      price: related.defaultPrice,
-      quantity: 1,
-      heroColor: related.heroColor,
-      makesText: related.makesText,
-    });
-    if (!reduceMotion) {
-      confetti({
-        particleCount: 30,
-        spread: 45,
-        origin: { y: 0.7 },
-      });
-    }
-    showToast('Added to Basket', `${related.name} (${related.defaultWeight}) added!`, 'success');
   };
 
   const handleCheckPincode = (e: React.FormEvent) => {
@@ -378,20 +354,16 @@ export const ProductDetailPage: React.FC<{
             </h3>
             <button
               onClick={() => navigateTo('products')}
-              className="text-xs font-bold text-[#C90018] hover:underline cursor-pointer"
+              className="inline-flex items-center gap-1.5 text-xs font-bold text-[#C90018] hover:underline cursor-pointer"
             >
-              View All Mixes →
+              View All Mixes
+              <ArrowRight className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
             </button>
           </div>
 
           <div className="grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-4 lg:gap-6">
-            {relatedProducts.map((rel, index) => (
-              <EditorialProductCard
-                key={rel.id}
-                product={rel}
-                onQuickAdd={handleRelatedQuickAdd}
-                index={index}
-              />
+            {relatedProducts.map((rel) => (
+              <HomeProductCard key={rel.id} product={rel} />
             ))}
           </div>
         </div>

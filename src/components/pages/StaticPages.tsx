@@ -118,7 +118,7 @@ export const ContactPage: React.FC = () => {
                   className="flex items-center space-x-1.5 bg-[#FFF8EC] px-3 py-1.5 rounded-full border border-[#F4C400]/60 text-xs font-bold text-[#6F3E24] hover:bg-[#F4C400]/20 transition-all shadow-2xs group"
                 >
                   <Star className="w-3.5 h-3.5 text-amber-500 fill-amber-500" />
-                  <span>4.2 ★</span>
+                  <span>4.2</span>
                   <span className="text-[10px] text-gray-500 hidden sm:inline">(80+ reviews)</span>
                   <ExternalLink className="w-3 h-3 text-gray-400 group-hover:text-[#C90018]" />
                 </a>
@@ -310,7 +310,10 @@ export const ContactPage: React.FC = () => {
               </div>
 
               <div className="flex items-center justify-between text-xs text-gray-500 pt-1">
-                <span>📍 3/2273, Ground Floor, Balabhai Ni Sheri, Salabatpura</span>
+                <span className="inline-flex items-center gap-1.5">
+                  <MapPin className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
+                  3/2273, Ground Floor, Balabhai Ni Sheri, Salabatpura
+                </span>
                 <span className="font-bold text-[#6F3E24]">PIN: 395003</span>
               </div>
             </div>

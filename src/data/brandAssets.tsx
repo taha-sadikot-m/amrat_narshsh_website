@@ -12,7 +12,7 @@ export const AmratNarsihLogo: React.FC<{
       <img
         src="/images/logo.webp"
         alt="Amrat Narsih"
-        className="w-full h-full object-contain drop-shadow-sm"
+        className="h-full w-auto max-h-full object-contain drop-shadow-sm"
         draggable={false}
       />
     </div>

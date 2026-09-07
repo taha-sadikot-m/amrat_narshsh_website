@@ -3,13 +3,15 @@ import 'server-only';
 import { randomInt } from 'node:crypto';
 import { Prisma, type Order, type OrderItem } from '@prisma/client';
 import { prisma } from '@/lib/prisma';
-import { FREE_SHIPPING_THRESHOLD, getProductBySlug, PAID_SHIPPING } from '@/lib/catalog';
-import type { ProductPackSize } from '@/types';
+import { FREE_SHIPPING_THRESHOLD, getProductBySlug, mapDbProduct, PAID_SHIPPING } from '@/lib/catalog';
+import { comboQuantityFromLines, splitBundlePrices } from '@/lib/combo-pricing';
+import type { ProductPackSize, PublicCombo } from '@/types';
 
 export type IncomingOrderItem = {
   productId: string;
   weight: string;
   quantity: number;
+  comboId?: string | null;
 };
 
 export type CheckoutAddress = {
@@ -57,6 +59,104 @@ export class OrderInputError extends Error {
 
 const clean = (value: unknown) => String(value ?? '').trim();
 
+async function priceCatalogItem(rawItem: IncomingOrderItem): Promise<PricedOrderItem> {
+  const productId = clean(rawItem?.productId);
+  const product = await getProductBySlug(productId);
+  if (!product) {
+    throw new OrderInputError(`Unknown product: ${productId}`);
+  }
+
+  const pack =
+    product.packSizes.find((candidate: ProductPackSize) => candidate.weight === clean(rawItem?.weight)) ??
+    product.packSizes[0];
+  const quantity = Math.max(1, Math.floor(Number(rawItem?.quantity) || 1));
+  const availableStock = Number(pack.stock ?? 0);
+
+  if (!product.inStock || availableStock < quantity) {
+    throw new OrderInputError(
+      `${product.name} (${pack.weight}) has only ${availableStock} units available.`,
+      409,
+    );
+  }
+
+  return {
+    productId: product.id,
+    name: product.name,
+    gujaratiName: product.gujaratiName,
+    weight: pack.weight,
+    price: pack.price,
+    quantity,
+    heroColor: product.heroColor,
+  };
+}
+
+async function priceComboGroup(comboId: string, rawItems: IncomingOrderItem[]): Promise<PricedOrderItem[] | null> {
+  const row = await prisma.combo.findUnique({
+    where: { id: comboId },
+    include: { items: { include: { product: true } } },
+  });
+  if (!row?.active) return null;
+
+  const products = row.items.map((item) => mapDbProduct(item.product));
+  const comboItems = row.items.map((item) => {
+    const product = products.find((entry) => entry.id === item.productId);
+    if (!product) return null;
+    const pack = product.packSizes.find((candidate) => candidate.isDefault) ?? product.packSizes[0];
+    return {
+      productId: product.id,
+      quantity: item.quantity,
+      name: product.name,
+      slug: product.slug,
+      imageUrl: product.imageUrl,
+      weight: pack?.weight ?? product.defaultWeight,
+      price: pack?.price ?? product.defaultPrice,
+      makesText: product.makesText,
+      heroColor: product.heroColor,
+      gujaratiName: product.gujaratiName,
+    };
+  });
+  if (comboItems.some((item) => item == null)) return null;
+  const definedItems = comboItems as NonNullable<(typeof comboItems)[number]>[];
+
+  const comboProductIds = new Set(definedItems.map((item) => item.productId));
+  const cartProductIds = new Set(rawItems.map((item) => clean(item.productId)));
+  if (comboProductIds.size !== cartProductIds.size) return null;
+  for (const id of comboProductIds) {
+    if (!cartProductIds.has(id)) return null;
+  }
+
+  const combo: PublicCombo = {
+    id: row.id,
+    name: row.name,
+    tagline: row.tagline,
+    price: row.price,
+    compareAtPrice: definedItems.reduce((sum, item) => sum + item.price * item.quantity, 0),
+    discount: 0,
+    sortOrder: row.sortOrder,
+    items: definedItems,
+  };
+
+  const comboQty = comboQuantityFromLines(
+    rawItems.map((item) => {
+      const unit = definedItems.find((entry) => entry.productId === clean(item.productId))?.quantity ?? 1;
+      return { productId: clean(item.productId), quantity: Math.max(1, Math.floor(Number(item.quantity) || 1)), comboUnitQty: unit };
+    }),
+  );
+  if (comboQty < 1) return null;
+
+  const priced = splitBundlePrices(combo);
+  const result: PricedOrderItem[] = [];
+  for (const line of priced) {
+    const catalog = await priceCatalogItem({
+      productId: line.productId,
+      weight: line.weight,
+      quantity: line.quantity * comboQty,
+    });
+    result.push({ ...catalog, price: line.unitPrice });
+  }
+  return result;
+}
+
 export async function priceOrder(body: unknown): Promise<OrderQuote> {
   const request = (body ?? {}) as Record<string, unknown>;
   const rawItems = request.items;
@@ -90,35 +190,30 @@ export async function priceOrder(body: unknown): Promise<OrderQuote> {
   }
 
   const items: PricedOrderItem[] = [];
+  const standalone: IncomingOrderItem[] = [];
+  const comboGroups = new Map<string, IncomingOrderItem[]>();
+
   for (const rawItem of rawItems as IncomingOrderItem[]) {
-    const productId = clean(rawItem?.productId);
-    const product = await getProductBySlug(productId);
-    if (!product) {
-      throw new OrderInputError(`Unknown product: ${productId}`);
+    const comboId = clean(rawItem?.comboId);
+    if (comboId) {
+      const group = comboGroups.get(comboId) ?? [];
+      group.push(rawItem);
+      comboGroups.set(comboId, group);
+    } else {
+      standalone.push(rawItem);
     }
+  }
 
-    const pack =
-      product.packSizes.find((candidate: ProductPackSize) => candidate.weight === clean(rawItem?.weight)) ??
-      product.packSizes[0];
-    const quantity = Math.max(1, Math.floor(Number(rawItem?.quantity) || 1));
-    const availableStock = Number(pack.stock ?? 0);
-
-    if (!product.inStock || availableStock < quantity) {
-      throw new OrderInputError(
-        `${product.name} (${pack.weight}) has only ${availableStock} units available.`,
-        409,
-      );
+  for (const [comboId, group] of comboGroups) {
+    const comboPriced = await priceComboGroup(comboId, group);
+    if (comboPriced) items.push(...comboPriced);
+    else {
+      for (const rawItem of group) items.push(await priceCatalogItem(rawItem));
     }
+  }
 
-    items.push({
-      productId: product.id,
-      name: product.name,
-      gujaratiName: product.gujaratiName,
-      weight: pack.weight,
-      price: pack.price,
-      quantity,
-      heroColor: product.heroColor,
-    });
+  for (const rawItem of standalone) {
+    items.push(await priceCatalogItem(rawItem));
   }
 
   const subtotal = items.reduce((sum, item) => sum + item.price * item.quantity, 0);

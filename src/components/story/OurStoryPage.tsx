@@ -1,196 +1,302 @@
 'use client';
 
-import React from 'react';
-import { Award, ShieldCheck, Sparkles, Heart, Clock, ArrowRight, CheckCircle2, MapPin, Building2, Users, History } from 'lucide-react';
+import React, { useState } from 'react';
+import Link from 'next/link';
+import { ArrowRight } from 'lucide-react';
+import { motion, AnimatePresence, useReducedMotion } from 'motion/react';
 import { useStore } from '../../context/StoreContext';
-import { Since1956Badge, VegBadge, AmratNarsihLogo } from '../../data/brandAssets';
+import { AmratNarsihLogo } from '../../data/brandAssets';
+
+// Sticky offset: 70px navbar row + 42px category strip.
+const HEADER = 112;
+
+const ERAS = [
+  {
+    year: '1956',
+    accent: '#C62828',
+    leader: 'Late Amrutlal Narsihdas Modi',
+    place: 'Salabatpura, Surat',
+    productId: 'bhajiya',
+    paragraphs: [
+      'Amrutlal Narsihdas Modi opened a small shop in Surat in 1956, selling flours and mixes to the households around it.',
+      'The recipes were the ones Gujarati kitchens already used. Bhajiya, gota, dalwada — packed so they could be made at home without the grinding.',
+    ],
+  },
+  {
+    year: '1992',
+    accent: '#D46A1E',
+    leader: 'Late Mukeshchandra Amrutlal Modi',
+    place: 'Modi Foods Pvt. Ltd., Surat',
+    productId: 'handwa',
+    paragraphs: [
+      'His son, Mukeshchandra Amrutlal Modi, joined the shop and took the work past the counter it started on.',
+      'In 1992 the business was incorporated as Modi Foods Pvt. Ltd. That is still the company behind the packets.',
+    ],
+  },
+  {
+    year: 'Today',
+    accent: '#2E7D32',
+    leader: 'Amit Mukeshchandra Modi',
+    place: 'Surat, Gujarat',
+    productId: 'gulab-jamun',
+    paragraphs: [
+      'Amit Mukeshchandra Modi runs the company now — the third generation of the family in the business.',
+      'The shelf has grown to mixes and flours for everyday plates, festival tables and fasting days, made to the same Surat recipes.',
+    ],
+  },
+];
+
+const CRAFT_NOTES = [
+  { title: 'Vegetarian', body: 'Every mix is vegetarian. Nothing else runs through the same line.' },
+  { title: 'No added colours', body: 'The colour is turmeric, chilli and lentil. Nothing is dyed.' },
+  { title: 'Sealed packs', body: 'Packed to stay dry, so the spice still smells like spice when you open it.' },
+  { title: 'Surat recipes', body: 'The blends follow the family recipes the shop opened with.' },
+];
+
+const CLUSTER_IDS = ['bhajiya', 'dalwada', 'khichu', 'gota'];
 
 export const OurStoryPage: React.FC = () => {
-  const { navigateTo } = useStore();
+  const { products } = useStore();
+  const reduceMotion = Boolean(useReducedMotion());
+  const [active, setActive] = useState(0);
+
+  const imageFor = (productId: string) => products.find((product) => product.id === productId)?.imageUrl;
+  const clusterProducts = CLUSTER_IDS.map((id) => products.find((product) => product.id === id)).filter(
+    (product): product is NonNullable<typeof product> => Boolean(product)
+  );
+  const activeEra = ERAS[active];
 
   return (
-    <div id="about-brand-page" className="py-10 sm:py-16 bg-[#FCFAF5] min-h-screen">
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16">
-        
-        {/* Story Hero */}
-        <div className="text-center space-y-4 max-w-3xl mx-auto">
-          <div className="inline-flex items-center space-x-2 bg-white px-4 py-1.5 rounded-full border border-[#EADFCB] shadow-2xs">
-            <MapPin className="w-4 h-4 text-[#C90018]" />
-            <span className="text-xs font-black text-[#6F3E24] tracking-widest uppercase">
-              ESTABLISHED 1956 • SURAT, GUJARAT
-            </span>
+    <main id="about-brand-page" className="bg-[#FFFBF5] text-[#3E2723]">
+      {/* Hero */}
+      <section className="relative isolate min-h-[440px] overflow-hidden border-b border-[#F0E4D0] lg:min-h-[560px]">
+        <motion.img
+          src="/images/gujarati/collection-still-life.webp"
+          alt="Amrat Narsih mixes on a Surat kitchen counter"
+          initial={reduceMotion ? false : { scale: 1.06 }}
+          animate={reduceMotion ? undefined : { scale: 1 }}
+          transition={{ duration: 1.1, ease: [0.22, 1, 0.36, 1] }}
+          className="absolute inset-0 -z-10 h-full w-full object-cover object-center"
+        />
+        <div
+          aria-hidden="true"
+          className="absolute inset-0 -z-10 bg-gradient-to-r from-[#FFFBF5] via-[#FFFBF5]/90 to-[#FFFBF5]/40"
+        />
+        <div
+          aria-hidden="true"
+          className="absolute inset-x-0 bottom-0 -z-10 h-24 bg-gradient-to-b from-transparent to-[#FFFBF5]"
+        />
+
+        <div className="relative mx-auto flex min-h-[440px] max-w-[1280px] flex-col justify-center px-6 py-16 lg:min-h-[560px] lg:py-24">
+          <div className="max-w-xl">
+            <AmratNarsihLogo className="h-11 w-[170px]" />
+            <p className="mt-7 text-[0.72rem] font-bold uppercase tracking-[0.16em] text-[#D46A1E]">
+              Est. 1956 · Salabatpura, Surat
+            </p>
+            <h1 className="font-display mt-3 text-[2.35rem] font-bold leading-[1.05] tracking-tight text-[#3E2723] sm:text-[3.25rem]">
+              Three generations,
+              <span className="block">one shop in Surat</span>
+            </h1>
+            <p className="mt-5 text-base leading-relaxed text-[#6D584F]">
+              Amrat Narsih mixes come out of a shop that opened in 1956. The family that opened it still runs the company.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Pinned era scroller */}
+      <section className="relative">
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 opacity-[0.07] transition-colors duration-700"
+          style={{ backgroundColor: activeEra.accent }}
+        />
+
+        <div className="relative mx-auto grid max-w-[1280px] gap-8 px-6 lg:grid-cols-[minmax(0,420px)_minmax(0,1fr)] lg:gap-16">
+          {/* Sticky year */}
+          <div
+            className="hidden lg:flex lg:sticky lg:flex-col lg:justify-center"
+            style={{ top: HEADER, height: `calc(100vh - ${HEADER}px)` }}
+          >
+            <div className="flex gap-6">
+              <div className="relative w-[2px] shrink-0 self-stretch bg-[#F0E4D0]">
+                <div
+                  className="absolute left-0 top-0 w-[2px] transition-[height,background-color] duration-500"
+                  style={{
+                    height: `${((active + 1) / ERAS.length) * 100}%`,
+                    backgroundColor: activeEra.accent,
+                  }}
+                />
+                {ERAS.map((era, index) => (
+                  <span
+                    key={era.year}
+                    className="absolute -left-[5px] h-3 w-3 rounded-full border-2 bg-[#FFFBF5] transition-colors duration-300"
+                    style={{
+                      top: `calc(${index} * (100% - 12px) / ${ERAS.length - 1})`,
+                      borderColor: index <= active ? era.accent : '#D4B896',
+                    }}
+                  />
+                ))}
+              </div>
+
+              <div className="min-w-0">
+                <AnimatePresence mode="wait" initial={false}>
+                  <motion.p
+                    key={activeEra.year}
+                    initial={reduceMotion ? false : { y: 28, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    exit={reduceMotion ? undefined : { y: -28, opacity: 0 }}
+                    transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+                    className="font-display text-[7.5rem] font-bold leading-[0.82] tracking-tight xl:text-[9rem]"
+                    style={{ color: activeEra.accent }}
+                  >
+                    {activeEra.year}
+                  </motion.p>
+                </AnimatePresence>
+                <p className="mt-6 text-sm font-bold text-[#3E2723]">{activeEra.leader}</p>
+                <p className="mt-1 text-[0.8rem] text-[#8D6E63]">{activeEra.place}</p>
+              </div>
+            </div>
           </div>
 
-          <h1 className="font-display font-black text-3xl sm:text-5xl text-[#191919] tracking-tight leading-tight">
-            A Legacy of Taste. <br />
-            <span className="text-[#C90018]">A Tradition That Lives On.</span>
-          </h1>
+          {/* Scrolling panels */}
+          <div>
+            {ERAS.map((era, index) => {
+              const packshot = imageFor(era.productId);
 
-          <p className="text-base sm:text-lg text-gray-700 leading-relaxed max-w-2xl mx-auto">
-            For generations, Gujarati food has been more than just a meal — it has been a celebration of family, tradition and togetherness.
+              return (
+                <motion.article
+                  key={era.year}
+                  onViewportEnter={() => setActive(index)}
+                  viewport={{ amount: 0.5, margin: `-${HEADER}px 0px 0px 0px` }}
+                  className="flex flex-col justify-center border-b border-[#F0E4D0] py-14 last:border-b-0 lg:min-h-[calc(100vh-112px)] lg:border-b-0 lg:py-24"
+                >
+                  <div className="lg:hidden">
+                    <p className="font-display text-[4rem] font-bold leading-none" style={{ color: era.accent }}>
+                      {era.year}
+                    </p>
+                    <p className="mt-3 text-sm font-bold text-[#3E2723]">{era.leader}</p>
+                    <p className="mt-1 text-[0.8rem] text-[#8D6E63]">{era.place}</p>
+                  </div>
+
+                  <motion.div
+                    initial={reduceMotion ? false : { y: 24, opacity: 0 }}
+                    whileInView={reduceMotion ? undefined : { y: 0, opacity: 1 }}
+                    viewport={{ once: true, margin: '-80px' }}
+                    transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+                    className="mt-8 flex flex-col gap-8 sm:flex-row sm:items-start lg:mt-0"
+                  >
+                    {packshot && (
+                      <img
+                        src={packshot}
+                        alt=""
+                        loading="lazy"
+                        className="h-[150px] w-[100px] shrink-0 -rotate-3 object-contain drop-shadow-[0_14px_18px_rgba(62,39,35,0.18)] sm:h-[190px] sm:w-[128px]"
+                      />
+                    )}
+                    <div className="min-w-0 space-y-4">
+                      {era.paragraphs.map((paragraph) => (
+                        <p key={paragraph} className="max-w-xl text-base leading-relaxed text-[#3E2723]/85">
+                          {paragraph}
+                        </p>
+                      ))}
+                    </div>
+                  </motion.div>
+                </motion.article>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* Name origin */}
+      <section className="border-y border-[#F0E4D0] bg-[#FFF3E0]">
+        <div className="mx-auto max-w-[1280px] px-6 py-14 sm:py-20">
+          <p className="font-display max-w-4xl text-[1.5rem] font-bold leading-snug text-[#3E2723] sm:text-[2rem]">
+            The name is the founder&rsquo;s. Amrutlal <span className="text-[#D46A1E]">Narsih</span>das Modi, shortened
+            the way the family said it.
           </p>
         </div>
+      </section>
 
-        {/* The Verified Company Story Detailed */}
-        <div className="bg-white rounded-3xl p-8 sm:p-12 border border-[#EADFCB] shadow-sm space-y-8">
-          
-          {/* Mobile: eyebrow, then logo, then a single-line heading, all centered */}
-          <div className="flex sm:hidden flex-col items-center text-center gap-3 border-b border-gray-100 pb-6">
-            <span className="text-xs font-extrabold uppercase tracking-wider text-[#C90018]">
-              Verified Heritage
-            </span>
-            <AmratNarsihLogo className="h-12 w-auto" />
-            <h2 className="font-display font-black text-xl text-gray-900 whitespace-nowrap">
-              The Amrat Narsih Story
-            </h2>
-          </div>
+      {/* How the mixes are made */}
+      <section className="mx-auto max-w-[1280px] px-6 py-16 sm:py-24">
+        <h2 className="font-display text-[1.6rem] font-bold text-[#3E2723]">How the mixes are made</h2>
 
-          {/* Desktop: eyebrow + heading on the left, logo on the right */}
-          <div className="hidden sm:flex items-center justify-between border-b border-gray-100 pb-6">
-            <div>
-              <span className="text-xs font-extrabold uppercase tracking-wider text-[#C90018]">
-                Verified Heritage
-              </span>
-              <h2 className="font-display font-black text-2xl sm:text-3xl text-gray-900 mt-1">
-                The Amrat Narsih Story
-              </h2>
-            </div>
-            <AmratNarsihLogo className="h-12 w-auto" />
-          </div>
-
-          <div className="space-y-6 text-sm sm:text-base text-gray-700 leading-relaxed">
-            <p>
-              For generations, Gujarati food has been more than just a meal — it has been a celebration of family, tradition and togetherness. Amrat Narsih carries this legacy forward with a simple purpose: to bring the authentic taste of Gujarat into modern homes, without taking away the traditions that make it special.
-            </p>
-
-            <p>
-              The journey began in <strong>1956</strong>, when <strong>Late Amrutlal Narsihdas Modi</strong> started a small shop in Surat. What began as a humble venture gradually grew with the efforts of his son, <strong>Late Mukeshchandra Amrutlal Modi</strong>, who joined the business and helped take it forward.
-            </p>
-
-            <p>
-              In <strong>1992</strong>, <strong>Modi Foods Pvt. Ltd.</strong> was incorporated, giving the growing business a formal foundation for its next chapter.
-            </p>
-
-            <p>
-              Today, <strong>Amit Mukeshchandra Modi</strong> leads the business, carrying forward the values and food heritage built across generations.
-            </p>
-
-            <p className="italic text-gray-800 bg-[#FCFAF5] p-4 rounded-2xl border border-[#EADFCB]">
-              The name <strong>Amrat Narsih</strong> itself is inspired by the legacy of <strong>Late Amrutlal Narsihdas Modi</strong>, keeping the family story at the heart of the brand.
-            </p>
-          </div>
-
-        </div>
-
-        {/* 3 Core Philosophy Pillars */}
-        <div className="bg-[#191919] rounded-3xl p-8 sm:p-12 text-white text-center space-y-6 shadow-xl">
-          <div className="text-xs font-extrabold uppercase tracking-widest text-[#F4C400]">
-            Our Guiding Philosophy
-          </div>
-
-          <div className="space-y-2">
-            <div className="font-display font-black text-2xl sm:text-4xl text-white">
-              Preserve the taste.
-            </div>
-            <div className="font-display font-black text-2xl sm:text-4xl text-[#F4C400]">
-              Simplify the preparation.
-            </div>
-            <div className="font-display font-black text-2xl sm:text-4xl text-[#C90018]">
-              Carry the tradition forward.
-            </div>
-          </div>
-
-        </div>
-
-        {/* 4 Purity & Quality Creeds */}
-        <div className="space-y-6">
-          <div className="text-center max-w-xl mx-auto">
-            <h3 className="font-display font-black text-2xl text-gray-900">
-              The 4 Uncompromising Standards
-            </h3>
-            <p className="text-xs text-gray-600 mt-1">
-              Quality commitments maintained across generations by Modi Foods Pvt. Ltd.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-            <div className="bg-white rounded-3xl p-6 border border-[#EADFCB] shadow-xs space-y-2">
-              <div className="w-10 h-10 rounded-xl bg-red-100 text-[#C90018] flex items-center justify-center font-bold">
-                1
+        <div className="mt-10 grid items-center gap-10 lg:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] lg:gap-6">
+          <div className="space-y-10">
+            {CRAFT_NOTES.slice(0, 2).map((note) => (
+              <div key={note.title} className="flex items-start gap-4 lg:flex-row-reverse lg:text-right">
+                <span
+                  className="mt-2 hidden h-px w-10 shrink-0 border-t border-dashed border-[#D4B896] lg:block"
+                  aria-hidden="true"
+                />
+                <div>
+                  <h3 className="text-sm font-bold text-[#3E2723]">{note.title}</h3>
+                  <p className="mt-1.5 text-sm leading-relaxed text-[#8D6E63]">{note.body}</p>
+                </div>
               </div>
-              <h4 className="font-display font-bold text-base text-gray-900">
-                100% Pure Vegetarian
-              </h4>
-              <p className="text-xs text-gray-600 leading-relaxed">
-                Strictly vegetarian processing facilities using high-grade whole lentils and certified grains.
-              </p>
-            </div>
+            ))}
+          </div>
 
-            <div className="bg-white rounded-3xl p-6 border border-[#EADFCB] shadow-xs space-y-2">
-              <div className="w-10 h-10 rounded-xl bg-amber-100 text-amber-800 flex items-center justify-center font-bold">
-                2
-              </div>
-              <h4 className="font-display font-bold text-base text-gray-900">
-                Zero Artificial Colors or Synthetics
-              </h4>
-              <p className="text-xs text-gray-600 leading-relaxed">
-                Pure spices, natural turmeric, and stone-ground gram flour. No chemical enhancers or artificial fillers.
-              </p>
-            </div>
+          <div className="relative mx-auto h-[150px] w-[250px] shrink-0 sm:h-[170px] sm:w-[300px]">
+            {clusterProducts.map((product, index) => {
+              const positions = [
+                'left-2 bottom-1 -rotate-6',
+                'left-[29%] bottom-3 -rotate-2',
+                'left-[54%] bottom-2 rotate-3',
+                'right-0 bottom-0 rotate-6',
+              ];
 
-            <div className="bg-white rounded-3xl p-6 border border-[#EADFCB] shadow-xs space-y-2">
-              <div className="w-10 h-10 rounded-xl bg-green-100 text-green-800 flex items-center justify-center font-bold">
-                3
-              </div>
-              <h4 className="font-display font-bold text-base text-gray-900">
-                Freshness &amp; Aroma Seal
-              </h4>
-              <p className="text-xs text-gray-600 leading-relaxed">
-                Multi-layer nitrogen sealed packaging locks in natural essential spice oils for authentic aroma.
-              </p>
-            </div>
+              return (
+                <img
+                  key={product.id}
+                  src={product.imageUrl}
+                  alt={`${product.name} packet`}
+                  loading="lazy"
+                  className={`absolute h-[124px] w-[80px] object-contain drop-shadow-[0_12px_10px_rgba(72,31,15,0.18)] sm:h-[144px] sm:w-[92px] ${
+                    positions[index] ?? positions[3]
+                  }`}
+                />
+              );
+            })}
+          </div>
 
-            <div className="bg-white rounded-3xl p-6 border border-[#EADFCB] shadow-xs space-y-2">
-              <div className="w-10 h-10 rounded-xl bg-orange-100 text-orange-800 flex items-center justify-center font-bold">
-                4
+          <div className="space-y-10">
+            {CRAFT_NOTES.slice(2).map((note) => (
+              <div key={note.title} className="flex items-start gap-4">
+                <span
+                  className="mt-2 hidden h-px w-10 shrink-0 border-t border-dashed border-[#D4B896] lg:block"
+                  aria-hidden="true"
+                />
+                <div>
+                  <h3 className="text-sm font-bold text-[#3E2723]">{note.title}</h3>
+                  <p className="mt-1.5 text-sm leading-relaxed text-[#8D6E63]">{note.body}</p>
+                </div>
               </div>
-              <h4 className="font-display font-bold text-base text-gray-900">
-                Authentic Gujarati Formulations
-              </h4>
-              <p className="text-xs text-gray-600 leading-relaxed">
-                Recipes unchanged since 1956 — ensuring Surti Locho, Gota, and Dalwadas taste truly traditional.
-              </p>
-            </div>
+            ))}
           </div>
         </div>
+      </section>
 
-        {/* CTA Strip */}
-        <div className="bg-[#C90018] rounded-3xl p-8 sm:p-12 text-white text-center space-y-4 shadow-xl">
-          <h3 className="font-display font-black text-2xl sm:text-3xl">
-            Bring the Taste of Gujarat Home
-          </h3>
-          <p className="text-xs sm:text-sm text-white/90 max-w-xl mx-auto">
-            Discover traditional favourites made for the way we enjoy food today.
-          </p>
-          <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
-            <button
-              onClick={() => navigateTo('products')}
-              className="bg-white hover:bg-[#FFF8EC] text-[#C90018] px-8 py-3.5 rounded-full font-display font-black text-xs uppercase tracking-wider shadow-lg transition-all inline-flex items-center space-x-2 cursor-pointer"
-            >
-              <span>Explore All 11 Products</span>
-              <ArrowRight className="w-4 h-4" />
-            </button>
-            <button
-              onClick={() => navigateTo('journey')}
-              className="bg-white/15 hover:bg-white/25 text-white border border-white/30 px-6 py-3.5 rounded-full font-display font-bold text-xs uppercase tracking-wider transition-all inline-flex items-center space-x-2 cursor-pointer"
-            >
-              <span>Interactive 1956 Timeline</span>
-              <History className="w-4 h-4" />
-            </button>
-          </div>
+      {/* Close */}
+      <section className="border-t border-[#F0E4D0]">
+        <div className="mx-auto flex max-w-[1280px] flex-wrap gap-3 px-6 py-12">
+          <Link
+            href="/shop"
+            className="inline-flex h-11 items-center gap-1.5 rounded-lg bg-[#D46A1E] px-5 text-sm font-bold text-white hover:bg-[#A84F10]"
+          >
+            Shop mixes
+            <ArrowRight className="h-4 w-4 shrink-0" aria-hidden="true" />
+          </Link>
+          <Link
+            href="/journey"
+            className="inline-flex h-11 items-center rounded-lg border border-[#F0E4D0] bg-white px-5 text-sm font-bold text-[#3E2723] hover:border-[#D46A1E]"
+          >
+            Since 1956
+          </Link>
         </div>
-
-      </div>
-    </div>
+      </section>
+    </main>
   );
 };

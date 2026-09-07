@@ -1,25 +1,21 @@
 'use client';
 
-import { HeroSection } from '../components/home/HeroSection';
-import { RecipeEntryPoint } from '../components/home/RecipeEntryPoint';
-import { BestsellersCarousel } from '../components/home/BestsellersCarousel';
-import { PacketToPlate } from '../components/home/PacketToPlate';
-import { WhyAmratNarsih } from '../components/home/WhyAmratNarsih';
-import { MakeItYoursDiscovery } from '../components/home/MakeItYoursDiscovery';
-import { SocialProofReviews } from '../components/home/SocialProofReviews';
-import { FinalCTA } from '../components/home/FinalCTA';
+import { HomeHeroSplit } from '../components/home/HomeHeroSplit';
+import { HomeCategoryCircles } from '../components/home/HomeCategoryCircles';
+import { HomeProductTabs } from '../components/home/HomeProductTabs';
+import { HomeFeaturedDeal } from '../components/home/HomeFeaturedDeal';
+import { HomeOccasionBanners } from '../components/home/HomeOccasionBanners';
+import { HomeTrustBadges } from '../components/home/HomeTrustBadges';
 
 export default function HomePage() {
   return (
-    <main id="home-view" className="space-y-0">
-      <HeroSection />
-      <RecipeEntryPoint />
-      <BestsellersCarousel />
-      <PacketToPlate />
-      <WhyAmratNarsih />
-      <MakeItYoursDiscovery />
-      <SocialProofReviews />
-      <FinalCTA />
+    <main id="home-view">
+      <HomeHeroSplit />
+      <HomeCategoryCircles />
+      <HomeProductTabs />
+      <HomeFeaturedDeal />
+      <HomeOccasionBanners />
+      <HomeTrustBadges />
     </main>
   );
 }

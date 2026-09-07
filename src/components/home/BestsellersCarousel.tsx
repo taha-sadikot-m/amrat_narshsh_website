@@ -4,10 +4,8 @@ import React, { useState } from 'react';
 import { motion, useReducedMotion } from 'motion/react';
 import { ArrowRight, Sparkles } from 'lucide-react';
 import { useStore } from '../../context/StoreContext';
-import { useCart } from '../../context/CartContext';
 import type { Product, ProductCategory } from '../../types';
-import { EditorialProductCard } from './EditorialProductCard';
-import confetti from 'canvas-confetti';
+import { HomeProductCard } from './HomeProductCard';
 
 type FilterId = 'all' | ProductCategory;
 
@@ -50,8 +48,7 @@ function BotanicalCorner({ className }: { className: string }) {
 }
 
 export const BestsellersCarousel: React.FC = () => {
-  const { navigateTo, showToast, products } = useStore();
-  const { addItem } = useCart();
+  const { navigateTo, products } = useStore();
   const reduceMotion = Boolean(useReducedMotion());
   const [selectedCategory, setSelectedCategory] = useState<FilterId>('all');
 
@@ -68,29 +65,6 @@ export const BestsellersCarousel: React.FC = () => {
     selectedCategory === 'all'
       ? (curatedProducts.length ? curatedProducts : products.slice(0, 4))
       : products.filter((product) => product.category === selectedCategory).slice(0, 4);
-
-  const handleQuickAdd = (product: Product, e: React.MouseEvent) => {
-    e.stopPropagation();
-    addItem({
-      productId: product.id,
-      name: product.name,
-      gujaratiName: product.gujaratiName,
-      weight: product.defaultWeight,
-      price: product.defaultPrice,
-      quantity: 1,
-      heroColor: product.heroColor,
-      makesText: product.makesText,
-    });
-    if (!reduceMotion) {
-      confetti({
-        particleCount: 30,
-        spread: 42,
-        origin: { y: 0.72 },
-        colors: ['#C90018', '#F4C400', '#6F3E24'],
-      });
-    }
-    showToast('Added to Basket', `${product.name} (${product.defaultWeight}) added!`, 'success');
-  };
 
   return (
     <section
@@ -170,13 +144,8 @@ export const BestsellersCarousel: React.FC = () => {
         </div>
 
         <div className="mt-7 grid grid-cols-2 gap-3 sm:gap-5 lg:mt-8 lg:grid-cols-4 lg:gap-6">
-          {visibleProducts.map((product, index) => (
-            <EditorialProductCard
-              key={product.id}
-              product={product}
-              onQuickAdd={handleQuickAdd}
-              index={index}
-            />
+          {visibleProducts.map((product) => (
+            <HomeProductCard key={product.id} product={product} />
           ))}
         </div>
 

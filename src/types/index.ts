@@ -92,6 +92,30 @@ export interface Product {
   imageUrl?: string;
 }
 
+export interface PublicComboItem {
+  productId: string;
+  quantity: number;
+  name: string;
+  slug: string;
+  imageUrl?: string;
+  weight: string;
+  price: number;
+  makesText: string;
+  heroColor: string;
+  gujaratiName: string;
+}
+
+export interface PublicCombo {
+  id: string;
+  name: string;
+  tagline: string;
+  price: number;
+  compareAtPrice: number;
+  discount: number;
+  sortOrder: number;
+  items: PublicComboItem[];
+}
+
 export interface RecipeStep {
   stepNumber: number;
   instruction: string;
@@ -124,7 +148,7 @@ export interface Recipe {
 }
 
 export interface CartItem {
-  id: string; // product-id + weight
+  id: string; // product-id + weight, or combo-{comboId}-{productId}-{weight}
   productId: string;
   name: string;
   gujaratiName: string;
@@ -133,6 +157,9 @@ export interface CartItem {
   quantity: number;
   heroColor: string;
   makesText?: string;
+  comboId?: string;
+  comboName?: string;
+  comboUnitQty?: number;
 }
 
 export interface Coupon {
@@ -199,4 +226,5 @@ export type PageView =
   | 'privacy'
   | 'terms'
   | 'shipping'
-  | 'returns';
+  | 'returns'
+  | 'combos';

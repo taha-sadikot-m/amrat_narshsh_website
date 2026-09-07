@@ -1,5 +1,5 @@
 import type { Category as DbCategory, Product as DbProduct } from '@prisma/client';
-import type { Category, Product } from '../types';
+import type { Category, Product, PublicCombo } from '../types';
 import { prisma } from './prisma';
 
 export function mapDbProduct(row: DbProduct): Product {
@@ -105,3 +105,57 @@ export async function getCategories(): Promise<Category[]> {
 
 export const FREE_SHIPPING_THRESHOLD = 499;
 export const PAID_SHIPPING = 49;
+
+function defaultPackPrice(product: Product) {
+  const pack = product.packSizes.find((item) => item.isDefault) ?? product.packSizes[0];
+  return {
+    weight: pack?.weight ?? product.defaultWeight,
+    price: pack?.price ?? product.defaultPrice,
+    makesText: product.makesText,
+    heroColor: product.heroColor,
+  };
+}
+
+export async function getPublicCombos(activeOnly = true): Promise<PublicCombo[]> {
+  const rows = await prisma.combo.findMany({
+    where: activeOnly ? { active: true } : undefined,
+    include: { items: { include: { product: true } } },
+    orderBy: { sortOrder: 'asc' },
+  });
+
+  return rows
+    .map((combo) => {
+      const items = combo.items
+        .map((item) => {
+          const product = mapDbProduct(item.product);
+          const pack = defaultPackPrice(product);
+          return {
+            productId: product.id,
+            quantity: item.quantity,
+            name: product.name,
+            slug: product.slug,
+            imageUrl: product.imageUrl,
+            weight: pack.weight,
+            price: pack.price,
+            makesText: pack.makesText,
+            heroColor: pack.heroColor,
+            gujaratiName: product.gujaratiName,
+          };
+        })
+        .filter((item) => item.price > 0);
+      const compareAtPrice = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+      const discount =
+        compareAtPrice > combo.price ? Math.round(((compareAtPrice - combo.price) / compareAtPrice) * 100) : 0;
+      return {
+        id: combo.id,
+        name: combo.name,
+        tagline: combo.tagline,
+        price: combo.price,
+        compareAtPrice,
+        discount,
+        sortOrder: combo.sortOrder,
+        items,
+      };
+    })
+    .filter((combo) => combo.items.length > 0);
+}

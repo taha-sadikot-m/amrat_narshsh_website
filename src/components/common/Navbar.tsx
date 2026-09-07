@@ -1,13 +1,12 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import { Search, ShoppingBag, Heart, Menu, X, ChevronDown, Sparkles, MapPin } from 'lucide-react';
-import { AmratNarsihLogo, Since1956Badge, ProductPackshot } from '../../data/brandAssets';
+import React, { useEffect, useState } from 'react';
+import { ShoppingBag, Heart, Menu, X, ChevronDown } from 'lucide-react';
+import { AmratNarsihLogo } from '../../data/brandAssets';
 import { useStore } from '../../context/StoreContext';
 import { useCart } from '../../context/CartContext';
 import { useWishlist } from '../../context/WishlistContext';
 
-// Representative product shown per category in the Products dropdown
 const CATEGORY_PREVIEW_PRODUCT: Record<string, string> = {
   'instant-mixes': 'bhajiya',
   'traditional-favourites': 'gobapuri',
@@ -15,287 +14,206 @@ const CATEGORY_PREVIEW_PRODUCT: Record<string, string> = {
 };
 
 export const Navbar: React.FC = () => {
-  const { currentPage, navigateTo, openSearch, categories, products } = useStore();
-  const { itemCount, subtotal, openCart } = useCart();
+  const { currentPage, navigateTo, categories, products, setSearchQuery } = useStore();
+  const { itemCount, openCart } = useCart();
   const { wishlistCount } = useWishlist();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isProductsDropdownOpen, setIsProductsDropdownOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [query, setQuery] = useState('');
 
   useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 15);
-    };
+    const handleScroll = () => setIsScrolled(window.scrollY > 15);
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const handleNavClick = (page: any, params?: any) => {
+  const handleNavClick = (page: Parameters<typeof navigateTo>[0], params?: Parameters<typeof navigateTo>[1]) => {
     navigateTo(page, params);
     setIsMobileMenuOpen(false);
     setIsProductsDropdownOpen(false);
   };
 
+  const submitSearch = (event: React.FormEvent) => {
+    event.preventDefault();
+    setSearchQuery(query.trim());
+    setIsMobileMenuOpen(false);
+  };
+
+  const stripLink = (active: boolean) =>
+    `text-[0.82rem] transition-colors duration-200 ${active ? 'text-[#F5A623]' : 'text-white hover:text-[#F5A623]'}`;
+
   const isProductsActive = currentPage === 'products' || currentPage === 'shop' || currentPage === 'product-detail';
   const isAboutActive = currentPage === 'about' || currentPage === 'our-story';
-  const isJourneyActive = currentPage === 'journey';
 
   return (
     <header
       id="main-navigation-header"
-      className={`sticky top-0 z-40 transition-all duration-300 ${
-        isScrolled
-          ? 'bg-white/95 backdrop-blur-md shadow-sm py-2.5 border-b border-[#EADFCB]'
-          : 'bg-[#FCFAF5]/95 backdrop-blur-sm py-3.5 border-b border-[#EADFCB]'
+      className={`sticky top-0 z-[1000] bg-white transition-[box-shadow] duration-200 ${
+        isScrolled ? 'shadow-[0_2px_16px_rgba(62,39,35,0.10)]' : ''
       }`}
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between mt-0.5">
-        
-        {/* Left Mobile Menu Toggle Button */}
-        <div className="flex items-center lg:hidden">
+      <div className="flex h-[70px] items-center justify-between border-b border-[#F0E4D0] px-4 lg:px-6">
+        <div className="flex items-center gap-2 lg:hidden">
           <button
             id="mobile-menu-toggle-btn"
+            type="button"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="p-2 rounded-full text-[#191919] hover:bg-[#FFF8EC] focus:outline-hidden"
-            aria-label="Toggle Navigation Menu"
+            className="rounded-lg p-2 text-[#3E2723]"
+            aria-label="Toggle navigation"
           >
-            {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-          </button>
-
-          <button
-            id="mobile-search-trigger-btn"
-            onClick={openSearch}
-            className="p-2 ml-1 rounded-full text-[#191919] hover:bg-[#FFF8EC]"
-            aria-label="Search Products"
-          >
-            <Search className="w-5 h-5" />
+            {isMobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
           </button>
         </div>
 
-        {/* Center/Left Brand Logo & Identity */}
-        <div className="flex items-center">
+        <button
+          id="brand-logo-home-link"
+          type="button"
+          onClick={() => handleNavClick('home')}
+          className="flex flex-col items-center lg:items-start"
+          aria-label="Amrat Narsih homepage"
+        >
+          <AmratNarsihLogo className="h-10 w-auto sm:h-11" />
+          <span className="hidden text-[0.65rem] text-[#8D6E63] sm:block">Est. 1956 · Surat, Gujarat</span>
+        </button>
+
+        <form
+          onSubmit={submitSearch}
+          className="hidden h-[42px] w-[480px] max-w-[42vw] overflow-hidden rounded-lg border-[1.5px] border-[#F0E4D0] bg-[#FFF3E0] focus-within:border-[#D46A1E] focus-within:shadow-[0_0_0_3px_rgba(212,106,30,0.12)] lg:flex"
+        >
+          <input
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Search for bhajiya mix, handwa, khakra..."
+            className="h-full min-w-0 flex-1 bg-transparent px-4 text-sm text-[#3E2723] outline-none placeholder:text-[#8D6E63]"
+            aria-label="Search products"
+          />
           <button
-            id="brand-logo-home-link"
-            onClick={() => handleNavClick('home')}
-            className="flex items-center group cursor-pointer focus:outline-hidden text-left"
-            aria-label="Amrat Narsih Homepage"
+            type="submit"
+            className="h-full bg-[#D46A1E] px-4 text-sm font-bold text-white transition-colors duration-200 hover:bg-[#A84F10]"
           >
-            <AmratNarsihLogo
-              className="h-10 sm:h-12 w-auto group-hover:scale-[1.02] transition-transform duration-200"
-            />
+            Search
           </button>
-        </div>
+        </form>
 
-        {/* Desktop Navigation Links as per specification: Home, About, Products, Our Journey, Contact */}
-        <nav className="hidden lg:flex items-center space-x-1 xl:space-x-2">
+        <div className="flex items-center gap-1 sm:gap-2">
           <button
-            id="nav-link-home"
-            onClick={() => handleNavClick('home')}
-            className={`px-3.5 py-2 text-xs font-extrabold uppercase tracking-wider rounded-full transition-colors cursor-pointer ${
-              currentPage === 'home'
-                ? 'text-[#C90018] bg-[#FFF8EC]'
-                : 'text-[#191919] hover:text-[#C90018] hover:bg-[#FFF8EC]/70'
-            }`}
+            type="button"
+            onClick={() => handleNavClick('shop')}
+            className="relative rounded-lg p-2 text-[#3E2723]"
+            aria-label={`Wishlist (${wishlistCount})`}
           >
-            Home
-          </button>
-
-          <button
-            id="nav-link-about"
-            onClick={() => handleNavClick('about')}
-            className={`px-3.5 py-2 text-xs font-extrabold uppercase tracking-wider rounded-full transition-colors cursor-pointer ${
-              isAboutActive
-                ? 'text-[#C90018] bg-[#FFF8EC]'
-                : 'text-[#191919] hover:text-[#C90018] hover:bg-[#FFF8EC]/70'
-            }`}
-          >
-            About
-          </button>
-
-          {/* Products Dropdown */}
-          <div
-            className="relative"
-            onMouseEnter={() => setIsProductsDropdownOpen(true)}
-            onMouseLeave={() => setIsProductsDropdownOpen(false)}
-          >
-            <button
-              id="nav-link-products"
-              onClick={() => handleNavClick('products')}
-              className={`px-3.5 py-2 text-xs font-extrabold uppercase tracking-wider rounded-full flex items-center space-x-1 transition-colors cursor-pointer ${
-                isProductsActive
-                  ? 'text-[#C90018] bg-[#FFF8EC]'
-                  : 'text-[#191919] hover:text-[#C90018] hover:bg-[#FFF8EC]/70'
-              }`}
-            >
-              <span>Products</span>
-              <ChevronDown className="w-3.5 h-3.5 ml-0.5" />
-            </button>
-
-            {/* Dropdown Menu */}
-            {isProductsDropdownOpen && (
-              <div className="absolute top-full left-0 w-80 bg-white rounded-3xl shadow-2xl border border-[#EADFCB] p-3 animate-in fade-in slide-in-from-top-2 duration-200 z-50">
-                <div className="p-2 border-b border-gray-100 mb-2 flex items-center justify-between">
-                  <div className="text-[10px] font-extrabold text-[#C90018] uppercase tracking-widest">
-                    Authentic Categories
-                  </div>
-                  <AmratNarsihLogo className="h-5 w-auto" />
-                </div>
-                {categories.map((cat) => (
-                  <button
-                    key={cat.id}
-                    id={`nav-category-${cat.id}`}
-                    onClick={() => handleNavClick('products', { category: cat.id })}
-                    className="w-full text-left p-2.5 rounded-2xl hover:bg-[#FCFAF5] transition-colors flex items-center space-x-3 cursor-pointer group"
-                  >
-                    <div className="w-11 h-11 rounded-xl bg-[#FCFAF5] border border-[#EADFCB] p-1 shrink-0 overflow-hidden">
-                      <ProductPackshot
-                        productId={CATEGORY_PREVIEW_PRODUCT[cat.id] || 'bhajiya'}
-                        src={products.find((product) => product.id === CATEGORY_PREVIEW_PRODUCT[cat.id])?.imageUrl}
-                      />
-                    </div>
-                    <div className="text-xs font-bold text-gray-900 group-hover:text-[#C90018]">
-                      {cat.name}
-                    </div>
-                  </button>
-                ))}
-                <div className="mt-2 pt-2 border-t border-gray-100">
-                  <button
-                    id="nav-all-products-link"
-                    onClick={() => handleNavClick('products', { category: 'all' })}
-                    className="w-full py-2.5 text-center text-xs font-extrabold text-[#C90018] bg-[#FCFAF5] hover:bg-[#FFF8EC] rounded-2xl transition-colors cursor-pointer"
-                  >
-                    Explore Entire Product Catalog (11 Mixes) →
-                  </button>
-                </div>
-              </div>
-            )}
-          </div>
-
-          <button
-            id="nav-link-journey"
-            onClick={() => handleNavClick('journey')}
-            className={`px-3.5 py-2 text-xs font-extrabold uppercase tracking-wider rounded-full transition-colors cursor-pointer ${
-              isJourneyActive
-                ? 'text-[#C90018] bg-[#FFF8EC]'
-                : 'text-[#191919] hover:text-[#C90018] hover:bg-[#FFF8EC]/70'
-            }`}
-          >
-            Our Journey
-          </button>
-
-          <button
-            id="nav-link-contact"
-            onClick={() => handleNavClick('contact')}
-            className={`px-3.5 py-2 text-xs font-extrabold uppercase tracking-wider rounded-full transition-colors cursor-pointer ${
-              currentPage === 'contact'
-                ? 'text-[#C90018] bg-[#FFF8EC]'
-                : 'text-[#191919] hover:text-[#C90018] hover:bg-[#FFF8EC]/70'
-            }`}
-          >
-            Contact
-          </button>
-        </nav>
-
-        {/* Right Actions: Search, Wishlist, Cart & Primary CTA */}
-        <div className="flex items-center space-x-2 sm:space-x-3">
-          
-          <button
-            id="desktop-search-btn"
-            onClick={openSearch}
-            className="hidden xl:flex items-center space-x-2 px-3.5 py-2 rounded-full bg-white border border-[#EADFCB] text-gray-600 hover:text-[#C90018] hover:border-[#C90018] transition-all text-xs font-medium cursor-pointer shadow-2xs"
-            aria-label="Search Amrat Narsih Instant Mixes"
-          >
-            <Search className="w-3.5 h-3.5 text-gray-500" />
-            <span className="text-gray-400">Search Mixes...</span>
-          </button>
-
-          <button
-            id="wishlist-header-btn"
-            onClick={() => handleNavClick('products')}
-            className="relative p-2.5 rounded-full text-gray-700 hover:text-[#C90018] hover:bg-[#FFF8EC] transition-colors cursor-pointer"
-            aria-label={`Wishlist items (${wishlistCount})`}
-          >
-            <Heart className="w-5 h-5" />
+            <Heart className="h-5 w-5" />
             {wishlistCount > 0 && (
-              <span className="absolute -top-1 -right-1 bg-[#F4C400] text-[#191919] font-black text-[10px] w-4 h-4 rounded-full flex items-center justify-center shadow-xs">
+              <span className="absolute -right-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-[#C62828] px-1 text-[10px] font-bold text-white">
                 {wishlistCount}
               </span>
             )}
           </button>
-
           <button
             id="cart-drawer-trigger-btn"
+            type="button"
             onClick={openCart}
-            className="p-2.5 rounded-full text-gray-700 hover:text-[#C90018] hover:bg-[#FFF8EC] transition-colors relative cursor-pointer"
-            aria-label={`Shopping Cart with ${itemCount} items`}
+            className="relative rounded-lg p-2 text-[#3E2723]"
+            aria-label={`Cart (${itemCount})`}
           >
-            <ShoppingBag className="w-5 h-5" />
-            <span className="absolute -top-1 -right-1 bg-[#C90018] text-white w-4 h-4 rounded-full flex items-center justify-center text-[10px] font-black shadow-xs">
+            <ShoppingBag className="h-5 w-5" />
+            <span className="absolute -right-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-[#C62828] px-1 text-[10px] font-bold text-white">
               {itemCount}
             </span>
           </button>
-
-          {/* Primary CTA: "Shop Now" */}
           <button
             id="nav-shop-now-btn"
-            onClick={() => handleNavClick('products')}
-            className="hidden sm:inline-flex btn-vibrant-cta text-white px-5 sm:px-6 py-2.5 rounded-full text-xs font-black uppercase tracking-wider transition-all hover:scale-[1.03] active:scale-95 cursor-pointer shadow-md hover:shadow-lg flex items-center space-x-1.5"
+            type="button"
+            onClick={() => handleNavClick('shop')}
+            className="hidden rounded-lg bg-[#D46A1E] px-5 py-2.5 text-sm font-bold text-white transition-colors duration-200 hover:bg-[#A84F10] sm:inline-flex"
           >
-            <span>Shop Now</span>
+            SHOP NOW
           </button>
         </div>
       </div>
 
-      {/* Mobile Drawer Menu */}
-      {isMobileMenuOpen && (
-        <div className="lg:hidden border-t border-[#EADFCB] bg-[#FCFAF5] px-4 pt-4 pb-6 space-y-3 shadow-xl animate-in slide-in-from-top-4 duration-200">
-          <div className="space-y-1">
-            <button
-              onClick={() => handleNavClick('home')}
-              className="w-full text-left px-4 py-3 rounded-xl font-bold text-[#191919] hover:bg-[#FFF8EC] flex items-center justify-between"
-            >
-              <span>Home</span>
-            </button>
-
-            <button
-              onClick={() => handleNavClick('about')}
-              className="w-full text-left px-4 py-3 rounded-xl font-bold text-[#191919] hover:bg-[#FFF8EC] flex items-center justify-between"
-            >
-              <span>About Our Heritage</span>
-            </button>
-
-            <button
-              onClick={() => handleNavClick('products')}
-              className="w-full text-left px-4 py-3 rounded-xl font-bold text-[#C90018] bg-[#FFF8EC] flex items-center justify-between"
-            >
-              <span>Products (All 11 Mixes)</span>
-              <span className="bg-[#C90018] text-white text-[10px] px-2 py-0.5 rounded-full">
-                Heritage
-              </span>
-            </button>
-
-            <button
-              onClick={() => handleNavClick('journey')}
-              className="w-full text-left px-4 py-3 rounded-xl font-bold text-[#191919] hover:bg-[#FFF8EC] flex items-center justify-between"
-            >
-              <span>Our Journey (1956–Today)</span>
-            </button>
-
-            <button
-              onClick={() => handleNavClick('contact')}
-              className="w-full text-left px-4 py-3 rounded-xl font-bold text-[#191919] hover:bg-[#FFF8EC] flex items-center justify-between"
-            >
-              <span>Contact &amp; Partnerships</span>
-            </button>
-          </div>
-
-          <div className="p-3 bg-white rounded-2xl border border-[#EADFCB] flex items-center space-x-3 text-xs text-[#6F3E24]">
-            <MapPin className="w-4 h-4 text-[#C90018] shrink-0" />
-            <div>
-              <span className="font-bold text-gray-900">Amrat Narsih</span>
-              <div className="text-[11px] text-gray-500">Surat, Gujarat • Established 1956</div>
+      <nav className="hidden h-[42px] items-center justify-center gap-8 bg-[#3E2723] lg:flex">
+        <button type="button" onClick={() => handleNavClick('home')} className={stripLink(currentPage === 'home')}>
+          Home
+        </button>
+        <button type="button" onClick={() => handleNavClick('our-story')} className={stripLink(isAboutActive)}>
+          About
+        </button>
+        <div
+          className="relative"
+          onMouseEnter={() => setIsProductsDropdownOpen(true)}
+          onMouseLeave={() => setIsProductsDropdownOpen(false)}
+        >
+          <button
+            type="button"
+            onClick={() => handleNavClick('shop')}
+            className={`${stripLink(isProductsActive)} inline-flex items-center gap-1`}
+          >
+            Products <ChevronDown className="h-3.5 w-3.5" />
+          </button>
+          {isProductsDropdownOpen && (
+            <div className="absolute left-1/2 top-full z-50 w-64 -translate-x-1/2 rounded-xl border border-[#F0E4D0] bg-white p-2 shadow-[0_8px_28px_rgba(62,39,35,0.16)]">
+              {categories.map((cat) => (
+                <button
+                  key={cat.id}
+                  type="button"
+                  onClick={() => handleNavClick('shop', { category: cat.id })}
+                  className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left text-sm font-semibold text-[#3E2723] hover:bg-[#FFF3E0]"
+                >
+                  <img
+                    src={products.find((p) => p.id === CATEGORY_PREVIEW_PRODUCT[cat.id])?.imageUrl}
+                    alt=""
+                    className="h-9 w-9 object-contain"
+                    loading="lazy"
+                  />
+                  {cat.name}
+                </button>
+              ))}
             </div>
-          </div>
+          )}
+        </div>
+        <button type="button" onClick={() => handleNavClick('journey')} className={stripLink(currentPage === 'journey')}>
+          Our Journey
+        </button>
+        <button type="button" onClick={() => handleNavClick('shop')} className={stripLink(false)}>
+          Recipes
+        </button>
+        <button type="button" onClick={() => handleNavClick('contact')} className={stripLink(currentPage === 'contact')}>
+          Contact
+        </button>
+      </nav>
+
+      {isMobileMenuOpen && (
+        <div className="border-t border-[#F0E4D0] bg-white px-4 py-4 lg:hidden">
+          <form onSubmit={submitSearch} className="mb-3 flex overflow-hidden rounded-lg border border-[#F0E4D0]">
+            <input
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Search mixes..."
+              className="h-10 min-w-0 flex-1 px-3 text-sm outline-none"
+            />
+            <button type="submit" className="bg-[#D46A1E] px-3 text-xs font-bold text-white">
+              Search
+            </button>
+          </form>
+          {[
+            { label: 'Home', action: () => handleNavClick('home') },
+            { label: 'About', action: () => handleNavClick('our-story') },
+            { label: 'Products', action: () => handleNavClick('shop') },
+            { label: 'Our Journey', action: () => handleNavClick('journey') },
+            { label: 'Recipes', action: () => handleNavClick('shop') },
+            { label: 'Contact', action: () => handleNavClick('contact') },
+          ].map((item) => (
+            <button
+              key={item.label}
+              type="button"
+              onClick={item.action}
+              className="block w-full rounded-lg px-3 py-3 text-left font-semibold text-[#3E2723] hover:bg-[#FFF3E0]"
+            >
+              {item.label}
+            </button>
+          ))}
         </div>
       )}
     </header>

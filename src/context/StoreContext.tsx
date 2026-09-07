@@ -2,7 +2,7 @@
 
 import React, { createContext, useContext, useState, useCallback } from 'react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { PageView, Product, MoodTag, ProductCategory, DietaryFilterId, Category } from '../types';
+import { PageView, Product, MoodTag, ProductCategory, DietaryFilterId, Category, PublicCombo } from '../types';
 import { hrefForPage, pageFromPathname, type NavigateParams } from '../lib/routes';
 
 interface ToastInfo {
@@ -32,6 +32,8 @@ interface StoreContextType {
   closeSearch: () => void;
   quickViewProduct: Product | null;
   setQuickViewProduct: (product: Product | null) => void;
+  quickViewCombo: PublicCombo | null;
+  setQuickViewCombo: (combo: PublicCombo | null) => void;
   toasts: ToastInfo[];
   showToast: (title: string, message: string, type?: 'success' | 'info' | 'warning') => void;
   removeToast: (id: string) => void;
@@ -53,6 +55,7 @@ export const StoreProvider: React.FC<{
 
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null);
+  const [quickViewCombo, setQuickViewCombo] = useState<PublicCombo | null>(null);
   const [toasts, setToasts] = useState<ToastInfo[]>([]);
 
   const currentPage = pageFromPathname(pathname);
@@ -100,7 +103,7 @@ export const StoreProvider: React.FC<{
       setToasts((prev) => [...prev, { id, title, message, type }]);
       setTimeout(() => {
         removeToast(id);
-      }, 4000);
+      }, 2500);
     },
     [removeToast]
   );
@@ -127,6 +130,8 @@ export const StoreProvider: React.FC<{
         closeSearch: () => setIsSearchOpen(false),
         quickViewProduct,
         setQuickViewProduct,
+        quickViewCombo,
+        setQuickViewCombo,
         toasts,
         showToast,
         removeToast,

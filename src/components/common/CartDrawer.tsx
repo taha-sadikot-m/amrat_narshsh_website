@@ -21,6 +21,7 @@ import { useCart } from '../../context/CartContext';
 import { useStore } from '../../context/StoreContext';
 import { ProductPackshot } from '../../data/brandAssets';
 import type { Product } from '../../types';
+import { comboQuantityFromLines } from '../../lib/combo-pricing';
 import confetti from 'canvas-confetti';
 
 const FREE_GIFT_THRESHOLD = 750;
@@ -43,6 +44,8 @@ export const CartDrawer: React.FC = () => {
     applyCoupon,
     removeCoupon,
     addItem,
+    updateComboQuantity,
+    removeCombo,
   } = useCart();
 
   const { navigateTo, showToast, products } = useStore();
@@ -173,12 +176,12 @@ export const CartDrawer: React.FC = () => {
                 {subtotal >= FREE_GIFT_THRESHOLD ? (
                   <span className="text-[#2E7D32] flex items-center space-x-1">
                     <Gift className="w-4 h-4 text-[#C90018]" />
-                    <span>🎉 Free Express Shipping + Heritage Seasoning Gift Unlocked!</span>
+                    <span>Free Express Shipping + Heritage Seasoning Gift Unlocked!</span>
                   </span>
                 ) : subtotal >= freeShippingThreshold ? (
                   <span className="text-[#2E7D32] flex items-center space-x-1">
                     <Truck className="w-4 h-4 text-[#2E7D32]" />
-                    <span>Free Shipping Unlocked! Add <strong>₹{amountToGift}</strong> for Free Spice Gift 🎁</span>
+                    <span>Free Shipping Unlocked! Add <strong>₹{amountToGift}</strong> for Free Spice Gift</span>
                   </span>
                 ) : (
                   <span className="flex items-center space-x-1">
@@ -243,7 +246,95 @@ export const CartDrawer: React.FC = () => {
               </div>
             ) : (
               <div className="space-y-3">
-                {items.map((item) => (
+                {(() => {
+                  const comboGroups = new Map<string, typeof items>();
+                  const singles: typeof items = [];
+                  for (const item of items) {
+                    if (item.comboId) {
+                      const group = comboGroups.get(item.comboId) ?? [];
+                      group.push(item);
+                      comboGroups.set(item.comboId, group);
+                    } else {
+                      singles.push(item);
+                    }
+                  }
+
+                  return (
+                    <>
+                      {[...comboGroups.entries()].map(([comboId, group]) => {
+                        const comboQty = comboQuantityFromLines(group);
+                        const comboTotal = group.reduce((sum, item) => sum + item.price * item.quantity, 0);
+                        const comboName = group[0]?.comboName ?? 'Combo';
+                        return (
+                          <div
+                            key={comboId}
+                            className="rounded-2xl border border-[#D4B896] bg-[#FFF3E0] p-3 shadow-xs"
+                          >
+                            <div className="mb-2 flex items-center justify-between">
+                              <span className="rounded bg-[#C62828] px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-white">
+                                Combo
+                              </span>
+                              <button
+                                type="button"
+                                onClick={() => removeCombo(comboId)}
+                                className="p-1 text-gray-400 hover:text-red-600"
+                                aria-label="Remove combo"
+                              >
+                                <Trash2 className="h-3.5 w-3.5" />
+                              </button>
+                            </div>
+                            <div className="flex h-16 items-end justify-center">
+                              {group.slice(0, 3).map((item, index) => (
+                                <div
+                                  key={item.id}
+                                  className="h-16 w-12"
+                                  style={{ marginLeft: index === 0 ? 0 : -10, zIndex: index + 1 }}
+                                >
+                                  <ProductPackshot
+                                    productId={item.productId}
+                                    src={products.find((product) => product.id === item.productId)?.imageUrl}
+                                    className="h-full w-full"
+                                  />
+                                </div>
+                              ))}
+                            </div>
+                            <h4 className="font-display mt-2 text-sm font-bold text-[#3E2723]">{comboName}</h4>
+                            <ul className="mt-1 space-y-0.5">
+                              {group.map((item) => (
+                                <li key={item.id} className="flex justify-between text-[11px] text-[#6F3E24]">
+                                  <span className="truncate pr-2">
+                                    {item.name} · {item.weight}
+                                  </span>
+                                  <span>×{item.quantity}</span>
+                                </li>
+                              ))}
+                            </ul>
+                            <div className="mt-2 flex items-center justify-between border-t border-[#EADFCB] pt-2">
+                              <span className="text-sm font-extrabold text-[#191919]">₹{comboTotal}</span>
+                              <div className="flex items-center rounded-lg border border-gray-200 bg-white">
+                                <button
+                                  type="button"
+                                  onClick={() => updateComboQuantity(comboId, -1)}
+                                  className="p-1 text-gray-600"
+                                  aria-label="Decrease combo quantity"
+                                >
+                                  <Minus className="h-3 w-3" />
+                                </button>
+                                <span className="px-2.5 text-xs font-bold">{comboQty}</span>
+                                <button
+                                  type="button"
+                                  onClick={() => updateComboQuantity(comboId, 1)}
+                                  className="p-1 text-gray-600"
+                                  aria-label="Increase combo quantity"
+                                >
+                                  <Plus className="h-3 w-3" />
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })}
+                      {singles.map((item) => (
                   <div
                     key={item.id}
                     className="p-3 bg-white rounded-2xl border border-[#EADFCB] shadow-xs flex items-center space-x-3 group"
@@ -306,7 +397,10 @@ export const CartDrawer: React.FC = () => {
                       </div>
                     </div>
                   </div>
-                ))}
+                      ))}
+                    </>
+                  );
+                })()}
               </div>
             )}
 
