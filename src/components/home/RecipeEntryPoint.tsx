@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useReducedMotion } from 'motion/react';
 import type { Product } from '../../types';
 import { useStore } from '../../context/StoreContext';
+import { DISH_IMAGES } from '../../data/dishImages';
 
 type DishPanel = {
   productId: string;
@@ -21,7 +22,7 @@ const DISH_PANELS: DishPanel[] = [
   {
     productId: 'bhajiya',
     label: 'Bhajiya',
-    foodImage: 'https://images.unsplash.com/photo-1631515243349-e0cb75fb8d3a?w=1200&q=85',
+    foodImage: DISH_IMAGES.bhajiya,
     fallback: 'linear-gradient(135deg, #7B3200 0%, #C85A00 100%)',
     subtext: (price) => `Crispy. Golden. Ready in 10 min. · ₹${price}`,
     titleClass: 'text-[1.4rem] md:text-[1.7rem] lg:text-[2rem]',
@@ -31,7 +32,7 @@ const DISH_PANELS: DishPanel[] = [
   {
     productId: 'handwa',
     label: 'Handwa',
-    foodImage: 'https://images.unsplash.com/photo-1630383249896-424e482df921?w=800&q=85',
+    foodImage: DISH_IMAGES.handwa,
     fallback: 'linear-gradient(135deg, #3D4700 0%, #7A8A00 100%)',
     subtext: (price) => `Baked fluffy. Gujarati comfort. · ₹${price}`,
     titleClass: 'text-[1.4rem]',
@@ -41,7 +42,7 @@ const DISH_PANELS: DishPanel[] = [
   {
     productId: 'gulab-jamun',
     label: 'Gulab Jamun',
-    foodImage: 'https://images.unsplash.com/photo-1601303516534-7e37a31c97a2?w=800&q=85',
+    foodImage: DISH_IMAGES['gulab-jamun'],
     fallback: 'linear-gradient(135deg, #5C0030 0%, #A0004A 100%)',
     subtext: (price) => `Melt-in-mouth. Festival-ready. · ₹${price}`,
     titleClass: 'text-[1.4rem] lg:text-[1.2rem]',
@@ -51,7 +52,7 @@ const DISH_PANELS: DishPanel[] = [
   {
     productId: 'dalwada',
     label: 'Dalwada',
-    foodImage: 'https://images.unsplash.com/photo-1567188040759-fb8a883dc6d8?w=800&q=85',
+    foodImage: DISH_IMAGES.dalwada,
     fallback: 'linear-gradient(135deg, #3B1A00 0%, #6B3200 100%)',
     subtext: (price) => `Crisp outside. Soft inside. · ₹${price}`,
     titleClass: 'text-[1.4rem]',
@@ -61,7 +62,7 @@ const DISH_PANELS: DishPanel[] = [
   {
     productId: 'khichu',
     label: 'Khichu',
-    foodImage: 'https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=800&q=85',
+    foodImage: DISH_IMAGES.khichu,
     fallback: 'linear-gradient(135deg, #5A3A00 0%, #C8890A 100%)',
     subtext: (price) => `Silky. Warming. Monsoon magic. · ₹${price}`,
     titleClass: 'text-[1.4rem] lg:text-[1.3rem]',
@@ -71,7 +72,7 @@ const DISH_PANELS: DishPanel[] = [
   {
     productId: 'gota',
     label: 'Gota',
-    foodImage: 'https://images.unsplash.com/photo-1606755962773-d324e0a13086?w=800&q=85',
+    foodImage: DISH_IMAGES.gota,
     fallback: 'linear-gradient(135deg, #D46A1E 0%, #8B3A00 100%)',
     subtext: (price) => `Fluffy. Herby. Gujarati soul. · ₹${price}`,
     titleClass: 'text-[1.4rem] lg:text-[1.3rem]',

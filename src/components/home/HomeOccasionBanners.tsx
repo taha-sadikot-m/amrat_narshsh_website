@@ -3,32 +3,33 @@
 import React from 'react';
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
+import { DISH_IMAGES } from '../../data/dishImages';
 
 const BANNERS = [
   {
     href: '/shop?category=instant-mixes',
-    image: 'https://images.unsplash.com/photo-1631515243349-e0cb75fb8d3a?w=800',
+    image: DISH_IMAGES.bhajiya,
     label: 'Monsoon Cravings',
     heading: 'Chai Time\nGoes Golden',
     price: '₹65',
   },
   {
     href: '/shop?category=sweet-moments',
-    image: 'https://images.unsplash.com/photo-1601303516534-7e37a31c97a2?w=800',
+    image: DISH_IMAGES['gulab-jamun'],
     label: 'Festival Sweets',
     heading: 'Celebrations\nMade Sweeter',
     price: '₹85',
   },
   {
     href: '/shop?mood=breakfast',
-    image: 'https://images.unsplash.com/photo-1601050690597-df0568f70950?w=800',
+    image: DISH_IMAGES.breakfast,
     label: 'Morning Rituals',
     heading: 'Start Every Day\nThe Gujarati Way',
     price: '₹65',
   },
   {
     href: '/shop?category=traditional-favourites',
-    image: 'https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=800',
+    image: DISH_IMAGES.khichu,
     label: 'Vrat & Farali',
     heading: 'Pure. Clean.\nFasting-Friendly.',
     price: '₹70',

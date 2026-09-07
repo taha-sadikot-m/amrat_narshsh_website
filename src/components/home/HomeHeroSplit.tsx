@@ -7,13 +7,9 @@ import { useReducedMotion } from 'motion/react';
 import { useStore } from '../../context/StoreContext';
 import { useCart } from '../../context/CartContext';
 import { defaultPack } from '../../lib/home-catalog';
+import { DISH_IMAGES } from '../../data/dishImages';
 
 const SLIDE_IDS = ['bhajiya', 'handwa', 'gota'] as const;
-const SLIDE_IMAGES = [
-  'https://images.unsplash.com/photo-1631515243349-e0cb75fb8d3a?w=1200',
-  'https://images.unsplash.com/photo-1630383249896-424e482df921?w=1200',
-  'https://images.unsplash.com/photo-1567188040759-fb8a883dc6d8?w=1200',
-];
 
 export const HomeHeroSplit: React.FC = () => {
   const { products, showToast } = useStore();
@@ -22,9 +18,9 @@ export const HomeHeroSplit: React.FC = () => {
   const [index, setIndex] = useState(0);
   const [paused, setPaused] = useState(false);
 
-  const slides = SLIDE_IDS.map((id, i) => ({
+  const slides = SLIDE_IDS.map((id) => ({
     product: products.find((item) => item.id === id),
-    image: SLIDE_IMAGES[i],
+    image: DISH_IMAGES[id],
   })).filter((slide) => slide.product);
   const current = slides[index] ?? slides[0];
   const gobapuri = products.find((item) => item.id === 'gobapuri');
