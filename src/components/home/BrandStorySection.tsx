@@ -130,7 +130,7 @@ export const BrandStorySection: React.FC = () => {
         {/* Story Footer Banner */}
         <div className="mt-12 p-8 bg-[#FFF8EC] rounded-3xl border border-[#F4C400]/40 flex flex-col sm:flex-row items-center justify-between gap-6">
           <div className="flex items-center space-x-4">
-            <AmratNarsihLogo className="h-12 w-auto shrink-0" />
+            <AmratNarsihLogo className="h-12 w-auto sm:h-14" />
             <div>
               <h4 className="font-display font-black text-lg text-gray-900">
                 1956 Heritage Presented Through Modern Excellence

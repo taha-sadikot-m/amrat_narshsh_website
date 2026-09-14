@@ -8,11 +8,13 @@ export const AmratNarsihLogo: React.FC<{
   variant?: 'full' | 'compact' | 'monochrome' | 'white';
 }> = ({ className = 'h-12 w-auto' }) => {
   return (
-    <div className={`relative inline-block select-none ${className}`}>
+    <div className={`relative inline-flex aspect-[900/328] shrink-0 items-center select-none ${className}`}>
       <img
         src="/images/logo.webp"
         alt="Amrat Narsih"
-        className="h-full w-auto max-h-full object-contain drop-shadow-sm"
+        width={900}
+        height={328}
+        className="block h-full w-full object-contain drop-shadow-[0_2px_3px_rgba(62,39,35,0.16)]"
         draggable={false}
       />
     </div>

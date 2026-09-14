@@ -73,7 +73,7 @@ export const Navbar: React.FC = () => {
           className="flex flex-col items-center lg:items-start"
           aria-label="Amrat Narsih homepage"
         >
-          <AmratNarsihLogo className="h-10 w-auto sm:h-11" />
+          <AmratNarsihLogo className="h-10 w-auto sm:h-12" />
           <span className="hidden text-[0.65rem] text-[#8D6E63] sm:block">Est. 1956 · Surat, Gujarat</span>
         </button>
 

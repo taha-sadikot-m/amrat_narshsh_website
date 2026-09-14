@@ -89,7 +89,7 @@ export const OurStoryPage: React.FC = () => {
 
         <div className="relative mx-auto flex min-h-[440px] max-w-[1280px] flex-col justify-center px-6 py-16 lg:min-h-[560px] lg:py-24">
           <div className="max-w-xl">
-            <AmratNarsihLogo className="h-11 w-[170px]" />
+            <AmratNarsihLogo className="h-12 w-auto sm:h-14" />
             <p className="mt-7 text-[0.72rem] font-bold uppercase tracking-[0.16em] text-[#D46A1E]">
               Est. 1956 · Salabatpura, Surat
             </p>
