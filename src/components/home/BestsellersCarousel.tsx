@@ -6,10 +6,11 @@ import { ArrowRight, Sparkles } from 'lucide-react';
 import { useStore } from '../../context/StoreContext';
 import type { Product, ProductCategory } from '../../types';
 import { HomeProductCard } from './HomeProductCard';
+import { FEATURED_PRODUCT_IDS } from '../../lib/home-catalog';
 
 type FilterId = 'all' | ProductCategory;
 
-const CURATED_PRODUCT_IDS = ['bhajiya', 'dalwada', 'farali-atta', 'gobapuri'];
+const CURATED_PRODUCT_IDS = [...FEATURED_PRODUCT_IDS];
 
 // The still-life is a rectangular photo on cream, so its edges are feathered
 // away to let it read as part of the section background.

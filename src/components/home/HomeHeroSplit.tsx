@@ -9,7 +9,12 @@ import { useCart } from '../../context/CartContext';
 import { defaultPack } from '../../lib/home-catalog';
 import { DISH_IMAGES } from '../../data/dishImages';
 
-const SLIDE_IDS = ['bhajiya', 'handwa', 'gota'] as const;
+const SLIDE_IDS = ['idli-idla', 'surti-locho', 'gota'] as const;
+const SLIDE_BACKGROUNDS = {
+  'idli-idla': DISH_IMAGES.breakfast,
+  'surti-locho': DISH_IMAGES.handwa,
+  gota: DISH_IMAGES.gota,
+} as const;
 
 export const HomeHeroSplit: React.FC = () => {
   const { products, showToast } = useStore();
@@ -20,7 +25,7 @@ export const HomeHeroSplit: React.FC = () => {
 
   const slides = SLIDE_IDS.map((id) => ({
     product: products.find((item) => item.id === id),
-    image: DISH_IMAGES[id],
+    image: SLIDE_BACKGROUNDS[id],
   })).filter((slide) => slide.product);
   const current = slides[index] ?? slides[0];
   const gobapuri = products.find((item) => item.id === 'gobapuri');

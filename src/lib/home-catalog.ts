@@ -15,8 +15,19 @@ export function discountPercent(price: number, compareAtPrice?: number) {
   return Math.round(((compareAtPrice - price) / compareAtPrice) * 100);
 }
 
+export const FEATURED_PRODUCT_IDS = ['idli-idla', 'surti-locho', 'gota', 'handwa'] as const;
+
+export function featuredRank(productId: string) {
+  const index = FEATURED_PRODUCT_IDS.indexOf(productId as (typeof FEATURED_PRODUCT_IDS)[number]);
+  return index === -1 ? FEATURED_PRODUCT_IDS.length : index;
+}
+
+export function compareByFeatured(a: { id: string }, b: { id: string }) {
+  return featuredRank(a.id) - featuredRank(b.id);
+}
+
 export const TAB_PRODUCT_IDS = {
-  bestsellers: ['bhajiya', 'dalwada', 'handwa', 'gulab-jamun', 'gota'],
+  bestsellers: ['idli-idla', 'surti-locho', 'gota', 'handwa', 'bhajiya'],
   arrivals: ['gobapuri', 'khichu', 'khatawada', 'farali-atta', 'surti-locho'],
   festival: ['gulab-jamun', 'gota', 'farali-atta', 'bhajiya', 'handwa'],
 } as const;

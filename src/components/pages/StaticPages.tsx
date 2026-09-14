@@ -22,7 +22,6 @@ import {
   Compass,
 } from 'lucide-react';
 import { useStore } from '../../context/StoreContext';
-import { Since1956Badge, VegBadge } from '../../data/brandAssets';
 
 // --- CONTACT & INQUIRIES PAGE ---
 export const ContactPage: React.FC = () => {
@@ -236,26 +235,6 @@ export const ContactPage: React.FC = () => {
                   <span>Open in Google Maps / Get Directions</span>
                   <ExternalLink className="w-3.5 h-3.5 opacity-80" />
                 </a>
-
-                {/* Verified Store Features */}
-                <div className="grid grid-cols-2 gap-2 pt-1 text-[11px] font-semibold text-gray-700">
-                  <div className="flex items-center space-x-1.5 bg-[#FCFAF5] p-2 rounded-xl border border-[#EADFCB]">
-                    <CheckCircle2 className="w-3.5 h-3.5 text-green-700 shrink-0" />
-                    <span>In-Store Shopping</span>
-                  </div>
-                  <div className="flex items-center space-x-1.5 bg-[#FCFAF5] p-2 rounded-xl border border-[#EADFCB]">
-                    <CheckCircle2 className="w-3.5 h-3.5 text-green-700 shrink-0" />
-                    <span>Wheelchair Accessible</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Heritage Seal */}
-              <div className="pt-2 flex items-center space-x-3 text-[11px] text-[#6F3E24] font-medium bg-[#FCFAF5] p-3 rounded-2xl border border-[#EADFCB]">
-                <Since1956Badge className="w-8 h-8 shrink-0" />
-                <span>
-                  <strong>Amrat Narsih</strong> • Preserving authentic Surat food traditions in Salabatpura since 1956.
-                </span>
               </div>
 
             </div>
@@ -280,13 +259,7 @@ export const ContactPage: React.FC = () => {
             
             {/* Interactive Visual Map Card */}
             <div className="bg-white rounded-3xl p-4 sm:p-6 border border-[#EADFCB] shadow-xs space-y-4">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-2">
-                  <div className="w-2.5 h-2.5 rounded-full bg-[#C90018] animate-pulse" />
-                  <span className="text-xs font-bold text-gray-900">
-                    Live Map Location (Salabatpura, Surat)
-                  </span>
-                </div>
+              <div className="flex justify-end">
                 <a
                   href={GOOGLE_MAPS_URL}
                   target="_blank"
@@ -307,14 +280,6 @@ export const ContactPage: React.FC = () => {
                   loading="lazy"
                   allowFullScreen
                 />
-              </div>
-
-              <div className="flex items-center justify-between text-xs text-gray-500 pt-1">
-                <span className="inline-flex items-center gap-1.5">
-                  <MapPin className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
-                  3/2273, Ground Floor, Balabhai Ni Sheri, Salabatpura
-                </span>
-                <span className="font-bold text-[#6F3E24]">PIN: 395003</span>
               </div>
             </div>
 

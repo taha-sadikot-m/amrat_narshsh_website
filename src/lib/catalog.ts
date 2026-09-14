@@ -1,5 +1,6 @@
 import type { Category as DbCategory, Product as DbProduct } from '@prisma/client';
 import type { Category, Product, PublicCombo } from '../types';
+import { compareByFeatured } from './home-catalog';
 import { prisma } from './prisma';
 
 export function mapDbProduct(row: DbProduct): Product {
@@ -59,7 +60,7 @@ export async function getProducts(query: ProductQuery = {}): Promise<Product[]> 
   const mood = query.mood && query.mood !== 'all' ? query.mood : null;
   const q = query.q?.trim().toLowerCase() ?? '';
 
-  return list.filter((product) => {
+  const filtered = list.filter((product) => {
     if (category && product.category !== category) return false;
     if (mood && !product.moodTags.includes(mood as Product['moodTags'][number])) return false;
     if (q) {
@@ -77,6 +78,8 @@ export async function getProducts(query: ProductQuery = {}): Promise<Product[]> 
     }
     return true;
   });
+
+  return [...filtered].sort(compareByFeatured);
 }
 
 export async function getProductBySlug(slug: string): Promise<Product | null> {

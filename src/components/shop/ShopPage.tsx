@@ -15,6 +15,7 @@ import { ProductGridSkeleton } from '../common/ProductSkeleton';
 import { HomeProductCard } from '../home/HomeProductCard';
 import { ProductListView } from './ProductListView';
 import { SortOptionId, Product } from '../../types';
+import { featuredRank } from '../../lib/home-catalog';
 
 type PriceTier = 'all' | 'under-100' | '100-140' | 'above-140';
 
@@ -81,6 +82,8 @@ export const ShopPage: React.FC<{ products?: Product[] }> = ({ products = [] }) 
     }).sort((a, b) => {
       // Sort logic
       if (sortBy === 'popularity') {
+        const rank = featuredRank(a.id) - featuredRank(b.id);
+        if (rank !== 0) return rank;
         const scoreA = (a.isBestseller ? 1000 : 0) + a.reviewCount * a.rating;
         const scoreB = (b.isBestseller ? 1000 : 0) + b.reviewCount * b.rating;
         return scoreB - scoreA;

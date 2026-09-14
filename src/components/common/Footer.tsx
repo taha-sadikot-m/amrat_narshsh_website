@@ -7,8 +7,8 @@ import { AmratNarsihLogo } from '../../data/brandAssets';
 import { useStore } from '../../context/StoreContext';
 
 const PRODUCT_LINKS = [
-  { id: 'bhajiya', label: 'Bhajiya Mix' },
-  { id: 'dalwada', label: 'Dalwada Mix' },
+  { id: 'idli-idla', label: 'Idada Mix' },
+  { id: 'surti-locho', label: 'Locho Mix' },
   { id: 'gota', label: 'Gota Mix' },
   { id: 'handwa', label: 'Handwa Mix' },
   { id: 'gulab-jamun', label: 'Gulab Jamun Mix' },
@@ -22,7 +22,9 @@ export const Footer: React.FC = () => {
     <footer id="main-footer" className="mb-[60px] border-t-[3px] border-[#D46A1E] bg-[#3E2723] text-white md:mb-0">
       <div className="mx-auto grid max-w-[1280px] grid-cols-1 gap-10 px-6 py-16 md:grid-cols-2 lg:grid-cols-4">
         <div>
-          <AmratNarsihLogo className="h-12 w-[180px] [filter:brightness(0)_invert(1)]" />
+          <div className="inline-flex rounded-xl bg-[#FFFBF5] px-3 py-2">
+            <AmratNarsihLogo className="h-12 w-auto" />
+          </div>
           <p className="mt-4 text-[0.85rem] leading-relaxed text-white/70">
             A Legacy of Taste.
             <br />
