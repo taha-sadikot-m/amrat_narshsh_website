@@ -81,6 +81,15 @@ const DISH_PANELS: DishPanel[] = [
   },
 ];
 
+const RECIPE_HREF: Record<(typeof DISH_PANELS)[number]['productId'], string> = {
+  bhajiya: '/recipes/batata-bhajiya',
+  handwa: '/recipes/dudhi-handwa',
+  'gulab-jamun': '/recipes/gulab-jamun-saffron-syrup',
+  dalwada: '/recipes/moong-dalwada',
+  khichu: '/recipes/street-style-khichu',
+  gota: '/recipes/dakor-gota',
+};
+
 function packPrice(product: Product): number {
   const pack = product.packSizes?.find((size) => size.isDefault) ?? product.packSizes?.[0];
   return pack?.price ?? product.defaultPrice;
@@ -101,8 +110,8 @@ function DishTile({
   return (
     <Link
       id={`recipe-entry-${product.id}`}
-      href={`/product/${product.slug}`}
-      aria-label={`Shop ${panel.label}, ${product.name}, ₹${price}`}
+      href={RECIPE_HREF[panel.productId]}
+      aria-label={`Open ${panel.label} recipe`}
       className={`group relative block h-[200px] cursor-pointer overflow-hidden outline-none md:h-[220px] lg:h-full ${panel.area} ${
         panel.productId === 'bhajiya' ? 'md:h-[260px] lg:h-full' : ''
       }`}
@@ -206,12 +215,12 @@ export const RecipeEntryPoint: React.FC = () => {
       </div>
 
       <div className="px-5 py-8 text-center">
-        <p className="text-[0.9rem] text-[#8D6E63]">Explore all 11 authentic Gujarati mixes</p>
+        <p className="text-[0.9rem] text-[#8D6E63]">Ten vegetarian recipes from the mixes</p>
         <Link
-          href="/shop"
+          href="/recipes"
           className="mt-2 inline-block text-[0.95rem] font-bold uppercase tracking-[0.08em] text-[#D46A1E] transition-colors hover:text-[#A84F10] hover:underline"
         >
-          View all products →
+          View all recipes →
         </Link>
       </div>
 

@@ -75,7 +75,7 @@ export const Footer: React.FC = () => {
           <ul className="mt-4 space-y-2 text-sm text-white/65">
             <li><Link href="/our-story" className="hover:text-[#D46A1E]">About Us</Link></li>
             <li><Link href="/journey" className="hover:text-[#D46A1E]">Our Journey Since 1956</Link></li>
-            <li><Link href="/shop" className="hover:text-[#D46A1E]">Recipes</Link></li>
+            <li><Link href="/recipes" className="hover:text-[#D46A1E]">Recipes</Link></li>
             <li><Link href="/combos" className="hover:text-[#D46A1E]">Combos</Link></li>
             <li><Link href="/contact" className="hover:text-[#D46A1E]">Contact Us</Link></li>
             <li><Link href="/contact" className="hover:text-[#D46A1E]">Partner Enquiries</Link></li>

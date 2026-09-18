@@ -128,7 +128,9 @@ export interface Recipe {
   gujaratiTitle: string;
   slug: string;
   productId: string;
+  extraProductIds?: string[];
   productName: string;
+  imageUrl: string;
   heroDishColor: string;
   prepTime: string;
   cookTime: string;
@@ -227,4 +229,5 @@ export type PageView =
   | 'terms'
   | 'shipping'
   | 'returns'
-  | 'combos';
+  | 'combos'
+  | 'recipes';

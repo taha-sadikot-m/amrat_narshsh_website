@@ -7,6 +7,7 @@ export type NavigateParams = {
   search?: string;
   dietary?: DietaryFilterId;
   orderId?: string;
+  recipeSlug?: string;
 };
 
 export function hrefForPage(page: PageView, params?: NavigateParams, products: Product[] = []): string {
@@ -52,6 +53,8 @@ export function hrefForPage(page: PageView, params?: NavigateParams, products: P
       return '/returns';
     case 'combos':
       return '/combos';
+    case 'recipes':
+      return params?.recipeSlug ? `/recipes/${params.recipeSlug}` : '/recipes';
     case 'cart':
       return '/checkout';
     case 'account':
@@ -76,5 +79,6 @@ export function pageFromPathname(pathname: string): PageView {
   if (pathname.startsWith('/shipping')) return 'shipping';
   if (pathname.startsWith('/returns')) return 'returns';
   if (pathname.startsWith('/combos')) return 'combos';
+  if (pathname.startsWith('/recipes')) return 'recipes';
   return 'home';
 }

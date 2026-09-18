@@ -176,7 +176,7 @@ export const Navbar: React.FC = () => {
         <button type="button" onClick={() => handleNavClick('journey')} className={stripLink(currentPage === 'journey')}>
           Our Journey
         </button>
-        <button type="button" onClick={() => handleNavClick('shop')} className={stripLink(false)}>
+        <button type="button" onClick={() => handleNavClick('recipes')} className={stripLink(currentPage === 'recipes')}>
           Recipes
         </button>
         <button type="button" onClick={() => handleNavClick('contact')} className={stripLink(currentPage === 'contact')}>
@@ -202,7 +202,7 @@ export const Navbar: React.FC = () => {
             { label: 'About', action: () => handleNavClick('our-story') },
             { label: 'Products', action: () => handleNavClick('shop') },
             { label: 'Our Journey', action: () => handleNavClick('journey') },
-            { label: 'Recipes', action: () => handleNavClick('shop') },
+            { label: 'Recipes', action: () => handleNavClick('recipes') },
             { label: 'Contact', action: () => handleNavClick('contact') },
           ].map((item) => (
             <button
