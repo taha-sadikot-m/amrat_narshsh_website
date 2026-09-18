@@ -16,7 +16,7 @@ import { useStore } from '../../context/StoreContext';
 import { useCart } from '../../context/CartContext';
 import { useWishlist } from '../../context/WishlistContext';
 import { Product } from '../../types';
-import { ProductPackshot, VegBadge, Since1956Badge } from '../../data/brandAssets';
+import { ProductPackshot, VegBadge } from '../../data/brandAssets';
 import { HomeProductCard } from '../home/HomeProductCard';
 import confetti from 'canvas-confetti';
 
@@ -144,12 +144,6 @@ export const ProductDetailPage: React.FC<{
               <div className="w-56 sm:w-64 drop-shadow-2xl transition-all duration-300">
                 <ProductPackshot productId={product.id} src={product.imageUrl} />
               </div>
-
-              {/* Bottom Heritage Seal */}
-              <div className="mt-4 flex items-center space-x-2 text-xs font-bold text-[#6F3E24] z-10">
-                <Since1956Badge className="w-8 h-8" />
-                <span>Amrat Narsih • Surat Heritage Since 1956</span>
-              </div>
             </div>
 
             {/* Packaging Guarantee Strip */}
@@ -175,14 +169,6 @@ export const ProductDetailPage: React.FC<{
               <div className="flex items-center space-x-2">
                 <span className="text-xs font-extrabold uppercase tracking-wider text-[#C90018]">
                   {product.categoryName}
-                </span>
-                <span className="text-gray-300">•</span>
-                <span className="text-xs text-green-700 font-bold bg-green-50 px-2 py-0.5 rounded-sm">
-                  100% Pure Vegetarian
-                </span>
-                <span className="text-gray-300">•</span>
-                <span className="text-xs text-[#6F3E24] font-bold">
-                  Surat Heritage
                 </span>
               </div>
 

@@ -1,30 +1,21 @@
 'use client';
 
 import React, { useState } from 'react';
-import { 
-  X, 
-  Trash2, 
-  Plus, 
-  Minus, 
-  ArrowRight, 
-  ShieldCheck, 
-  Truck, 
-  Sparkles, 
-  ShoppingBag, 
-  Gift, 
-  Check, 
-  Flame, 
-  Award,
-  Zap
+import {
+  X,
+  Trash2,
+  Plus,
+  Minus,
+  ArrowRight,
+  ShoppingBag,
+  Check,
+  Zap,
 } from 'lucide-react';
 import { useCart } from '../../context/CartContext';
 import { useStore } from '../../context/StoreContext';
 import { ProductPackshot } from '../../data/brandAssets';
 import type { Product } from '../../types';
 import { comboQuantityFromLines } from '../../lib/combo-pricing';
-import confetti from 'canvas-confetti';
-
-const FREE_GIFT_THRESHOLD = 750;
 
 export const CartDrawer: React.FC = () => {
   const {
@@ -33,45 +24,15 @@ export const CartDrawer: React.FC = () => {
     closeCart,
     updateQuantity,
     removeItem,
-    clearCart,
-    subtotal,
-    discount,
-    shipping,
-    total,
-    freeShippingThreshold,
-    freeShippingProgress,
-    appliedCoupon,
-    applyCoupon,
-    removeCoupon,
     addItem,
     updateComboQuantity,
     removeCombo,
   } = useCart();
 
   const { navigateTo, showToast, products } = useStore();
-  const [couponInput, setCouponInput] = useState('');
-  const [couponError, setCouponError] = useState('');
   const [justAddedId, setJustAddedId] = useState<string | null>(null);
 
   if (!isCartOpen) return null;
-
-  const handleApplyCoupon = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!couponInput.trim()) return;
-    const res = applyCoupon(couponInput);
-    if (res.success) {
-      setCouponError('');
-      setCouponInput('');
-      confetti({
-        particleCount: 70,
-        spread: 60,
-        origin: { y: 0.6 },
-      });
-      showToast('Coupon Applied!', res.message, 'success');
-    } else {
-      setCouponError(res.message);
-    }
-  };
 
   const handleCheckoutClick = () => {
     closeCart();
@@ -127,14 +88,10 @@ export const CartDrawer: React.FC = () => {
 
   const smartRecommendations = getSmartRecommendations();
 
-  // Progress towards Free Gift
-  const freeGiftProgress = Math.min(Math.round((subtotal / FREE_GIFT_THRESHOLD) * 100), 100);
-  const amountToGift = Math.max(0, FREE_GIFT_THRESHOLD - subtotal);
-
   return (
     <div
       id="cart-drawer-overlay"
-      className="fixed inset-0 z-50 overflow-hidden bg-black/60 backdrop-blur-xs transition-opacity duration-300 animate-in fade-in"
+      className="fixed inset-0 z-[1100] overflow-hidden bg-black/60 backdrop-blur-xs transition-opacity duration-300 animate-in fade-in"
       onClick={closeCart}
     >
       <div
@@ -167,55 +124,6 @@ export const CartDrawer: React.FC = () => {
             >
               <X className="w-5 h-5" />
             </button>
-          </div>
-
-          {/* Tiered Progress Tracker (Free Shipping & Heritage Gift) */}
-          <div className="px-6 py-3.5 bg-[#FFF8EC] border-b border-[#F4C400]/40 space-y-2">
-            <div className="flex items-center justify-between text-xs font-bold text-[#6F3E24]">
-              <div className="flex items-center space-x-1.5">
-                {subtotal >= FREE_GIFT_THRESHOLD ? (
-                  <span className="text-[#2E7D32] flex items-center space-x-1">
-                    <Gift className="w-4 h-4 text-[#C90018]" />
-                    <span>Free Express Shipping + Heritage Seasoning Gift Unlocked!</span>
-                  </span>
-                ) : subtotal >= freeShippingThreshold ? (
-                  <span className="text-[#2E7D32] flex items-center space-x-1">
-                    <Truck className="w-4 h-4 text-[#2E7D32]" />
-                    <span>Free Shipping Unlocked! Add <strong>₹{amountToGift}</strong> for Free Spice Gift</span>
-                  </span>
-                ) : (
-                  <span className="flex items-center space-x-1">
-                    <Truck className="w-4 h-4 text-[#C90018]" />
-                    <span>
-                      Add <strong className="text-[#C90018]">₹{freeShippingThreshold - subtotal}</strong> more for <strong>FREE Shipping</strong>
-                    </span>
-                  </span>
-                )}
-              </div>
-              <span className="text-[11px] font-extrabold text-[#C90018]">
-                {subtotal >= FREE_GIFT_THRESHOLD ? '100%' : `${Math.max(freeShippingProgress, freeGiftProgress)}%`}
-              </span>
-            </div>
-
-            {/* Dual Milestone Track */}
-            <div className="relative w-full bg-[#EADFCB] h-2.5 rounded-full overflow-hidden">
-              <div
-                className="h-full bg-gradient-to-r from-[#F4C400] via-[#E31B23] to-[#C90018] transition-all duration-500 rounded-full"
-                style={{ width: `${Math.min((subtotal / FREE_GIFT_THRESHOLD) * 100, 100)}%` }}
-              />
-            </div>
-
-            {/* Milestone Markers */}
-            <div className="flex items-center justify-between text-[10px] text-gray-500 font-semibold pt-0.5">
-              <span className="flex items-center space-x-1">
-                <span className={`w-1.5 h-1.5 rounded-full ${subtotal >= freeShippingThreshold ? 'bg-[#2E7D32]' : 'bg-gray-400'}`} />
-                <span>₹500 Free Shipping</span>
-              </span>
-              <span className="flex items-center space-x-1">
-                <span className={`w-1.5 h-1.5 rounded-full ${subtotal >= FREE_GIFT_THRESHOLD ? 'bg-[#C90018]' : 'bg-gray-400'}`} />
-                <span>₹750 Free Spice Pack</span>
-              </span>
-            </div>
           </div>
 
           {/* Items List or Empty State */}
@@ -470,83 +378,8 @@ export const CartDrawer: React.FC = () => {
             )}
           </div>
 
-          {/* Footer with Coupon & Checkout */}
           {items.length > 0 && (
-            <div className="p-6 bg-white border-t border-[#EADFCB] space-y-3.5">
-              {/* Coupon Form */}
-              <div>
-                {appliedCoupon ? (
-                  <div className="flex items-center justify-between p-2.5 bg-green-50 border border-green-200 rounded-xl text-xs">
-                    <div className="flex items-center space-x-1.5 text-green-800 font-medium">
-                      <Sparkles className="w-4 h-4 text-green-600" />
-                      <span>
-                        <strong>{appliedCoupon.code}</strong> ({appliedCoupon.discountPercentage}% OFF applied)
-                      </span>
-                    </div>
-                    <button
-                      onClick={removeCoupon}
-                      className="text-red-600 font-bold hover:underline cursor-pointer"
-                    >
-                      Remove
-                    </button>
-                  </div>
-                ) : (
-                  <form onSubmit={handleApplyCoupon} className="flex space-x-2">
-                    <input
-                      type="text"
-                      value={couponInput}
-                      onChange={(e) => setCouponInput(e.target.value)}
-                      placeholder="Promo code (e.g. GUJARAT10)"
-                      className="flex-1 px-3 py-2 text-xs border border-gray-300 rounded-xl uppercase tracking-wider focus:outline-hidden focus:border-[#C90018] bg-[#FCFAF5]"
-                    />
-                    <button
-                      type="submit"
-                      className="px-4 py-2 bg-[#191919] text-white rounded-xl text-xs font-bold hover:bg-black transition-colors cursor-pointer"
-                    >
-                      Apply
-                    </button>
-                  </form>
-                )}
-                {couponError && (
-                  <p className="text-[11px] text-red-600 mt-1">{couponError}</p>
-                )}
-              </div>
-
-              {/* Order Calculations */}
-              <div className="space-y-1.5 text-xs text-gray-600 border-t border-gray-100 pt-2.5">
-                <div className="flex justify-between">
-                  <span>Pantry Subtotal</span>
-                  <span className="font-semibold text-gray-900">₹{subtotal}</span>
-                </div>
-                {discount > 0 && (
-                  <div className="flex justify-between text-green-700 font-semibold">
-                    <span>Heritage Discount</span>
-                    <span>-₹{discount}</span>
-                  </div>
-                )}
-                <div className="flex justify-between">
-                  <span>Express Shipping</span>
-                  <span>
-                    {shipping === 0 ? (
-                      <span className="text-green-700 font-bold">FREE</span>
-                    ) : (
-                      `₹${shipping}`
-                    )}
-                  </span>
-                </div>
-                {subtotal >= FREE_GIFT_THRESHOLD && (
-                  <div className="flex justify-between text-[#C90018] font-bold">
-                    <span>Surprise Gujarati Masala Gift</span>
-                    <span>FREE (₹90 value)</span>
-                  </div>
-                )}
-                <div className="flex justify-between text-sm font-extrabold text-gray-900 border-t border-gray-200 pt-2 font-display">
-                  <span>Grand Total</span>
-                  <span className="text-base text-[#C90018]">₹{total}</span>
-                </div>
-              </div>
-
-              {/* Primary Checkout CTA */}
+            <div className="p-6 bg-white border-t border-[#EADFCB]">
               <button
                 id="drawer-proceed-checkout-btn"
                 onClick={handleCheckoutClick}
@@ -555,15 +388,6 @@ export const CartDrawer: React.FC = () => {
                 <span>Proceed to Secure Checkout</span>
                 <ArrowRight className="w-4 h-4" />
               </button>
-
-              <div className="flex items-center justify-center space-x-3 text-[10px] text-gray-400 pt-1">
-                <span className="flex items-center">
-                  <ShieldCheck className="w-3.5 h-3.5 mr-1 text-green-600" />
-                  100% Stone-Ground Purity
-                </span>
-                <span>•</span>
-                <span>UPI, Cards &amp; COD</span>
-              </div>
             </div>
           )}
         </div>
