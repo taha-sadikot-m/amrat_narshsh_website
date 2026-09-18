@@ -61,6 +61,7 @@ export async function getProducts(query: ProductQuery = {}): Promise<Product[]> 
   const q = query.q?.trim().toLowerCase() ?? '';
 
   const filtered = list.filter((product) => {
+    if (product.defaultPrice <= 0) return false;
     if (category && product.category !== category) return false;
     if (mood && !product.moodTags.includes(mood as Product['moodTags'][number])) return false;
     if (q) {
@@ -86,7 +87,10 @@ export async function getProductBySlug(slug: string): Promise<Product | null> {
   const row = await prisma.product.findFirst({
     where: { OR: [{ slug }, { id: slug }] },
   });
-  return row ? mapDbProduct(row) : null;
+  if (!row) return null;
+  const product = mapDbProduct(row);
+  if (product.defaultPrice <= 0) return null;
+  return product;
 }
 
 export function mapDbCategory(row: DbCategory): Category {

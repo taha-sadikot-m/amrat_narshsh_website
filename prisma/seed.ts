@@ -63,7 +63,71 @@ const PACKSHOT_IMAGES: Record<string, string> = {
   khatawada: '/images/products/khatawada.webp',
   khichu: '/images/products/khichu.webp',
   'surti-locho': '/images/products/surti-locho.webp',
+  fafda: '/images/products/gobapuri.webp',
+  'loya-khaman': '/images/products/idli-idla.webp',
+  dahiwada: '/images/products/dalwada.webp',
+  'guvar-papdi': '/images/products/bhajiya.webp',
+  'nylon-khaman': '/images/products/idli-idla.webp',
+  'chora-fali': '/images/products/bhajiya.webp',
+  'chatni-kadhi': '/images/products/khichu.webp',
+  'papad-plain': '/images/products/khatawada.webp',
+  'dahi-rajwadi': '/images/products/khichu.webp',
+  'dahi-sharbati': '/images/products/khichu.webp',
+  'dahi-amrutkumbh': '/images/products/khichu.webp',
+  'dahi-mego': '/images/products/khichu.webp',
+  'dahi-rasamwadi': '/images/products/khichu.webp',
+  'idliyo-bulk': '/images/products/idli-idla.webp',
 };
+
+function productImageUrl(product: { id: string; imageUrl?: string }, existingUrl?: string | null) {
+  return existingUrl || PACKSHOT_IMAGES[product.id] || product.imageUrl || null;
+}
+
+function productWriteData(p: (typeof PRODUCTS)[number], existingImageUrl?: string | null) {
+  const packSizes = p.packSizes.map((pack) => ({
+    ...pack,
+    stock: pack.isDefault ? p.stockCount : pack.stock ?? 0,
+  }));
+  const json = (value: unknown) => JSON.parse(JSON.stringify(value));
+  return {
+    slug: p.slug,
+    name: p.name,
+    gujaratiName: p.gujaratiName,
+    hindiName: p.hindiName ?? null,
+    category: p.category,
+    categoryName: p.categoryName,
+    tagline: p.tagline,
+    description: p.description,
+    culinaryStory: p.culinaryStory,
+    heroColor: p.heroColor,
+    accentColor: p.accentColor,
+    badgeColor: p.badgeColor ?? null,
+    packSizes: json(packSizes),
+    defaultWeight: p.defaultWeight,
+    defaultPrice: p.defaultPrice,
+    compareAtPrice: p.compareAtPrice ?? null,
+    rating: p.rating,
+    reviewCount: p.reviewCount,
+    makesText: p.makesText,
+    badges: json(p.badges),
+    ingredients: json(p.ingredients),
+    verifiedNutrition: json(p.verifiedNutrition),
+    preparationSteps: json(p.preparationSteps),
+    cookingTimeMinutes: p.cookingTimeMinutes,
+    difficulty: p.difficulty,
+    servingSuggestion: p.servingSuggestion,
+    pairingChutney: p.pairingChutney,
+    allergens: json(p.allergens),
+    shelfLife: p.shelfLife,
+    moodTags: json(p.moodTags),
+    isBestseller: p.isBestseller ?? false,
+    isFeatured: p.isFeatured ?? false,
+    isNew: p.isNew ?? false,
+    inStock: p.inStock,
+    stockCount: p.stockCount,
+    imageUrl: productImageUrl(p, existingImageUrl),
+  };
+}
 
 async function main() {
   for (const [sortOrder, category] of CATEGORIES.entries()) {
@@ -75,53 +139,16 @@ async function main() {
   }
 
   for (const p of PRODUCTS) {
-    const packSizes = p.packSizes.map((pack) => ({
-      ...pack,
-      stock: pack.isDefault ? p.stockCount : 0,
-    }));
+    const existing = await prisma.product.findUnique({
+      where: { id: p.id },
+      select: { imageUrl: true },
+    });
+    const data = productWriteData(p, existing?.imageUrl);
 
     await prisma.product.upsert({
       where: { id: p.id },
-      update: {},
-      create: {
-        id: p.id,
-        slug: p.slug,
-        name: p.name,
-        gujaratiName: p.gujaratiName,
-        hindiName: p.hindiName ?? null,
-        category: p.category,
-        categoryName: p.categoryName,
-        tagline: p.tagline,
-        description: p.description,
-        culinaryStory: p.culinaryStory,
-        heroColor: p.heroColor,
-        accentColor: p.accentColor,
-        badgeColor: p.badgeColor ?? null,
-        packSizes: JSON.parse(JSON.stringify(packSizes)),
-        defaultWeight: p.defaultWeight,
-        defaultPrice: p.defaultPrice,
-        compareAtPrice: p.compareAtPrice ?? null,
-        rating: p.rating,
-        reviewCount: p.reviewCount,
-        makesText: p.makesText,
-        badges: JSON.parse(JSON.stringify(p.badges)),
-        ingredients: JSON.parse(JSON.stringify(p.ingredients)),
-        verifiedNutrition: JSON.parse(JSON.stringify(p.verifiedNutrition)),
-        preparationSteps: JSON.parse(JSON.stringify(p.preparationSteps)),
-        cookingTimeMinutes: p.cookingTimeMinutes,
-        difficulty: p.difficulty,
-        servingSuggestion: p.servingSuggestion,
-        pairingChutney: p.pairingChutney,
-        allergens: JSON.parse(JSON.stringify(p.allergens)),
-        shelfLife: p.shelfLife,
-        moodTags: JSON.parse(JSON.stringify(p.moodTags)),
-        isBestseller: p.isBestseller ?? false,
-        isFeatured: p.isFeatured ?? false,
-        isNew: p.isNew ?? false,
-        inStock: p.inStock,
-        stockCount: p.stockCount,
-        imageUrl: PACKSHOT_IMAGES[p.id] ?? null,
-      },
+      update: data,
+      create: { id: p.id, ...data },
     });
   }
 
