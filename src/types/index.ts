@@ -130,6 +130,8 @@ export interface Recipe {
   productId: string;
   extraProductIds?: string[];
   productName: string;
+  productSlug?: string;
+  published?: boolean;
   imageUrl: string;
   heroDishColor: string;
   prepTime: string;

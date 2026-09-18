@@ -13,6 +13,7 @@ import {
   LogOut,
   ExternalLink,
   Layers,
+  ChefHat,
 } from 'lucide-react';
 
 const NAV = [
@@ -20,6 +21,7 @@ const NAV = [
   { href: '/admin/hero', label: 'Hero images', icon: ImageIcon },
   { href: '/admin/offers', label: 'Offers', icon: Megaphone },
   { href: '/admin/products', label: 'Products', icon: Package },
+  { href: '/admin/recipes', label: 'Recipes', icon: ChefHat },
   { href: '/admin/combos', label: 'Combos', icon: Layers },
   { href: '/admin/orders', label: 'Orders', icon: ShoppingBag },
   { href: '/admin/coupons', label: 'Coupons', icon: Ticket },
@@ -92,7 +94,7 @@ export function AdminChrome({ children }: { children: React.ReactNode }) {
             ))}
           </div>
         </div>
-        <main className="flex-1 p-4 sm:p-8 max-w-6xl w-full mx-auto">{children}</main>
+        <main className={`flex-1 p-4 sm:p-8 w-full mx-auto ${pathname.startsWith('/admin/recipes/') ? 'max-w-[1400px]' : 'max-w-6xl'}`}>{children}</main>
       </div>
     </div>
   );

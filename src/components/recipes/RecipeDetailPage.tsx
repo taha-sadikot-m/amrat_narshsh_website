@@ -19,7 +19,6 @@ import {
   Users,
 } from 'lucide-react';
 import type { Recipe } from '../../types';
-import { getRelatedRecipes } from '../../data/recipes';
 import { ProductPackshot } from '../../data/brandAssets';
 import { useStore } from '../../context/StoreContext';
 import { useCart } from '../../context/CartContext';
@@ -35,10 +34,9 @@ function SectionHeading({ icon: Icon, children }: { icon: LucideIcon; children: 
   );
 }
 
-export const RecipeDetailPage: React.FC<{ recipe: Recipe }> = ({ recipe }) => {
+export const RecipeDetailPage: React.FC<{ recipe: Recipe; related?: Recipe[] }> = ({ recipe, related = [] }) => {
   const { products, showToast, navigateTo } = useStore();
   const { addItem } = useCart();
-  const related = getRelatedRecipes(recipe);
   const mixIds = [recipe.productId, ...(recipe.extraProductIds ?? [])];
   const mixes = mixIds
     .map((id) => products.find((product) => product.id === id))

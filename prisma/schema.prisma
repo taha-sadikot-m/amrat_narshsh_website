@@ -56,6 +56,7 @@ model Product {
   stockCount         Int     @default(0)
   imageUrl           String?
   comboItems         ComboItem[]
+  recipes            RecipeProduct[]
 }
 
 model Coupon {
@@ -172,4 +173,42 @@ model ComboItem {
   quantity  Int     @default(1)
 
   @@unique([comboId, productId])
+}
+
+model Recipe {
+  id            String          @id
+  slug          String          @unique
+  title         String
+  gujaratiTitle String          @default("")
+  imageUrl      String          @default("")
+  heroDishColor String          @default("#D46A1E")
+  prepTime      String          @default("")
+  cookTime      String          @default("")
+  totalTime     String          @default("")
+  servings      String          @default("")
+  difficulty    String          @default("Easy")
+  category      String          @default("")
+  description   String          @default("")
+  ingredients   Json
+  steps         Json
+  chefTips      Json
+  pairing       String          @default("")
+  tags          Json
+  published     Boolean         @default(true)
+  sortOrder     Int             @default(0)
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  products      RecipeProduct[]
+}
+
+model RecipeProduct {
+  id        String  @id @default(cuid())
+  recipeId  String
+  recipe    Recipe  @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+  productId String
+  product   Product @relation(fields: [productId], references: [id], onDelete: Restrict)
+  isPrimary Boolean @default(false)
+
+  @@unique([recipeId, productId])
+  @@index([productId])
 }

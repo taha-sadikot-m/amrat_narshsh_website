@@ -15,7 +15,7 @@ import {
 import { useStore } from '../../context/StoreContext';
 import { useCart } from '../../context/CartContext';
 import { useWishlist } from '../../context/WishlistContext';
-import { Product } from '../../types';
+import { Product, Recipe } from '../../types';
 import { ProductPackshot, VegBadge } from '../../data/brandAssets';
 import { HomeProductCard } from '../home/HomeProductCard';
 import confetti from 'canvas-confetti';
@@ -23,7 +23,8 @@ import confetti from 'canvas-confetti';
 export const ProductDetailPage: React.FC<{
   product: Product;
   relatedProducts: Product[];
-}> = ({ product, relatedProducts }) => {
+  recipes?: Recipe[];
+}> = ({ product, relatedProducts, recipes = [] }) => {
   const { navigateTo, showToast } = useStore();
   const { addItem, openCart } = useCart();
   const { toggleWishlist, isInWishlist } = useWishlist();
@@ -331,6 +332,27 @@ export const ProductDetailPage: React.FC<{
           </div>
 
         </div>
+
+        {recipes.length > 0 && (
+          <div className="mb-10">
+            <h3 className="font-display mb-6 text-xl font-black text-gray-900 sm:text-2xl">Recipes</h3>
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+              {recipes.map((recipe) => (
+                <a
+                  key={recipe.id}
+                  href={`/recipes/${recipe.slug}`}
+                  className="overflow-hidden rounded-2xl border border-[#EADFCB] bg-white"
+                >
+                  <img src={recipe.imageUrl} alt="" className="h-32 w-full object-cover" />
+                  <div className="p-3">
+                    <p className="font-display text-sm font-bold text-[#3E2723]">{recipe.title}</p>
+                    <p className="mt-1 text-xs text-[#8D6E63]">{recipe.totalTime}</p>
+                  </div>
+                </a>
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* Frequently Bought Together / Related Mixes */}
         <div>

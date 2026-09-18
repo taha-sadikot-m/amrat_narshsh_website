@@ -1,9 +1,10 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useReducedMotion } from 'motion/react';
 import type { Product } from '../../types';
+import type { Recipe } from '../../types';
 import { useStore } from '../../context/StoreContext';
 import { DISH_IMAGES } from '../../data/dishImages';
 
@@ -81,14 +82,10 @@ const DISH_PANELS: DishPanel[] = [
   },
 ];
 
-const RECIPE_HREF: Record<(typeof DISH_PANELS)[number]['productId'], string> = {
-  bhajiya: '/recipes/batata-bhajiya',
-  handwa: '/recipes/dudhi-handwa',
-  'gulab-jamun': '/recipes/gulab-jamun-saffron-syrup',
-  dalwada: '/recipes/moong-dalwada',
-  khichu: '/recipes/street-style-khichu',
-  gota: '/recipes/dakor-gota',
-};
+function hrefForProduct(recipes: Recipe[], productId: string) {
+  const match = recipes.find((recipe) => recipe.productId === productId || recipe.extraProductIds?.includes(productId));
+  return match ? `/recipes/${match.slug}` : '/recipes';
+}
 
 function packPrice(product: Product): number {
   const pack = product.packSizes?.find((size) => size.isDefault) ?? product.packSizes?.[0];
@@ -99,10 +96,12 @@ function DishTile({
   panel,
   product,
   reduceMotion,
+  href,
 }: {
   panel: DishPanel;
   product: Product;
   reduceMotion: boolean;
+  href: string;
 }) {
   const [imageFailed, setImageFailed] = useState(false);
   const price = packPrice(product);
@@ -110,7 +109,7 @@ function DishTile({
   return (
     <Link
       id={`recipe-entry-${product.id}`}
-      href={RECIPE_HREF[panel.productId]}
+      href={href}
       aria-label={`Open ${panel.label} recipe`}
       className={`group relative block h-[200px] cursor-pointer overflow-hidden outline-none md:h-[220px] lg:h-full ${panel.area} ${
         panel.productId === 'bhajiya' ? 'md:h-[260px] lg:h-full' : ''
@@ -186,6 +185,14 @@ function DishTile({
 export const RecipeEntryPoint: React.FC = () => {
   const { products } = useStore();
   const reduceMotion = Boolean(useReducedMotion());
+  const [recipes, setRecipes] = useState<Recipe[]>([]);
+
+  useEffect(() => {
+    fetch('/api/recipes')
+      .then((response) => response.json())
+      .then((data) => setRecipes(data.recipes || []))
+      .catch(() => setRecipes([]));
+  }, []);
 
   const tiles = DISH_PANELS.map((panel) => ({
     panel,
@@ -210,7 +217,13 @@ export const RecipeEntryPoint: React.FC = () => {
 
       <div className="mx-auto grid w-full max-w-[1280px] grid-cols-1 grid-rows-none gap-[3px] md:grid-cols-2 md:gap-1 lg:grid-cols-[55fr_25fr_20fr] lg:grid-rows-[340px_280px] lg:gap-1">
         {tiles.map(({ panel, product }) => (
-          <DishTile key={panel.productId} panel={panel} product={product} reduceMotion={reduceMotion} />
+          <DishTile
+            key={panel.productId}
+            panel={panel}
+            product={product}
+            reduceMotion={reduceMotion}
+            href={hrefForProduct(recipes, panel.productId)}
+          />
         ))}
       </div>
 

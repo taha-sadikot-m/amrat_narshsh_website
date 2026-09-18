@@ -1,5 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 import { CATEGORIES, PRODUCTS } from '../src/data/products';
+import { RECIPES } from '../src/data/recipes';
 
 const prisma = new PrismaClient();
 
@@ -254,8 +255,49 @@ async function main() {
     });
   }
 
+  for (const [index, recipe] of RECIPES.entries()) {
+    const productIds = [recipe.productId, ...(recipe.extraProductIds ?? [])].filter(Boolean);
+    const json = (value: unknown) => JSON.parse(JSON.stringify(value));
+    const data = {
+      slug: recipe.slug,
+      title: recipe.title,
+      gujaratiTitle: recipe.gujaratiTitle,
+      imageUrl: recipe.imageUrl,
+      heroDishColor: recipe.heroDishColor,
+      prepTime: recipe.prepTime,
+      cookTime: recipe.cookTime,
+      totalTime: recipe.totalTime,
+      servings: recipe.servings,
+      difficulty: recipe.difficulty,
+      category: recipe.category,
+      description: recipe.description,
+      ingredients: json(recipe.ingredients),
+      steps: json(recipe.steps),
+      chefTips: json(recipe.chefTips),
+      pairing: recipe.pairing,
+      tags: json(recipe.tags),
+      published: true,
+      sortOrder: index,
+    };
+    await prisma.recipe.upsert({
+      where: { id: recipe.id },
+      update: data,
+      create: { id: recipe.id, ...data },
+    });
+    await prisma.recipeProduct.deleteMany({ where: { recipeId: recipe.id } });
+    if (productIds.length) {
+      await prisma.recipeProduct.createMany({
+        data: productIds.map((productId, productIndex) => ({
+          recipeId: recipe.id,
+          productId,
+          isPrimary: productIndex === 0,
+        })),
+      });
+    }
+  }
+
   console.log(
-    `Seeded missing records: ${PRODUCTS.length} products, ${CATEGORIES.length} categories, ${COUPONS.length} coupons, ${OFFERS.length} offers, ${COMBOS.length} combos, ${HERO_SLIDES.length} hero slides, and hero settings.`,
+    `Seeded missing records: ${PRODUCTS.length} products, ${CATEGORIES.length} categories, ${COUPONS.length} coupons, ${OFFERS.length} offers, ${COMBOS.length} combos, ${HERO_SLIDES.length} hero slides, ${RECIPES.length} recipes, and hero settings.`,
   );
 }
 
