@@ -4,21 +4,26 @@ import {
   createOrder,
   markPaymentSetupFailed,
   OrderInputError,
-  priceOrder,
 } from '@/lib/order-service';
 import { createRazorpayClient, getRazorpayCredentials } from '@/lib/razorpay';
+import { requireCustomerApi } from '@/lib/customer-auth';
+import { priceCustomerOrder } from '@/lib/checkout-customer';
 
 export async function POST(request: Request) {
+  const { customer, error } = await requireCustomerApi();
+  if (error || !customer) return error;
+
   const body = await request.json().catch(() => null);
   let localOrderId: string | null = null;
 
   try {
-    const quote = await priceOrder(body);
+    const quote = await priceCustomerOrder(body, customer);
     const localOrder = await createOrder(quote, {
       paymentMethod: 'razorpay',
       status: 'Awaiting Payment',
       paymentStatus: 'Pending',
       adjustInventory: false,
+      customerId: customer.id,
     });
     localOrderId = localOrder.id;
 
@@ -41,15 +46,20 @@ export async function POST(request: Request) {
       currency: razorpayOrder.currency,
       name: 'Amrat Narsih',
       description: `Order ${order.id}`,
+      prefill: {
+        name: quote.address.fullName,
+        email: quote.address.email,
+        contact: quote.address.phone,
+      },
     });
-  } catch (error) {
+  } catch (caught) {
     if (localOrderId) {
       await markPaymentSetupFailed(localOrderId).catch(() => undefined);
     }
-    if (error instanceof OrderInputError) {
-      return NextResponse.json({ error: error.message }, { status: error.status });
+    if (caught instanceof OrderInputError) {
+      return NextResponse.json({ error: caught.message }, { status: caught.status });
     }
-    console.error('Razorpay order setup failed', error);
+    console.error('Razorpay order setup failed', caught);
     return NextResponse.json(
       { error: 'Could not start Razorpay Test Mode checkout. Please try again.' },
       { status: 500 },

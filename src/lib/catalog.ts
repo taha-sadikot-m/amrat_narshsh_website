@@ -1,7 +1,8 @@
 import type { Category as DbCategory, Product as DbProduct } from '@prisma/client';
 import type { Category, Product, PublicCombo } from '../types';
-import { compareByFeatured } from './home-catalog';
 import { prisma } from './prisma';
+import { getHomeMerch } from './home-merch';
+import { compareByFeaturedIds } from './home-catalog';
 
 export function mapDbProduct(row: DbProduct): Product {
   return {
@@ -80,7 +81,8 @@ export async function getProducts(query: ProductQuery = {}): Promise<Product[]> 
     return true;
   });
 
-  return [...filtered].sort(compareByFeatured);
+  const merch = await getHomeMerch();
+  return [...filtered].sort((a, b) => compareByFeaturedIds(merch.featuredIds, a, b));
 }
 
 export async function getProductBySlug(slug: string): Promise<Product | null> {
@@ -95,7 +97,7 @@ export async function getProductBySlug(slug: string): Promise<Product | null> {
 
 export function mapDbCategory(row: DbCategory): Category {
   return {
-    id: row.id as Category['id'],
+    id: row.id,
     name: row.name,
     gujaratiName: row.gujaratiName,
     description: row.description,

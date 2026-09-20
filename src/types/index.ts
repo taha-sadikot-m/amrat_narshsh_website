@@ -1,7 +1,7 @@
-export type ProductCategory = 'instant-mixes' | 'traditional-favourites' | 'sweet-moments';
+export type ProductCategory = string;
 
 export interface Category {
-  id: ProductCategory;
+  id: string;
   name: string;
   gujaratiName: string;
   description: string;
@@ -92,6 +92,28 @@ export interface Product {
   imageUrl?: string;
 }
 
+export type HomeMerchConfig = {
+  featuredIds: string[];
+  bestsellers: string[];
+  arrivals: string[];
+  festival: string[];
+};
+
+export type HeroSlidePublic = {
+  id: string;
+  productId: string | null;
+  desktopImageUrl: string;
+  mobileImageUrl: string;
+  altText: string;
+  sortOrder: number;
+};
+
+export type HeroCarouselPublic = {
+  overlayOpacity: number;
+  autoplayIntervalMs: number;
+  slides: HeroSlidePublic[];
+};
+
 export interface PublicComboItem {
   productId: string;
   quantity: number;
@@ -166,6 +188,13 @@ export interface CartItem {
   comboUnitQty?: number;
 }
 
+export interface CustomerPublic {
+  id: string;
+  phone: string;
+  name: string | null;
+  email: string | null;
+}
+
 export interface Coupon {
   code: string;
   discountPercentage: number;
@@ -225,6 +254,7 @@ export type PageView =
   | 'faq'
   | 'cart'
   | 'checkout'
+  | 'login'
   | 'account'
   | 'order-tracking'
   | 'privacy'

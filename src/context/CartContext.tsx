@@ -21,75 +21,18 @@ interface CartContextType {
   freeShippingThreshold: number;
   freeShippingProgress: number;
   appliedCoupon: Coupon | null;
-  applyCoupon: (code: string) => { success: boolean; message: string };
+  applyCoupon: (code: string) => Promise<{ success: boolean; message: string }>;
   removeCoupon: () => void;
   isCartOpen: boolean;
   openCart: () => void;
   closeCart: () => void;
 }
 
-const AVAILABLE_COUPONS: Record<string, Coupon> = {
-  GUJARAT10: {
-    code: 'GUJARAT10',
-    discountPercentage: 10,
-    minOrderValue: 200,
-    description: '10% OFF on all Gujarati Instant Mixes',
-  },
-  HERITAGE1956: {
-    code: 'HERITAGE1956',
-    discountPercentage: 15,
-    minOrderValue: 499,
-    description: '15% OFF on celebration orders above ₹499',
-  },
-  TASTEOFHOME: {
-    code: 'TASTEOFHOME',
-    discountPercentage: 20,
-    minOrderValue: 799,
-    description: '20% OFF on family pantry orders above ₹799',
-  },
-};
-
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
 const CART_STORAGE_KEY = 'amrat_narsih_cart_v1';
 const COUPON_STORAGE_KEY = 'amrat_narsih_coupon_v1';
 const FREE_SHIPPING_THRESHOLD = 499;
-
-const DEMO_CART: CartItem[] = [
-  {
-    id: 'bhajiya-500g',
-    productId: 'bhajiya',
-    name: 'Bhajiya Instant Mix',
-    gujaratiName: 'ભજીયા ઇન્સ્ટન્ટ મિક્સ',
-    weight: '500g',
-    price: 120,
-    quantity: 2,
-    heroColor: '#C90018',
-    makesText: 'Crispy & Golden Platter',
-  },
-  {
-    id: 'dalwada-200g',
-    productId: 'dalwada',
-    name: 'Dalwada Instant Mix',
-    gujaratiName: 'દાલવડા ઇન્સ્ટન્ટ મિક્સ',
-    weight: '200g',
-    price: 65,
-    quantity: 1,
-    heroColor: '#7C4A27',
-    makesText: 'Makes 21 WADA',
-  },
-  {
-    id: 'surti-locho-200g',
-    productId: 'surti-locho',
-    name: 'Surti Locho Instant Mix',
-    gujaratiName: 'સુરતી લોચો ઇન્સ્ટન્ટ મિક્સ',
-    weight: '200g',
-    price: 65,
-    quantity: 1,
-    heroColor: '#F57C00',
-    makesText: 'Pioneer Taste of Surat',
-  },
-];
 
 export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [items, setItems] = useState<CartItem[]>([]);
@@ -99,7 +42,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
   useEffect(() => {
     try {
       const saved = localStorage.getItem(CART_STORAGE_KEY);
-      setItems(saved ? JSON.parse(saved) : DEMO_CART);
+      setItems(saved ? JSON.parse(saved) : []);
       const savedCoupon = localStorage.getItem(COUPON_STORAGE_KEY);
       setAppliedCoupon(savedCoupon ? JSON.parse(savedCoupon) : null);
     } catch {
@@ -222,21 +165,24 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setAppliedCoupon(null);
   };
 
-  const applyCoupon = (rawCode: string) => {
+  const applyCoupon = async (rawCode: string) => {
     const code = rawCode.trim().toUpperCase();
-    const coupon = AVAILABLE_COUPONS[code];
-    if (!coupon) {
-      return { success: false, message: 'Invalid coupon code. Try GUJARAT10 or HERITAGE1956.' };
-    }
     const currentSubtotal = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
-    if (currentSubtotal < coupon.minOrderValue) {
-      return {
-        success: false,
-        message: `Add items worth ₹${coupon.minOrderValue - currentSubtotal} more to use ${code}.`,
-      };
+    try {
+      const response = await fetch('/api/coupons/validate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code, subtotal: currentSubtotal }),
+      });
+      const data = await response.json();
+      if (!data.success || !data.coupon) {
+        return { success: false, message: data.message || 'Invalid coupon code.' };
+      }
+      setAppliedCoupon(data.coupon);
+      return { success: true, message: data.message || 'Coupon applied.' };
+    } catch {
+      return { success: false, message: 'Could not validate coupon. Try again.' };
     }
-    setAppliedCoupon(coupon);
-    return { success: true, message: `Coupon applied! ${coupon.description}` };
   };
 
   const removeCoupon = () => {

@@ -8,13 +8,14 @@ datasource db {
 }
 
 model Category {
-  id            String @id
+  id            String    @id
   name          String
   gujaratiName  String
   description   String
   color         String
   tagline       String
-  sortOrder     Int    @default(0)
+  sortOrder     Int       @default(0)
+  products      Product[]
 }
 
 model Product {
@@ -24,6 +25,8 @@ model Product {
   gujaratiName       String
   hindiName          String?
   category           String
+  categoryId         String  @default("instant-mixes")
+  categoryRel        Category @relation(fields: [categoryId], references: [id], onDelete: Restrict)
   categoryName       String
   tagline            String
   description        String
@@ -57,6 +60,8 @@ model Product {
   imageUrl           String?
   comboItems         ComboItem[]
   recipes            RecipeProduct[]
+
+  @@index([categoryId])
 }
 
 model Coupon {
@@ -64,6 +69,47 @@ model Coupon {
   discountPercentage Int
   minOrderValue      Int
   description        String
+}
+
+model HomeMerch {
+  id           String   @id @default("default")
+  featuredIds  Json
+  bestsellers  Json
+  arrivals     Json
+  festival     Json
+  updatedAt    DateTime @updatedAt
+}
+
+model Customer {
+  id          String    @id @default(cuid())
+  firebaseUid String    @unique
+  phone       String    @unique
+  name        String?
+  email       String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  addresses   Address[]
+  orders      Order[]
+}
+
+model Address {
+  id           String   @id @default(cuid())
+  customerId   String
+  customer     Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  label        String   @default("Home")
+  fullName     String
+  email        String
+  phone        String
+  addressLine1 String
+  addressLine2 String?
+  city         String
+  state        String
+  pincode      String
+  isDefault    Boolean  @default(false)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([customerId])
 }
 
 model Order {
@@ -90,10 +136,14 @@ model Order {
   city              String
   state             String
   pincode           String
+  customerId        String?
+  customer          Customer?   @relation(fields: [customerId], references: [id], onDelete: SetNull)
   items             OrderItem[]
 
   @@index([razorpayOrderId])
   @@index([razorpayPaymentId])
+  @@index([customerId])
+  @@index([phone])
 }
 
 model OrderItem {

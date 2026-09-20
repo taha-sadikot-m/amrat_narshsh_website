@@ -15,7 +15,7 @@ import { ProductGridSkeleton } from '../common/ProductSkeleton';
 import { HomeProductCard } from '../home/HomeProductCard';
 import { ProductListView } from './ProductListView';
 import { SortOptionId, Product } from '../../types';
-import { featuredRank } from '../../lib/home-catalog';
+import { compareByFeaturedIds } from '../../lib/home-catalog';
 
 type PriceTier = 'all' | 'under-100' | '100-140' | 'above-140';
 
@@ -29,6 +29,7 @@ export const ShopPage: React.FC<{ products?: Product[] }> = ({ products = [] }) 
     setSearchQuery,
     showToast,
     categories,
+    homeMerch,
   } = useStore();
 
   // Local view and filter states
@@ -82,7 +83,7 @@ export const ShopPage: React.FC<{ products?: Product[] }> = ({ products = [] }) 
     }).sort((a, b) => {
       // Sort logic
       if (sortBy === 'popularity') {
-        const rank = featuredRank(a.id) - featuredRank(b.id);
+        const rank = compareByFeaturedIds(homeMerch.featuredIds, a, b);
         if (rank !== 0) return rank;
         const scoreA = (a.isBestseller ? 1000 : 0) + a.reviewCount * a.rating;
         const scoreB = (b.isBestseller ? 1000 : 0) + b.reviewCount * b.rating;
@@ -98,17 +99,16 @@ export const ShopPage: React.FC<{ products?: Product[] }> = ({ products = [] }) 
       if (sortBy === 'name-asc') return a.name.localeCompare(b.name);
       return 0;
     });
-  }, [activeCategoryFilter, activeMoodFilter, priceTier, searchQuery, sortBy, products]);
+  }, [activeCategoryFilter, activeMoodFilter, priceTier, searchQuery, sortBy, products, homeMerch]);
 
   // Counts for Category Badges
   const categoryCounts = useMemo(() => {
-    return {
-      all: products.length,
-      'instant-mixes': products.filter((p) => p.category === 'instant-mixes').length,
-      'traditional-favourites': products.filter((p) => p.category === 'traditional-favourites').length,
-      'sweet-moments': products.filter((p) => p.category === 'sweet-moments').length,
-    };
-  }, []);
+    const counts: Record<string, number> = { all: products.length };
+    for (const category of categories) {
+      counts[category.id] = products.filter((p) => p.category === category.id).length;
+    }
+    return counts;
+  }, [products, categories]);
 
   // Check if any filter is actively applied
   const isAnyFilterActive =
@@ -251,71 +251,29 @@ export const ShopPage: React.FC<{ products?: Product[] }> = ({ products = [] }) 
                   </span>
                 </button>
 
-                {/* Instant Mixes */}
+                {categories.map((category) => (
                 <button
-                  id="category-filter-instant-mixes"
-                  onClick={() => setActiveCategoryFilter('instant-mixes')}
+                  key={category.id}
+                  id={`category-filter-${category.id}`}
+                  onClick={() => setActiveCategoryFilter(category.id)}
                   className={`px-4 py-2 rounded-2xl text-xs font-black transition-all flex items-center space-x-1.5 cursor-pointer ${
-                    activeCategoryFilter === 'instant-mixes'
+                    activeCategoryFilter === category.id
                       ? 'bg-[#C90018] text-white shadow-xs'
                       : 'bg-[#FCFAF5] text-gray-700 hover:bg-[#FFF8EC] border border-[#EADFCB]'
                   }`}
                 >
-                  <span>Instant Mixes</span>
+                  <span>{category.name}</span>
                   <span
                     className={`text-[10px] px-1.5 py-0.2 rounded-full font-bold ${
-                      activeCategoryFilter === 'instant-mixes'
+                      activeCategoryFilter === category.id
                         ? 'bg-white/20 text-white'
                         : 'bg-gray-200/70 text-gray-600'
                     }`}
                   >
-                    {categoryCounts['instant-mixes']}
+                    {categoryCounts[category.id] ?? 0}
                   </span>
                 </button>
-
-                {/* Traditional Favourites */}
-                <button
-                  id="category-filter-traditional-favourites"
-                  onClick={() => setActiveCategoryFilter('traditional-favourites')}
-                  className={`px-4 py-2 rounded-2xl text-xs font-black transition-all flex items-center space-x-1.5 cursor-pointer ${
-                    activeCategoryFilter === 'traditional-favourites'
-                      ? 'bg-[#C90018] text-white shadow-xs'
-                      : 'bg-[#FCFAF5] text-gray-700 hover:bg-[#FFF8EC] border border-[#EADFCB]'
-                  }`}
-                >
-                  <span>Traditional Favourites</span>
-                  <span
-                    className={`text-[10px] px-1.5 py-0.2 rounded-full font-bold ${
-                      activeCategoryFilter === 'traditional-favourites'
-                        ? 'bg-white/20 text-white'
-                        : 'bg-gray-200/70 text-gray-600'
-                    }`}
-                  >
-                    {categoryCounts['traditional-favourites']}
-                  </span>
-                </button>
-
-                {/* Sweet Moments */}
-                <button
-                  id="category-filter-sweet-moments"
-                  onClick={() => setActiveCategoryFilter('sweet-moments')}
-                  className={`px-4 py-2 rounded-2xl text-xs font-black transition-all flex items-center space-x-1.5 cursor-pointer ${
-                    activeCategoryFilter === 'sweet-moments'
-                      ? 'bg-[#C90018] text-white shadow-xs'
-                      : 'bg-[#FCFAF5] text-gray-700 hover:bg-[#FFF8EC] border border-[#EADFCB]'
-                  }`}
-                >
-                  <span>Sweet Moments</span>
-                  <span
-                    className={`text-[10px] px-1.5 py-0.2 rounded-full font-bold ${
-                      activeCategoryFilter === 'sweet-moments'
-                        ? 'bg-white/20 text-white'
-                        : 'bg-gray-200/70 text-gray-600'
-                    }`}
-                  >
-                    {categoryCounts['sweet-moments']}
-                  </span>
-                </button>
+                ))}
               </div>
             </div>
           </div>

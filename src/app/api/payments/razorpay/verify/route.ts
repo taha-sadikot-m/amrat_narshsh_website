@@ -5,6 +5,8 @@ import {
   OrderInputError,
 } from '@/lib/order-service';
 import { getRazorpayCredentials } from '@/lib/razorpay';
+import { requireCustomerApi } from '@/lib/customer-auth';
+import { prisma } from '@/lib/prisma';
 
 const clean = (value: unknown) => String(value ?? '').trim();
 
@@ -18,6 +20,9 @@ function signaturesMatch(expected: string, received: string): boolean {
 }
 
 export async function POST(request: Request) {
+  const { customer, error } = await requireCustomerApi();
+  if (error || !customer) return error;
+
   const body = await request.json().catch(() => null);
   const localOrderId = clean(body?.localOrderId);
   const razorpayOrderId = clean(body?.razorpay_order_id);
@@ -26,6 +31,14 @@ export async function POST(request: Request) {
 
   if (!localOrderId || !razorpayOrderId || !razorpayPaymentId || !razorpaySignature) {
     return NextResponse.json({ error: 'Incomplete Razorpay payment response.' }, { status: 400 });
+  }
+
+  const owned = await prisma.order.findFirst({
+    where: { id: localOrderId, customerId: customer.id },
+    select: { id: true },
+  });
+  if (!owned) {
+    return NextResponse.json({ error: 'Order not found.' }, { status: 404 });
   }
 
   try {

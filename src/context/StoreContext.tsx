@@ -2,8 +2,9 @@
 
 import React, { createContext, useContext, useState, useCallback } from 'react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { PageView, Product, MoodTag, ProductCategory, DietaryFilterId, Category, PublicCombo } from '../types';
+import { PageView, Product, MoodTag, ProductCategory, DietaryFilterId, Category, PublicCombo, HomeMerchConfig, HeroCarouselPublic } from '../types';
 import { hrefForPage, pageFromPathname, type NavigateParams } from '../lib/routes';
+import { DEFAULT_HOME_MERCH } from '../lib/home-catalog';
 
 interface ToastInfo {
   id: string;
@@ -40,6 +41,8 @@ interface StoreContextType {
   trackingOrderId: string | null;
   setTrackingOrderId: (id: string | null) => void;
   currentParams: { orderId?: string; productId?: string };
+  homeMerch: HomeMerchConfig;
+  hero: HeroCarouselPublic | null;
 }
 
 const StoreContext = createContext<StoreContextType | undefined>(undefined);
@@ -48,7 +51,9 @@ export const StoreProvider: React.FC<{
   children: React.ReactNode;
   products: Product[];
   categories: Category[];
-}> = ({ children, products, categories }) => {
+  homeMerch?: HomeMerchConfig;
+  hero?: HeroCarouselPublic | null;
+}> = ({ children, products, categories, homeMerch = DEFAULT_HOME_MERCH, hero = null }) => {
   const pathname = usePathname() ?? '/';
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -144,6 +149,8 @@ export const StoreProvider: React.FC<{
           orderId: trackingOrderId ?? undefined,
           productId: selectedProductId ?? undefined,
         },
+        homeMerch,
+        hero,
       }}
     >
       {children}

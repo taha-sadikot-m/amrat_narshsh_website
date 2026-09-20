@@ -2,6 +2,8 @@ import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
 import { AppProviders } from '../components/AppProviders';
 import { getCategories, getProducts } from '../lib/catalog';
+import { getHomeMerch } from '../lib/home-merch';
+import { getHeroCarousel } from '../lib/site-content';
 import '../index.css';
 
 export const metadata: Metadata = {
@@ -17,7 +19,12 @@ export const metadata: Metadata = {
 };
 
 export default async function RootLayout({ children }: { children: ReactNode }) {
-  const [products, categories] = await Promise.all([getProducts(), getCategories()]);
+  const [products, categories, homeMerch, hero] = await Promise.all([
+    getProducts(),
+    getCategories(),
+    getHomeMerch(),
+    getHeroCarousel().catch(() => null),
+  ]);
 
   return (
     <html lang="en" className="scroll-smooth">
@@ -30,7 +37,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
         />
       </head>
       <body className="bg-[#FFFBF5] text-[#3E2723] font-sans antialiased selection:bg-[#D46A1E] selection:text-white">
-        <AppProviders products={products} categories={categories}>{children}</AppProviders>
+        <AppProviders products={products} categories={categories} homeMerch={homeMerch} hero={hero}>{children}</AppProviders>
       </body>
     </html>
   );

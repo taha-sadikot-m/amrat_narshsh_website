@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   ShoppingBag,
   ShieldCheck,
@@ -17,6 +17,9 @@ import {
 } from 'lucide-react';
 import { useStore } from '../../context/StoreContext';
 import { useCart } from '../../context/CartContext';
+import { useAuth } from '../../context/AuthContext';
+import { PhoneOtpForm } from '../auth/PhoneOtpForm';
+import { indianPhoneDigits } from '../../lib/phone';
 import { ProductPackshot, VegBadge, Since1956Badge } from '../../data/brandAssets';
 import confetti from 'canvas-confetti';
 
@@ -72,18 +75,23 @@ function loadRazorpayCheckout(): Promise<void> {
 export const CheckoutPage: React.FC = () => {
   const { navigateTo, showToast, products } = useStore();
   const { items, subtotal, shipping, discount, total, appliedCoupon, applyCoupon, removeCoupon, clearCart } = useCart();
+  const { customer, loading: authLoading } = useAuth();
 
-  // Form State
   const [formData, setFormData] = useState({
-    firstName: 'Kavita',
-    lastName: 'Patel',
-    email: 'kavita.patel@example.com',
-    phone: '9876543210',
-    address: 'B-402, Shivalik High Street, Near Judges Bungalow Cross Road, Bodakdev',
-    city: 'Ahmedabad',
+    firstName: '',
+    lastName: '',
+    email: '',
+    phone: '',
+    address: '',
+    city: '',
     state: 'Gujarat',
-    pincode: '380054',
+    pincode: '',
   });
+  const [addresses, setAddresses] = useState<
+    { id: string; label: string; fullName: string; email: string; addressLine1: string; city: string; state: string; pincode: string; isDefault: boolean }[]
+  >([]);
+  const [addressId, setAddressId] = useState<string>('');
+  const [saveAddress, setSaveAddress] = useState(true);
 
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('razorpay');
   const [couponInput, setCouponInput] = useState('');
@@ -94,10 +102,9 @@ export const CheckoutPage: React.FC = () => {
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
-  const handleCouponSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleCouponSubmit = async () => {
     if (!couponInput.trim()) return;
-    const res = applyCoupon(couponInput.trim());
+    const res = await applyCoupon(couponInput.trim());
     if (res.success) {
       showToast('Coupon Applied', res.message, 'success');
       setCouponInput('');
@@ -105,6 +112,43 @@ export const CheckoutPage: React.FC = () => {
       showToast('Invalid Coupon', res.message, 'warning');
     }
   };
+
+  useEffect(() => {
+    if (!customer) {
+      setAddresses([]);
+      setAddressId('');
+      return;
+    }
+    const parts = (customer.name ?? '').split(' ');
+    setFormData((prev) => ({
+      ...prev,
+      firstName: parts[0] || prev.firstName,
+      lastName: parts.slice(1).join(' ') || prev.lastName,
+      email: customer.email || prev.email,
+      phone: indianPhoneDigits(customer.phone) ?? prev.phone,
+    }));
+    void fetch('/api/me/addresses', { credentials: 'include' })
+      .then((response) => response.json())
+      .then((data) => {
+        const list = data.addresses ?? [];
+        setAddresses(list);
+        const def = list.find((row: { isDefault: boolean }) => row.isDefault) ?? list[0];
+        if (def) {
+          setAddressId(def.id);
+          const nameParts = String(def.fullName).split(' ');
+          setFormData((prev) => ({
+            ...prev,
+            firstName: nameParts[0] || prev.firstName,
+            lastName: nameParts.slice(1).join(' ') || prev.lastName,
+            email: def.email || prev.email,
+            address: def.addressLine1,
+            city: def.city,
+            state: def.state,
+            pincode: def.pincode,
+          }));
+        }
+      });
+  }, [customer]);
 
   const checkoutPayload = (method: PaymentMethod | 'whatsapp') => ({
     items: items.map((item) => ({
@@ -115,6 +159,8 @@ export const CheckoutPage: React.FC = () => {
     })),
     paymentMethod: method,
     couponCode: appliedCoupon?.code ?? null,
+    addressId: addressId || undefined,
+    saveAddress: !addressId && saveAddress,
     address: {
       fullName: `${formData.firstName} ${formData.lastName}`.trim(),
       email: formData.email,
@@ -169,9 +215,9 @@ export const CheckoutPage: React.FC = () => {
       description: paymentOrder.description,
       order_id: paymentOrder.razorpayOrderId,
       prefill: {
-        name: `${formData.firstName} ${formData.lastName}`.trim(),
-        email: formData.email,
-        contact: formData.phone,
+        name: paymentOrder.prefill?.name ?? `${formData.firstName} ${formData.lastName}`.trim(),
+        email: paymentOrder.prefill?.email ?? formData.email,
+        contact: paymentOrder.prefill?.contact ?? formData.phone,
       },
       notes: { localOrderId: paymentOrder.localOrderId },
       theme: { color: '#C90018' },
@@ -215,6 +261,10 @@ export const CheckoutPage: React.FC = () => {
 
   const handlePlaceOrder = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!customer) {
+      showToast('Sign in required', 'Verify your mobile number to place this order.', 'warning');
+      return;
+    }
     if (items.length === 0 || isProcessing) {
       if (items.length === 0) {
         showToast('Empty Basket', 'Please add products before checking out.', 'warning');
@@ -258,6 +308,10 @@ export const CheckoutPage: React.FC = () => {
   };
 
   const handleWhatsAppOrder = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    if (!customer) {
+      showToast('Sign in required', 'Verify your mobile number to place this order.', 'warning');
+      return;
+    }
     if (!e.currentTarget.form?.reportValidity() || items.length === 0 || isProcessing) return;
     setIsProcessing(true);
     try {
@@ -411,6 +465,24 @@ export const CheckoutPage: React.FC = () => {
                 <div className="flex items-center justify-between border-b border-gray-100 pb-3">
                   <h3 className="font-display font-bold text-base text-gray-900 flex items-center space-x-2">
                     <span className="w-6 h-6 rounded-full bg-[#C90018] text-white text-xs flex items-center justify-center font-bold">1</span>
+                    <span>Sign in with mobile</span>
+                  </h3>
+                </div>
+                {authLoading ? (
+                  <p className="text-xs text-gray-500">Checking session…</p>
+                ) : customer ? (
+                  <p className="text-sm text-gray-700">
+                    Signed in as <strong>+91 {indianPhoneDigits(customer.phone)}</strong>
+                  </p>
+                ) : (
+                  <PhoneOtpForm compact />
+                )}
+              </div>
+
+              <div className={`bg-white rounded-3xl p-6 border border-[#EADFCB] shadow-xs space-y-4 ${customer ? '' : 'pointer-events-none opacity-50'}`}>
+                <div className="flex items-center justify-between border-b border-gray-100 pb-3">
+                  <h3 className="font-display font-bold text-base text-gray-900 flex items-center space-x-2">
+                    <span className="w-6 h-6 rounded-full bg-[#C90018] text-white text-xs flex items-center justify-center font-bold">2</span>
                     <span>Contact Information</span>
                   </h3>
                   <span className="text-[11px] text-gray-400">For SMS &amp; Dispatch Updates</span>
@@ -456,6 +528,7 @@ export const CheckoutPage: React.FC = () => {
                       type="tel"
                       name="phone"
                       required
+                      readOnly
                       value={formData.phone}
                       onChange={handleInputChange}
                       className="w-full px-3.5 py-2.5 bg-[#FCFAF5] border border-[#EADFCB] rounded-xl text-xs font-medium text-gray-900 focus:outline-hidden focus:border-[#C90018]"
@@ -464,11 +537,10 @@ export const CheckoutPage: React.FC = () => {
                 </div>
               </div>
 
-              {/* 2. Delivery Address */}
-              <div className="bg-white rounded-3xl p-6 border border-[#EADFCB] shadow-xs space-y-4">
+              <div className={`bg-white rounded-3xl p-6 border border-[#EADFCB] shadow-xs space-y-4 ${customer ? '' : 'pointer-events-none opacity-50'}`}>
                 <div className="flex items-center justify-between border-b border-gray-100 pb-3">
                   <h3 className="font-display font-bold text-base text-gray-900 flex items-center space-x-2">
-                    <span className="w-6 h-6 rounded-full bg-[#C90018] text-white text-xs flex items-center justify-center font-bold">2</span>
+                    <span className="w-6 h-6 rounded-full bg-[#C90018] text-white text-xs flex items-center justify-center font-bold">3</span>
                     <span>Shipping Address</span>
                   </h3>
                   <span className="text-[11px] text-green-700 font-bold flex items-center">
@@ -478,6 +550,39 @@ export const CheckoutPage: React.FC = () => {
                 </div>
 
                 <div className="space-y-3">
+                  {addresses.length > 0 ? (
+                    <div>
+                      <label className="text-[11px] font-bold text-gray-700 block mb-1">Saved addresses</label>
+                      <select
+                        value={addressId}
+                        onChange={(event) => {
+                          const id = event.target.value;
+                          setAddressId(id);
+                          const saved = addresses.find((row) => row.id === id);
+                          if (!saved) return;
+                          const nameParts = saved.fullName.split(' ');
+                          setFormData((prev) => ({
+                            ...prev,
+                            firstName: nameParts[0] || prev.firstName,
+                            lastName: nameParts.slice(1).join(' ') || prev.lastName,
+                            email: saved.email || prev.email,
+                            address: saved.addressLine1,
+                            city: saved.city,
+                            state: saved.state,
+                            pincode: saved.pincode,
+                          }));
+                        }}
+                        className="w-full rounded-xl border border-[#EADFCB] bg-[#FCFAF5] px-3 py-2.5 text-xs font-bold"
+                      >
+                        <option value="">New address</option>
+                        {addresses.map((row) => (
+                          <option key={row.id} value={row.id}>
+                            {row.label} — {row.addressLine1}, {row.city}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  ) : null}
                   <div>
                     <label className="text-[11px] font-bold text-gray-700 block mb-1">Flat / House No. / Building / Street Address</label>
                     <input
@@ -533,14 +638,23 @@ export const CheckoutPage: React.FC = () => {
                       />
                     </div>
                   </div>
+                  {!addressId ? (
+                    <label className="flex items-center gap-2 text-xs font-bold text-gray-700">
+                      <input
+                        type="checkbox"
+                        checked={saveAddress}
+                        onChange={(event) => setSaveAddress(event.target.checked)}
+                      />
+                      Save this address to my account
+                    </label>
+                  ) : null}
                 </div>
               </div>
 
-              {/* 3. Payment Method Selection */}
-              <div className="bg-white rounded-3xl p-6 border border-[#EADFCB] shadow-xs space-y-4">
+              <div className={`bg-white rounded-3xl p-6 border border-[#EADFCB] shadow-xs space-y-4 ${customer ? '' : 'pointer-events-none opacity-50'}`}>
                 <div className="flex items-center justify-between border-b border-gray-100 pb-3">
                   <h3 className="font-display font-bold text-base text-gray-900 flex items-center space-x-2">
-                    <span className="w-6 h-6 rounded-full bg-[#C90018] text-white text-xs flex items-center justify-center font-bold">3</span>
+                    <span className="w-6 h-6 rounded-full bg-[#C90018] text-white text-xs flex items-center justify-center font-bold">4</span>
                     <span>Select Payment Option</span>
                   </h3>
                   <span className="text-[11px] text-gray-400 flex items-center">
@@ -662,7 +776,7 @@ export const CheckoutPage: React.FC = () => {
                       />
                       <button
                         type="button"
-                        onClick={handleCouponSubmit}
+                        onClick={() => void handleCouponSubmit()}
                         className="px-3.5 py-2 bg-gray-900 hover:bg-black text-white rounded-xl text-xs font-bold cursor-pointer"
                       >
                         Apply
@@ -708,7 +822,7 @@ export const CheckoutPage: React.FC = () => {
                 <button
                   id="place-order-final-btn"
                   type="submit"
-                  disabled={isProcessing}
+                  disabled={isProcessing || !customer}
                   className="w-full btn-vibrant-cta text-white py-4 rounded-2xl font-display font-black text-sm transition-all flex items-center justify-center space-x-2 cursor-pointer disabled:opacity-50"
                 >
                   {isProcessing ? (
@@ -734,7 +848,7 @@ export const CheckoutPage: React.FC = () => {
                   id="place-order-whatsapp-btn"
                   type="button"
                   onClick={handleWhatsAppOrder}
-                  disabled={isProcessing}
+                  disabled={isProcessing || !customer}
                   className="flex w-full items-center justify-center gap-2 rounded-2xl border border-[#128C4A] bg-[#25D366] py-4 font-display text-sm font-black text-white shadow-[0_8px_20px_rgba(37,211,102,0.2)] transition-colors hover:bg-[#1DB954] focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-[#128C4A] disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   <MessageCircle className="h-5 w-5" />

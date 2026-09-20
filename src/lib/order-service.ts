@@ -294,6 +294,7 @@ type CreateOrderOptions = {
   status: string;
   paymentStatus: string;
   adjustInventory: boolean;
+  customerId: string;
 };
 
 export async function createOrder(
@@ -312,6 +313,7 @@ export async function createOrder(
     return tx.order.create({
       data: {
         id,
+        customerId: options.customerId,
         status: options.status,
         paymentMethod: options.paymentMethod,
         paymentStatus: options.paymentStatus,

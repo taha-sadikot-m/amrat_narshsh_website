@@ -3,10 +3,14 @@ import {
   buildWhatsAppOrderUrl,
   createOrder,
   OrderInputError,
-  priceOrder,
 } from '@/lib/order-service';
+import { requireCustomerApi } from '@/lib/customer-auth';
+import { priceCustomerOrder } from '@/lib/checkout-customer';
 
 export async function POST(request: Request) {
+  const { customer, error } = await requireCustomerApi();
+  if (error || !customer) return error;
+
   const body = await request.json().catch(() => null);
   const paymentMethod = String(body?.paymentMethod ?? 'cod');
   if (paymentMethod !== 'cod' && paymentMethod !== 'whatsapp') {
@@ -17,13 +21,14 @@ export async function POST(request: Request) {
   }
 
   try {
-    const quote = await priceOrder(body);
+    const quote = await priceCustomerOrder(body, customer);
     const isWhatsApp = paymentMethod === 'whatsapp';
     const order = await createOrder(quote, {
       paymentMethod,
       status: isWhatsApp ? 'Awaiting WhatsApp Confirmation' : 'Processing',
       paymentStatus: isWhatsApp ? 'Pending Confirmation' : 'Cash on Delivery',
       adjustInventory: true,
+      customerId: customer.id,
     });
 
     return NextResponse.json({

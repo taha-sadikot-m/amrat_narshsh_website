@@ -15,7 +15,7 @@ export async function POST(request: Request) {
   const coupon = await prisma.coupon.findUnique({ where: { code } });
   if (!coupon) {
     return NextResponse.json(
-      { success: false, message: 'Invalid coupon code. Try GUJARAT10 or HERITAGE1956.' },
+      { success: false, message: 'Invalid coupon code.' },
       { status: 404 }
     );
   }

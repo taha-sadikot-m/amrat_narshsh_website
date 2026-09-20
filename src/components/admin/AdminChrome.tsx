@@ -14,16 +14,22 @@ import {
   ExternalLink,
   Layers,
   ChefHat,
+  LayoutList,
+  FolderTree,
+  Users,
 } from 'lucide-react';
 
 const NAV = [
   { href: '/admin', label: 'Dashboard', icon: LayoutDashboard },
+  { href: '/admin/home', label: 'Homepage', icon: LayoutList },
   { href: '/admin/hero', label: 'Hero images', icon: ImageIcon },
   { href: '/admin/offers', label: 'Offers', icon: Megaphone },
   { href: '/admin/products', label: 'Products', icon: Package },
+  { href: '/admin/categories', label: 'Categories', icon: FolderTree },
   { href: '/admin/recipes', label: 'Recipes', icon: ChefHat },
   { href: '/admin/combos', label: 'Combos', icon: Layers },
   { href: '/admin/orders', label: 'Orders', icon: ShoppingBag },
+  { href: '/admin/customers', label: 'Customers', icon: Users },
   { href: '/admin/coupons', label: 'Coupons', icon: Ticket },
   { href: '/admin/inbox', label: 'Inbox', icon: Inbox },
 ];

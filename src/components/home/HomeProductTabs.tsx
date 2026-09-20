@@ -5,7 +5,6 @@ import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 import { useStore } from '../../context/StoreContext';
 import type { Product } from '../../types';
-import { TAB_PRODUCT_IDS } from '../../lib/home-catalog';
 import { HomeProductCard } from './HomeProductCard';
 
 const TABS = [
@@ -15,9 +14,9 @@ const TABS = [
 ] as const;
 
 export const HomeProductTabs: React.FC = () => {
-  const { products } = useStore();
+  const { products, homeMerch } = useStore();
   const [tab, setTab] = useState<(typeof TABS)[number]['id']>('bestsellers');
-  const ids = TAB_PRODUCT_IDS[tab];
+  const ids = homeMerch[tab];
   const shown = ids
     .map((id) => products.find((product) => product.id === id))
     .filter((product): product is Product => Boolean(product));

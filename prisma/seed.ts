@@ -96,6 +96,7 @@ function productWriteData(p: (typeof PRODUCTS)[number], existingImageUrl?: strin
     gujaratiName: p.gujaratiName,
     hindiName: p.hindiName ?? null,
     category: p.category,
+    categoryId: p.category,
     categoryName: p.categoryName,
     tagline: p.tagline,
     description: p.description,
@@ -153,6 +154,8 @@ async function main() {
     });
   }
 
+  await prisma.$executeRawUnsafe('UPDATE "Product" SET "categoryId" = "category" WHERE "categoryId" <> "category"');
+
   for (const c of COUPONS) {
     await prisma.coupon.upsert({
       where: { code: c.code },
@@ -160,6 +163,18 @@ async function main() {
       create: c,
     });
   }
+
+  await prisma.homeMerch.upsert({
+    where: { id: 'default' },
+    update: {},
+    create: {
+      id: 'default',
+      featuredIds: ['idli-idla', 'surti-locho', 'gota', 'handwa'],
+      bestsellers: ['idli-idla', 'surti-locho', 'gota', 'handwa', 'bhajiya'],
+      arrivals: ['gobapuri', 'khichu', 'khatawada', 'farali-atta', 'surti-locho'],
+      festival: ['gulab-jamun', 'gota', 'farali-atta', 'bhajiya', 'handwa'],
+    },
+  });
 
   for (const offer of OFFERS) {
     await prisma.offer.upsert({

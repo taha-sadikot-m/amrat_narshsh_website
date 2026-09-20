@@ -17,16 +17,27 @@ const SLIDE_BACKGROUNDS = {
 } as const;
 
 export const HomeHeroSplit: React.FC = () => {
-  const { products, showToast } = useStore();
+  const { products, showToast, hero } = useStore();
   const { addItem } = useCart();
   const reduceMotion = Boolean(useReducedMotion());
   const [index, setIndex] = useState(0);
   const [paused, setPaused] = useState(false);
 
-  const slides = SLIDE_IDS.map((id) => ({
+  const dbSlides = (hero?.slides ?? [])
+    .map((slide) => ({
+      product: products.find((item) => item.id === slide.productId) ?? products[0],
+      image: slide.desktopImageUrl || slide.mobileImageUrl,
+      key: slide.id,
+    }))
+    .filter((slide) => slide.product && slide.image);
+
+  const fallbackSlides = SLIDE_IDS.map((id) => ({
     product: products.find((item) => item.id === id),
     image: SLIDE_BACKGROUNDS[id],
+    key: id,
   })).filter((slide) => slide.product);
+
+  const slides = dbSlides.length ? dbSlides : fallbackSlides;
   const current = slides[index] ?? slides[0];
   const gobapuri = products.find((item) => item.id === 'gobapuri');
   const bhajiya = products.find((item) => item.id === 'bhajiya');
@@ -107,9 +118,9 @@ export const HomeHeroSplit: React.FC = () => {
               </Link>
             </div>
             <div className="mt-6 flex gap-2">
-              {slides.map((_, i) => (
+              {slides.map((slide, i) => (
                 <button
-                  key={i}
+                  key={slide.key}
                   type="button"
                   aria-label={`Slide ${i + 1}`}
                   onClick={() => setIndex(i)}

@@ -15,6 +15,14 @@ export function discountPercent(price: number, compareAtPrice?: number) {
   return Math.round(((compareAtPrice - price) / compareAtPrice) * 100);
 }
 
+export function compareByFeaturedIds(featuredIds: string[], a: { id: string }, b: { id: string }) {
+  const rank = (id: string) => {
+    const index = featuredIds.indexOf(id);
+    return index === -1 ? featuredIds.length : index;
+  };
+  return rank(a.id) - rank(b.id);
+}
+
 export const FEATURED_PRODUCT_IDS = ['idli-idla', 'surti-locho', 'gota', 'handwa'] as const;
 
 export function featuredRank(productId: string) {
@@ -31,3 +39,10 @@ export const TAB_PRODUCT_IDS = {
   arrivals: ['gobapuri', 'khichu', 'khatawada', 'farali-atta', 'surti-locho'],
   festival: ['gulab-jamun', 'gota', 'farali-atta', 'bhajiya', 'handwa'],
 } as const;
+
+export const DEFAULT_HOME_MERCH = {
+  featuredIds: [...FEATURED_PRODUCT_IDS] as string[],
+  bestsellers: [...TAB_PRODUCT_IDS.bestsellers] as string[],
+  arrivals: [...TAB_PRODUCT_IDS.arrivals] as string[],
+  festival: [...TAB_PRODUCT_IDS.festival] as string[],
+};

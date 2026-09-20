@@ -1,0 +1,34 @@
+---
+description: Auto-select Superpowers skills from task intent without waiting for slash commands
+alwaysApply: true
+---
+
+# Superpowers skill routing
+
+Do not wait for `/skill` commands. Infer required Superpowers skills from the user's request, **read the current `SKILL.md` for each** (do not rely on memory), announce `Using [skill] to [purpose]`, then follow that skill exactly.
+
+Process skills first (how to work), then implementation.
+
+## Routing
+
+Apply every skill that matches; chain them in order.
+
+| Task | Skills |
+|---|---|
+| New feature, component, UI, or behavior change | `brainstorming` before plan/code → `writing-plans` after design approval → `test-driven-development` during implementation |
+| Bug, test failure, or unexpected behavior | `systematic-debugging` before proposing a fix |
+| Multi-step spec already agreed | `writing-plans` |
+| Executing a written plan | `executing-plans` or `subagent-driven-development` |
+| Independent work with no shared state | `dispatching-parallel-agents` |
+| Isolated feature workspace needed | `using-git-worktrees` |
+| About to claim done, merge, or open a PR | `verification-before-completion` then `finishing-a-development-branch` |
+| Major feature complete or pre-merge review | `requesting-code-review` |
+| Incoming review comments | `receiving-code-review` |
+| Authoring or editing skills | `writing-skills` |
+
+Start of conversation / any task: also follow `using-superpowers` (check skills before acting).
+
+## Skip only when
+
+- The user explicitly says to skip Superpowers, **or**
+- The request is purely informational with no implementation (still check first; a “how do I…” that leads to code still routes).

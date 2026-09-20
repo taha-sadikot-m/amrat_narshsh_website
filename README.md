@@ -75,6 +75,12 @@ If those are unset, local defaults are `admin@amratnarsih.com` / `amratnarsih-ad
 
 Use Studio to manage hero backgrounds (desktop + mobile), marquee offers, products and stock, orders, coupons, and contact inbox. Uploads go to `public/uploads` — see the limitation noted under Deploy to Render.
 
+## Customer accounts
+
+Shop and cart work without an account. Checkout requires a verified Indian mobile number (Firebase Phone Auth OTP). First OTP creates the customer; later OTPs sign in. Account pages: `/login`, `/account`, `/account/orders`, `/account/addresses`.
+
+Phone Auth needs a Firebase **Blaze** project. Add the Firebase variables from `.env.example`, enable the Phone provider, and add test numbers for local development. Then run `npx prisma db push` so `Customer` and `Address` tables exist.
+
 
 ## API
 

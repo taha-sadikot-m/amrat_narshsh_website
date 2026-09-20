@@ -58,7 +58,9 @@ export function hrefForPage(page: PageView, params?: NavigateParams, products: P
     case 'cart':
       return '/checkout';
     case 'account':
-      return '/';
+      return '/account';
+    case 'login':
+      return '/login';
     default:
       return '/';
   }
@@ -80,5 +82,7 @@ export function pageFromPathname(pathname: string): PageView {
   if (pathname.startsWith('/returns')) return 'returns';
   if (pathname.startsWith('/combos')) return 'combos';
   if (pathname.startsWith('/recipes')) return 'recipes';
+  if (pathname.startsWith('/account')) return 'account';
+  if (pathname.startsWith('/login')) return 'login';
   return 'home';
 }

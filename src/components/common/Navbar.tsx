@@ -1,11 +1,13 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { ShoppingBag, Heart, Menu, X, ChevronDown } from 'lucide-react';
+import { ShoppingBag, Heart, Menu, X, ChevronDown, User } from 'lucide-react';
 import { AmratNarsihLogo } from '../../data/brandAssets';
 import { useStore } from '../../context/StoreContext';
 import { useCart } from '../../context/CartContext';
 import { useWishlist } from '../../context/WishlistContext';
+import { useAuth } from '../../context/AuthContext';
+import { usePathname, useRouter } from 'next/navigation';
 
 const CATEGORY_PREVIEW_PRODUCT: Record<string, string> = {
   'instant-mixes': 'bhajiya',
@@ -17,6 +19,9 @@ export const Navbar: React.FC = () => {
   const { currentPage, navigateTo, categories, products, setSearchQuery } = useStore();
   const { itemCount, openCart } = useCart();
   const { wishlistCount } = useWishlist();
+  const { customer } = useAuth();
+  const pathname = usePathname();
+  const router = useRouter();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isProductsDropdownOpen, setIsProductsDropdownOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
@@ -97,6 +102,22 @@ export const Navbar: React.FC = () => {
         </form>
 
         <div className="flex items-center gap-1 sm:gap-2">
+          <button
+            type="button"
+            onClick={() => {
+              if (customer) {
+                router.push('/account');
+                return;
+              }
+              if (pathname?.startsWith('/checkout')) return;
+              const next = pathname && pathname !== '/login' ? pathname : '/account';
+              router.push(`/login?next=${encodeURIComponent(next)}`);
+            }}
+            className="relative rounded-lg p-2 text-[#3E2723]"
+            aria-label={customer ? 'My account' : 'Sign in'}
+          >
+            <User className="h-5 w-5" />
+          </button>
           <button
             type="button"
             onClick={() => handleNavClick('shop')}
@@ -204,6 +225,14 @@ export const Navbar: React.FC = () => {
             { label: 'Our Journey', action: () => handleNavClick('journey') },
             { label: 'Recipes', action: () => handleNavClick('recipes') },
             { label: 'Contact', action: () => handleNavClick('contact') },
+            {
+              label: customer ? 'My Account' : 'Sign in',
+              action: () => {
+                if (customer) router.push('/account');
+                else router.push('/login?next=/account');
+                setIsMobileMenuOpen(false);
+              },
+            },
           ].map((item) => (
             <button
               key={item.label}
