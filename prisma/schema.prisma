@@ -52,6 +52,8 @@ model Product {
   allergens          Json
   shelfLife          String
   moodTags           Json
+  passportRegion     String?
+  passportReward     Boolean  @default(false)
   isBestseller       Boolean @default(false)
   isFeatured         Boolean @default(false)
   isNew              Boolean @default(false)
@@ -90,6 +92,7 @@ model Customer {
   updatedAt   DateTime  @updatedAt
   addresses   Address[]
   orders      Order[]
+  forks       RecipeFork[]
 }
 
 model Address {
@@ -157,6 +160,9 @@ model OrderItem {
   price        Int
   quantity     Int
   heroColor    String
+  blendCode    String?
+  blendName    String?
+  packingNote  String?
 }
 
 model ContactMessage {
@@ -249,6 +255,7 @@ model Recipe {
   createdAt     DateTime        @default(now())
   updatedAt     DateTime        @updatedAt
   products      RecipeProduct[]
+  forks         RecipeFork[]
 }
 
 model RecipeProduct {
@@ -261,4 +268,22 @@ model RecipeProduct {
 
   @@unique([recipeId, productId])
   @@index([productId])
+}
+
+model RecipeFork {
+  id           String   @id @default(cuid())
+  recipeId     String
+  recipe       Recipe   @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+  customerId   String
+  customer     Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  parentForkId String?
+  title        String
+  steps        Json
+  chefTips     Json
+  extras       Json
+  status       String   @default("pending")
+  createdAt    DateTime @default(now())
+
+  @@index([recipeId, status])
+  @@index([customerId])
 }

@@ -7,6 +7,7 @@ import { useStore } from '../../context/StoreContext';
 import { useCart } from '../../context/CartContext';
 import { useWishlist } from '../../context/WishlistContext';
 import { useAuth } from '../../context/AuthContext';
+import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 
 const CATEGORY_PREVIEW_PRODUCT: Record<string, string> = {
@@ -102,6 +103,12 @@ export const Navbar: React.FC = () => {
         </form>
 
         <div className="flex items-center gap-1 sm:gap-2">
+          <Link
+            href="/mehmaan"
+            className="hidden rounded-full bg-[#FFF3E0] px-3 py-2 text-xs font-bold text-[#D46A1E] md:inline-flex"
+          >
+            Guests coming?
+          </Link>
           <button
             type="button"
             onClick={() => {
@@ -223,6 +230,7 @@ export const Navbar: React.FC = () => {
             { label: 'About', action: () => handleNavClick('our-story') },
             { label: 'Products', action: () => handleNavClick('shop') },
             { label: 'Our Journey', action: () => handleNavClick('journey') },
+            { label: 'Guests coming?', action: () => { setIsMobileMenuOpen(false); router.push('/mehmaan'); } },
             { label: 'Recipes', action: () => handleNavClick('recipes') },
             { label: 'Contact', action: () => handleNavClick('contact') },
             {

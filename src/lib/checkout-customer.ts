@@ -4,6 +4,7 @@ import type { Customer } from '@prisma/client';
 import { prisma } from '@/lib/prisma';
 import { indianPhoneDigits } from '@/lib/phone';
 import { OrderInputError, priceOrder, type CheckoutAddress, type OrderQuote } from '@/lib/order-service';
+import { blendDisplayName, packingNote, parseBlendCode } from '@/lib/apna-mix';
 import { unsetOtherDefaultAddresses } from '@/lib/customer-account';
 
 function clean(value: unknown) {
@@ -64,6 +65,13 @@ export async function priceCustomerOrder(body: unknown, customer: Customer): Pro
   const quote = await priceOrder({
     ...request,
     address,
+  });
+  quote.items = quote.items.map((item) => {
+    if (!item.blendCode) return item;
+    const blend = parseBlendCode(item.blendCode);
+    if (!blend) return item;
+    const blendName = blendDisplayName(customer.name, item.name, blend.spice);
+    return { ...item, blendName, packingNote: packingNote(blendName, blend) };
   });
 
   if (request.saveAddress && !addressId) {

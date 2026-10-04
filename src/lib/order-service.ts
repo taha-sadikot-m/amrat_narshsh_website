@@ -6,12 +6,14 @@ import { prisma } from '@/lib/prisma';
 import { FREE_SHIPPING_THRESHOLD, getProductBySlug, mapDbProduct, PAID_SHIPPING } from '@/lib/catalog';
 import { comboQuantityFromLines, splitBundlePrices } from '@/lib/combo-pricing';
 import type { ProductPackSize, PublicCombo } from '@/types';
+import { parseBlendCode } from '@/lib/apna-mix';
 
 export type IncomingOrderItem = {
   productId: string;
   weight: string;
   quantity: number;
   comboId?: string | null;
+  blendCode?: string | null;
 };
 
 export type CheckoutAddress = {
@@ -33,6 +35,9 @@ export type PricedOrderItem = {
   price: number;
   quantity: number;
   heroColor: string;
+  blendCode?: string;
+  blendName?: string;
+  packingNote?: string;
 };
 
 export type OrderQuote = {
@@ -71,6 +76,10 @@ async function priceCatalogItem(rawItem: IncomingOrderItem): Promise<PricedOrder
     product.packSizes[0];
   const quantity = Math.max(1, Math.floor(Number(rawItem?.quantity) || 1));
   const availableStock = Number(pack.stock ?? 0);
+  const blend = parseBlendCode(clean(rawItem?.blendCode));
+  if (clean(rawItem?.blendCode) && !blend) {
+    throw new OrderInputError('Choose a spice, sour, and sweet level.');
+  }
 
   if (!product.inStock || availableStock < quantity) {
     throw new OrderInputError(
@@ -87,6 +96,7 @@ async function priceCatalogItem(rawItem: IncomingOrderItem): Promise<PricedOrder
     price: pack.price,
     quantity,
     heroColor: product.heroColor,
+    ...(blend ? { blendCode: clean(rawItem.blendCode) } : {}),
   };
 }
 
@@ -254,7 +264,7 @@ async function runSerializable<T>(
 
 async function decrementInventory(
   tx: Prisma.TransactionClient,
-  items: PricedOrderItem[],
+  items: Pick<PricedOrderItem, 'productId' | 'weight' | 'quantity'>[],
 ): Promise<void> {
   for (const item of items) {
     const product = await tx.product.findUnique({ where: { id: item.productId } });
@@ -394,10 +404,11 @@ export async function finalizeRazorpayPayment(input: {
 }
 
 export function buildWhatsAppOrderUrl(order: SavedOrder): string {
-  const itemLines = order.items.map(
-    (item, index) =>
-      `${index + 1}. ${item.name} (${item.weight}) x ${item.quantity} = ₹${item.price * item.quantity}`,
-  );
+  const itemLines = order.items.map((item, index) => {
+    const label = item.blendName || item.name;
+    const note = item.packingNote ? ` — ${item.packingNote}` : '';
+    return `${index + 1}. ${label} (${item.weight}) x ${item.quantity} = ₹${item.price * item.quantity}${note}`;
+  });
   const address = [
     order.addressLine1,
     order.addressLine2,

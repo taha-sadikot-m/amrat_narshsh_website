@@ -22,6 +22,7 @@ import type { Recipe } from '../../types';
 import { ProductPackshot } from '../../data/brandAssets';
 import { useStore } from '../../context/StoreContext';
 import { useCart } from '../../context/CartContext';
+import { RecipeForks } from './RecipeForks';
 
 function SectionHeading({ icon: Icon, children }: { icon: LucideIcon; children: React.ReactNode }) {
   return (
@@ -34,7 +35,20 @@ function SectionHeading({ icon: Icon, children }: { icon: LucideIcon; children: 
   );
 }
 
-export const RecipeDetailPage: React.FC<{ recipe: Recipe; related?: Recipe[] }> = ({ recipe, related = [] }) => {
+export const RecipeDetailPage: React.FC<{
+  recipe: Recipe;
+  related?: Recipe[];
+  forks?: {
+    id: string;
+    title: string;
+    steps: { instruction: string; tip?: string }[];
+    chefTips: string[];
+    extras: string[];
+    forkCount: number;
+    author: string;
+  }[];
+  signedIn?: boolean;
+}> = ({ recipe, related = [], forks = [], signedIn = false }) => {
   const { products, showToast, navigateTo } = useStore();
   const { addItem } = useCart();
   const mixIds = [recipe.productId, ...(recipe.extraProductIds ?? [])];
@@ -231,6 +245,7 @@ export const RecipeDetailPage: React.FC<{ recipe: Recipe; related?: Recipe[] }> 
             </div>
           </section>
         )}
+        <RecipeForks recipe={recipe} forks={forks} signedIn={signedIn} />
       </div>
     </article>
   );

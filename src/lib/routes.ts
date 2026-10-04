@@ -55,6 +55,12 @@ export function hrefForPage(page: PageView, params?: NavigateParams, products: P
       return '/combos';
     case 'recipes':
       return params?.recipeSlug ? `/recipes/${params.recipeSlug}` : '/recipes';
+    case 'mehmaan':
+      return '/mehmaan';
+    case 'leftovers':
+      return '/leftover-rescue';
+    case 'passport':
+      return '/passport';
     case 'cart':
       return '/checkout';
     case 'account':
@@ -82,6 +88,9 @@ export function pageFromPathname(pathname: string): PageView {
   if (pathname.startsWith('/returns')) return 'returns';
   if (pathname.startsWith('/combos')) return 'combos';
   if (pathname.startsWith('/recipes')) return 'recipes';
+  if (pathname.startsWith('/mehmaan')) return 'mehmaan';
+  if (pathname.startsWith('/leftover-rescue')) return 'leftovers';
+  if (pathname.startsWith('/passport')) return 'passport';
   if (pathname.startsWith('/account')) return 'account';
   if (pathname.startsWith('/login')) return 'login';
   return 'home';

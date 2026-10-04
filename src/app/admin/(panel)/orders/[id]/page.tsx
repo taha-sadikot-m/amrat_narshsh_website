@@ -25,7 +25,7 @@ type OrderDetail = {
   state: string;
   pincode: string;
   customerId: string | null;
-  items: { name: string; quantity: number; weight: string; price: number }[];
+  items: { name: string; quantity: number; weight: string; price: number; packingNote: string | null; blendName: string | null }[];
 };
 
 const STATUSES = ['Processing', 'Shipped', 'Out for Delivery', 'Delivered'];
@@ -76,7 +76,10 @@ export default function AdminOrderDetailPage() {
       <ul className="bg-white rounded-3xl border border-[#EADFCB] p-5 space-y-2 text-sm">
         {order.items.map((item) => (
           <li key={`${item.name}-${item.weight}`} className="flex justify-between">
-            <span>{item.quantity}× {item.name} ({item.weight})</span>
+            <span>
+              {item.quantity}× {item.blendName || item.name} ({item.weight})
+              {item.packingNote ? <span className="block text-xs text-[#8D6E63]">{item.packingNote}</span> : null}
+            </span>
             <span>₹{item.price * item.quantity}</span>
           </li>
         ))}

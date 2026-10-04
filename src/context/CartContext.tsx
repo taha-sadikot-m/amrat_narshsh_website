@@ -78,7 +78,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const addItem = (item: Omit<CartItem, 'id'>) => {
     const compositeId = item.comboId
       ? comboLineId(item.comboId, item.productId, item.weight)
-      : `${item.productId}-${item.weight}`;
+      : `${item.productId}-${item.weight}${item.blendCode ? `-${item.blendCode}` : ''}`;
     setItems((prev) => {
       const existing = prev.find((i) => i.id === compositeId);
       if (existing) {

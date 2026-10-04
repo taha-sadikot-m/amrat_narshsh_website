@@ -9,5 +9,10 @@ coverage/
 image.png
 .env*
 !.env.example
+
+# Google / Firebase service account keys
+*-firebase-adminsdk-*.json
+*service-account*.json
+*serviceAccount*.json
 public/uploads/**
 !public/uploads/.gitkeep

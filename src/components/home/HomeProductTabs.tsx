@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 import { useStore } from '../../context/StoreContext';
 import type { Product } from '../../types';
+import { MODE_COPY, orderProductsForMode, shelfForMode, type StorefrontMode } from '../../lib/storefront-mode';
 import { HomeProductCard } from './HomeProductCard';
 
 const TABS = [
@@ -13,17 +14,32 @@ const TABS = [
   { id: 'festival', label: 'Festival Specials' },
 ] as const;
 
-export const HomeProductTabs: React.FC = () => {
+export const HomeProductTabs: React.FC<{ mode?: StorefrontMode }> = ({ mode = 'default' }) => {
   const { products, homeMerch } = useStore();
   const [tab, setTab] = useState<(typeof TABS)[number]['id']>('bestsellers');
   const ids = homeMerch[tab];
-  const shown = ids
+  const tabProducts = ids
     .map((id) => products.find((product) => product.id === id))
     .filter((product): product is Product => Boolean(product));
+  const shown = orderProductsForMode(tabProducts, mode);
+  const modeShelf = mode === 'default' ? [] : shelfForMode(products, mode);
+  const copy = MODE_COPY[mode];
+  const nashta = mode === 'nashta';
 
   return (
-    <section className="bg-[#FFF3E0] py-10 lg:py-[60px]">
+    <section className={`py-10 lg:py-[60px] ${nashta ? 'bg-[#F6E2C4]' : 'bg-[#FFF3E0]'}`}>
       <div className="mx-auto max-w-[1280px] px-6">
+        {copy && modeShelf.length > 0 && (
+          <div className="mb-10">
+            <p className="text-center text-[0.75rem] font-bold uppercase tracking-[0.15em] text-[#D46A1E]">{copy.title}</p>
+            <p className="mt-2 text-center text-sm text-[#8D6E63]">{copy.body}</p>
+            <div className="mt-6 grid grid-cols-2 gap-4 lg:grid-cols-5">
+              {modeShelf.map((product) => (
+                <HomeProductCard key={product.id} product={product} />
+              ))}
+            </div>
+          </div>
+        )}
         <div className="text-center">
           <p className="text-[0.75rem] font-bold uppercase tracking-[0.15em] text-[#D46A1E]">Our Products</p>
           <h2 className="font-display mt-2 text-[2rem] font-bold text-[#3E2723]">Crafted Since 1956</h2>

@@ -15,9 +15,11 @@ import {
 import { useStore } from '../../context/StoreContext';
 import { useCart } from '../../context/CartContext';
 import { useWishlist } from '../../context/WishlistContext';
+import { useAuth } from '../../context/AuthContext';
 import { Product, Recipe } from '../../types';
 import { ProductPackshot, VegBadge } from '../../data/brandAssets';
 import { HomeProductCard } from '../home/HomeProductCard';
+import { ApnaMixControls } from './ApnaMixControls';
 import confetti from 'canvas-confetti';
 
 export const ProductDetailPage: React.FC<{
@@ -28,6 +30,8 @@ export const ProductDetailPage: React.FC<{
   const { navigateTo, showToast } = useStore();
   const { addItem, openCart } = useCart();
   const { toggleWishlist, isInWishlist } = useWishlist();
+  const { customer } = useAuth();
+  const [blend, setBlend] = useState<{ blendCode: string; blendName: string; packingNote: string } | null>(null);
 
   const [selectedWeight, setSelectedWeight] = useState<string>('');
   const [quantity, setQuantity] = useState(1);
@@ -57,6 +61,7 @@ export const ProductDetailPage: React.FC<{
       quantity,
       heroColor: product.heroColor,
       makesText: product.makesText,
+      ...(blend ?? {}),
     });
     confetti({
       particleCount: 40,
@@ -251,6 +256,12 @@ export const ProductDetailPage: React.FC<{
 
             {/* Quantity and Actions */}
             <div className="space-y-3 pt-2">
+              <ApnaMixControls
+                productId={product.id}
+                productName={product.name}
+                customerName={customer?.name}
+                onChange={setBlend}
+              />
               <div className="flex items-center space-x-4">
                 <span className="text-xs font-bold text-gray-800">Quantity:</span>
                 <div className="flex items-center border border-gray-300 rounded-xl bg-white shadow-2xs">

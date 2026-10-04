@@ -14,6 +14,11 @@ export function normalizeIndianE164(input: string): string | null {
   return digits ? `+91${digits}` : null;
 }
 
+/** True only when the number is a valid Indian mobile and the captcha is solved. */
+export function canRequestOtp(phone: string, captchaSolved: boolean): boolean {
+  return Boolean(captchaSolved && normalizeIndianE164(phone));
+}
+
 export function phonesMatch(a: string, b: string): boolean {
   const left = indianPhoneDigits(a);
   const right = indianPhoneDigits(b);

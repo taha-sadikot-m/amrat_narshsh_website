@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
 import { AppProviders } from '../components/AppProviders';
 import { getCategories, getProducts } from '../lib/catalog';
+import { filterStorefrontProducts } from '../lib/storefront-catalog';
 import { getHomeMerch } from '../lib/home-merch';
 import { getHeroCarousel } from '../lib/site-content';
 import '../index.css';
@@ -19,12 +20,13 @@ export const metadata: Metadata = {
 };
 
 export default async function RootLayout({ children }: { children: ReactNode }) {
-  const [products, categories, homeMerch, hero] = await Promise.all([
+  const [catalog, categories, homeMerch, hero] = await Promise.all([
     getProducts(),
     getCategories(),
     getHomeMerch(),
     getHeroCarousel().catch(() => null),
   ]);
+  const products = await filterStorefrontProducts(catalog);
 
   return (
     <html lang="en" className="scroll-smooth">

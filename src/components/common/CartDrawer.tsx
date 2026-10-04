@@ -259,7 +259,7 @@ export const CartDrawer: React.FC = () => {
                     {/* Info */}
                     <div className="flex-1 min-w-0">
                       <h4 className="text-xs font-bold text-gray-900 truncate font-display">
-                        {item.name}
+                        {item.blendName || item.name}
                       </h4>
                       <div className="flex items-center space-x-2 mt-1">
                         <span className="text-[10px] font-bold bg-[#FFF8EC] text-[#6F3E24] px-2 py-0.5 rounded-md border border-[#F4C400]/30">

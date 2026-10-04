@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
-import { indianPhoneDigits, normalizeIndianE164, phonesMatch } from './phone';
+import { canRequestOtp, indianPhoneDigits, normalizeIndianE164, phonesMatch } from './phone';
 
 describe('normalizeIndianE164', () => {
   it('accepts 10-digit Indian mobiles', () => {
@@ -29,5 +29,16 @@ describe('phonesMatch', () => {
 describe('indianPhoneDigits', () => {
   it('returns the national 10-digit number', () => {
     assert.equal(indianPhoneDigits('+919876543210'), '9876543210');
+  });
+});
+
+describe('canRequestOtp', () => {
+  it('allows a request only for a valid Indian mobile with a solved captcha', () => {
+    assert.equal(canRequestOtp('9876543210', true), true);
+    assert.equal(canRequestOtp('+91 98765 43210', true), true);
+    assert.equal(canRequestOtp('9876543210', false), false);
+    assert.equal(canRequestOtp('12345', true), false);
+    assert.equal(canRequestOtp('', true), false);
+    assert.equal(canRequestOtp('5876543210', true), false);
   });
 });

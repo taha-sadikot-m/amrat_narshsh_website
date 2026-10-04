@@ -186,6 +186,9 @@ export interface CartItem {
   comboId?: string;
   comboName?: string;
   comboUnitQty?: number;
+  blendCode?: string;
+  blendName?: string;
+  packingNote?: string;
 }
 
 export interface CustomerPublic {
@@ -262,4 +265,7 @@ export type PageView =
   | 'shipping'
   | 'returns'
   | 'combos'
-  | 'recipes';
+  | 'recipes'
+  | 'mehmaan'
+  | 'leftovers'
+  | 'passport';

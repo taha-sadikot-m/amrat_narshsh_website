@@ -1,8 +1,9 @@
 'use client';
 
-import React, { useEffect, useId, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   RecaptchaVerifier,
+  initializeRecaptchaConfig,
   signInWithPhoneNumber,
   type ConfirmationResult,
 } from 'firebase/auth';
@@ -15,6 +16,15 @@ type PhoneOtpFormProps = {
   compact?: boolean;
 };
 
+function destroyVerifier(widget: RecaptchaVerifier | null) {
+  if (!widget) return;
+  try {
+    widget.clear();
+  } catch {
+    // clear() throws once the instance is already destroyed
+  }
+}
+
 export function PhoneOtpForm({ onVerified, compact }: PhoneOtpFormProps) {
   const { refresh } = useAuth();
   const [phone, setPhone] = useState('');
@@ -23,9 +33,10 @@ export function PhoneOtpForm({ onVerified, compact }: PhoneOtpFormProps) {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
   const [cooldown, setCooldown] = useState(0);
+  const [captchaEpoch, setCaptchaEpoch] = useState(0);
   const confirmation = useRef<ConfirmationResult | null>(null);
   const verifier = useRef<RecaptchaVerifier | null>(null);
-  const recaptchaDomId = `recaptcha${useId().replace(/:/g, '')}`;
+  const hostRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     if (cooldown <= 0) return;
@@ -34,18 +45,49 @@ export function PhoneOtpForm({ onVerified, compact }: PhoneOtpFormProps) {
   }, [cooldown]);
 
   useEffect(() => {
-    return () => {
-      verifier.current?.clear();
-      verifier.current = null;
-    };
+    if (!isFirebaseClientConfigured()) return;
+    void initializeRecaptchaConfig(getFirebaseAuth()).catch(() => {
+      // signInWithPhoneNumber loads this config again if the first call fails
+    });
   }, []);
 
-  async function ensureVerifier() {
-    const auth = getFirebaseAuth();
-    if (!verifier.current) {
-      verifier.current = new RecaptchaVerifier(auth, recaptchaDomId, { size: 'invisible' });
+  useEffect(() => {
+    const host = hostRef.current;
+    if (!host) return;
+    if (!isFirebaseClientConfigured()) {
+      setError('Phone sign-in is not configured. Add Firebase keys to .env.');
+      return;
     }
-    return verifier.current;
+
+    let cancelled = false;
+    let widget: RecaptchaVerifier | null = null;
+
+    // Wait out React Strict Mode's setup/cleanup/setup so only one widget is created.
+    const timer = window.setTimeout(() => {
+      if (cancelled) return;
+      const currentHost = hostRef.current;
+      if (!currentHost) return;
+      destroyVerifier(verifier.current);
+      verifier.current = null;
+      currentHost.replaceChildren();
+
+      const slot = document.createElement('div');
+      currentHost.appendChild(slot);
+      widget = new RecaptchaVerifier(getFirebaseAuth(), slot, { size: 'invisible' });
+      verifier.current = widget;
+    }, 0);
+
+    return () => {
+      cancelled = true;
+      window.clearTimeout(timer);
+      destroyVerifier(widget);
+      if (widget && verifier.current === widget) verifier.current = null;
+      host.replaceChildren();
+    };
+  }, [captchaEpoch]);
+
+  function resetCaptcha() {
+    setCaptchaEpoch((value) => value + 1);
   }
 
   async function sendCode() {
@@ -59,15 +101,19 @@ export function PhoneOtpForm({ onVerified, compact }: PhoneOtpFormProps) {
       setError('Enter a valid 10-digit Indian mobile number.');
       return;
     }
+    const recaptcha = verifier.current;
+    if (!recaptcha) {
+      setError('Captcha is still loading. Try again in a moment.');
+      return;
+    }
     setBusy(true);
     try {
-      const recaptcha = await ensureVerifier();
       confirmation.current = await signInWithPhoneNumber(getFirebaseAuth(), e164, recaptcha);
       setStep('otp');
       setCooldown(30);
+      resetCaptcha();
     } catch (caught) {
-      verifier.current?.clear();
-      verifier.current = null;
+      resetCaptcha();
       setError(caught instanceof Error ? caught.message : 'Could not send OTP.');
     } finally {
       setBusy(false);
@@ -101,9 +147,10 @@ export function PhoneOtpForm({ onVerified, compact }: PhoneOtpFormProps) {
     }
   }
 
+  const phoneReady = Boolean(normalizeIndianE164(phone));
+
   return (
     <div className={compact ? 'space-y-3' : 'space-y-4'}>
-      <div id={recaptchaDomId} />
       {step === 'phone' ? (
         <>
           <label className="text-[11px] font-bold text-gray-700 block">Mobile number</label>
@@ -123,7 +170,7 @@ export function PhoneOtpForm({ onVerified, compact }: PhoneOtpFormProps) {
           </div>
           <button
             type="button"
-            disabled={busy}
+            disabled={busy || !phoneReady}
             onClick={() => void sendCode()}
             className="w-full rounded-2xl bg-[#C90018] py-3 text-xs font-bold text-white disabled:opacity-50"
           >
@@ -151,7 +198,7 @@ export function PhoneOtpForm({ onVerified, compact }: PhoneOtpFormProps) {
           </button>
           <button
             type="button"
-            disabled={busy || cooldown > 0}
+            disabled={busy || cooldown > 0 || !phoneReady}
             onClick={() => void sendCode()}
             className="w-full text-xs font-bold text-[#C90018] disabled:text-gray-400"
           >
@@ -163,12 +210,15 @@ export function PhoneOtpForm({ onVerified, compact }: PhoneOtpFormProps) {
             onClick={() => {
               setStep('phone');
               setOtp('');
+              setError('');
+              resetCaptcha();
             }}
           >
             Change number
           </button>
         </>
       )}
+      <div ref={hostRef} />
       {error ? <p className="text-xs text-red-600">{error}</p> : null}
     </div>
   );

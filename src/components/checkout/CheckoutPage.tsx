@@ -156,6 +156,7 @@ export const CheckoutPage: React.FC = () => {
       weight: item.weight,
       quantity: item.quantity,
       comboId: item.comboId ?? null,
+      blendCode: item.blendCode ?? null,
     })),
     paymentMethod: method,
     couponCode: appliedCoupon?.code ?? null,
